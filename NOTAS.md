@@ -6,7 +6,10 @@
 
 1. ✅ Crear el repo **público** `qfcorp/tukan-iphone` (minutos de Mac gratis).
 2. ✅ Cascarón común en Swift (WebView a pantalla completa) + generador + prueba en simulador.
-3. ⏳ Probar compilando **TuFlota** y **TuDron** en la Mac de GitHub (sin firma de Apple) → debe decir **ABRE BIEN**.
+3. ✅ 12 nov: **TuFlota** y **TuDron** compiladas en la Mac de GitHub y probadas en el simulador **iPhone 17**: las dos **ABRE BIEN** (costo $0).
+   - ⚠️ TuFlota muestra en su portada «USD 5 per month» y «7-day free trial». Antes de enviar a Apple, el servidor
+     debe esconder precios y botones de pago cuando el navegador diga `TukanIOS` (ver «Reglas de Apple»).
+   - El simulador está en inglés y la web se muestra en inglés; en un iPhone en español sale en español.
 4. ⏳ Cuando Apple active la cuenta (después de pagar los $99):
    - Crear en App Store Connect la **clave de API** (Users and Access → Integrations → App Store Connect API, rol *App Manager*).
    - Guardarla en Settings → Secrets: `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`.
@@ -36,5 +39,6 @@
 
 ## Historial
 
+- 12 nov 2026: primera compilación: TuFlota ABRE BIEN; TuDron fallaba por el «&» de su dirección en la prueba (arreglado). Segunda: las dos ABRE BIEN.
 - 12 nov 2026: repo creado por Dimitry; estructura, generador, prueba en simulador y workflow
   (TuFlota y TuDron) hechos por Claude.
