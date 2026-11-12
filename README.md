@@ -57,4 +57,8 @@ Campos de `app.json`: `nombre`, `nombre_corto` (lo que sale debajo del ícono), 
 | `herramientas/generar.py` | Arma el proyecto de Xcode de una app |
 | `herramientas/probar_simulador.sh` | Abre la app en el simulador de iPhone y revisa que cargue |
 | `.github/workflows/` | La compilación en la Mac de GitHub |
+| `appstore/TEXTOS_APP_STORE.md` | Textos de la ficha en la App Store (nombre, subtítulo, descripción, palabras clave) de cada app, en español e inglés |
+| `docs/` | Guía de primeros pasos y manual corto de las apps de iPhone (`.md` y `.pdf`; los PDF se rehacen con `python3 herramientas/hacer_pdf_docs.py`) |
 | `NOTAS.md` | Bloc de notas: plan, lo hecho y lo que falta |
+
+> **Regla siempre:** en las apps de iPhone no se muestran precios ni botones o enlaces de pago, y los textos de la ficha, la guía y el manual no hablan de eso.

@@ -39,6 +39,7 @@
 
 ## Historial
 
+- 12 nov 2026 (tarde): textos de ficha para la App Store (`appstore/TEXTOS_APP_STORE.md`, Flota Tukán y TuDron, es/en), guía de primeros pasos y manual corto de iPhone (`docs/`, con PDF), sin precios ni pagos. Falta: capturas de la ficha, cuenta de demo del revisor y que el servidor esconda precios con `TukanIOS`.
 - 12 nov 2026: primera compilación: TuFlota ABRE BIEN; TuDron fallaba por el «&» de su dirección en la prueba (arreglado). Segunda: las dos ABRE BIEN.
 - 12 nov 2026: repo creado por Dimitry; estructura, generador, prueba en simulador y workflow
   (TuFlota y TuDron) hechos por Claude.
