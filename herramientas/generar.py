@@ -13,6 +13,7 @@ El icono se toma, en este orden:
 import json
 import os
 import re
+import shlex
 import shutil
 import struct
 import subprocess
@@ -245,9 +246,12 @@ def main():
     with open(os.path.join(salida, "project.yml"), "w", encoding="utf-8") as f:
         json.dump(proyecto, f, ensure_ascii=False, indent=2)
 
+    # Valores entre comillas: la url puede traer "&" (ej. ?r=inicio&app=1).
     with open(os.path.join(salida, "datos.env"), "w") as f:
-        f.write("PRODUCTO=%s\nBUNDLE_ID=%s\nURL_APP=%s\nVERSION=%s\nCOMPILACION=%s\n" % (
-            cfg["producto"], cfg["bundle_id"], cfg["url"], cfg["version"], cfg["compilacion"]))
+        for clave, valor in (("PRODUCTO", cfg["producto"]), ("BUNDLE_ID", cfg["bundle_id"]),
+                             ("URL_APP", cfg["url"]), ("VERSION", cfg["version"]),
+                             ("COMPILACION", str(cfg["compilacion"]))):
+            f.write("%s=%s\n" % (clave, shlex.quote(str(valor))))
     print("Listo: construir/%s (%s, %s)" % (app, cfg["nombre"], cfg["bundle_id"]))
 
 

@@ -21,15 +21,22 @@ fallar() {
 # Elegir un iPhone disponible del simulador
 UDID=$(xcrun simctl list devices available -j | python3 -c '
 import json, sys
+import re
 datos = json.load(sys.stdin)["devices"]
-mejor = None
+opciones = []
 for runtime, equipos in datos.items():
     if "iOS" not in runtime:
         continue
+    ver = tuple(int(n) for n in re.findall(r"\d+", runtime.split("iOS")[-1])[:2])
     for e in equipos:
-        if e["name"].startswith("iPhone"):
-            mejor = e["udid"]
-print(mejor or "")
+        nombre = e["name"]
+        if not nombre.startswith("iPhone"):
+            continue
+        num = re.search(r"iPhone (\d+)", nombre)
+        # Preferir el iOS mas nuevo y un iPhone normal reciente (no SE, no Plus/Max)
+        normal = 1 if num and not re.search(r"SE|Plus|Max|mini|Air|e$", nombre) else 0
+        opciones.append((ver, normal, int(num.group(1)) if num else 0, e["udid"]))
+print(max(opciones)[3] if opciones else "")
 ')
 [ -n "$UDID" ] || fallar "no hay simulador de iPhone disponible"
 NOMBRE_EQUIPO=$(xcrun simctl list devices | grep "$UDID" | sed 's/ (.*//' | xargs)
