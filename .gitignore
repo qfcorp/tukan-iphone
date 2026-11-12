@@ -1,0 +1,5 @@
+construir/
+pruebas/
+*.xcodeproj/
+.DS_Store
+__pycache__/

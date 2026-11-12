@@ -1,0 +1,15 @@
+{
+  "nombre": "TuDron",
+  "nombre_corto": "TuDron",
+  "producto": "TuDron",
+  "bundle_id": "com.tukansoftware.tudron",
+  "url": "https://tudron.tukanec.com/?r=inicio&app=1",
+  "color_fondo": "#14213D",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos del dron, del sitio de vuelo y de los documentos.",
+    "fotos": "Para adjuntar fotos y documentos de los vuelos.",
+    "ubicacion": "Para registrar el lugar del vuelo."
+  }
+}

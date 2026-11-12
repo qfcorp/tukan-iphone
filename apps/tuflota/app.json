@@ -1,0 +1,15 @@
+{
+  "nombre": "Flota Tukán",
+  "nombre_corto": "Flota Tukán",
+  "producto": "FlotaTukan",
+  "bundle_id": "com.tukansoftware.flotatukan",
+  "url": "https://tuflota.tukanec.com/",
+  "color_fondo": "#1D3461",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar la foto del recibo, de la gasolinera o del vehículo.",
+    "fotos": "Para adjuntar fotos de recibos y del vehículo.",
+    "ubicacion": "Para mostrar las gasolineras cercanas."
+  }
+}

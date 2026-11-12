@@ -1,0 +1,103 @@
+name: Compilar y probar apps de iPhone
+
+# Este repositorio es PUBLICO: los minutos de Mac de GitHub Actions son gratis.
+# Aqui solo van los cascarones de las apps (nombre, icono, color y direccion web).
+# Las claves de Apple van en Settings -> Secrets (quedan ocultas aunque el repo sea publico).
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App a compilar (todas, tuflota, tudron...)"
+        required: true
+        default: "todas"
+  push:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - "plantilla/**"
+      - "herramientas/**"
+      - ".github/workflows/compilar-iphone.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compilar-iphone-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lista:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.lista.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: lista
+        env:
+          PEDIDA: ${{ github.event.inputs.app || 'todas' }}
+        run: |
+          if [ "$PEDIDA" = "todas" ]; then
+            APPS=$(ls apps | python3 -c 'import json,sys; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))')
+          else
+            [ -f "apps/$PEDIDA/app.json" ] || { echo "No existe apps/$PEDIDA"; exit 1; }
+            APPS="[\"$PEDIDA\"]"
+          fi
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+          echo "Apps: $APPS"
+
+  compilar:
+    needs: lista
+    runs-on: macos-15
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.lista.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+
+      - name: Armar el proyecto de Xcode
+        run: |
+          python3 herramientas/generar.py "${{ matrix.app }}"
+          cd "construir/${{ matrix.app }}"
+          xcodegen generate
+
+      - name: Compilar para el simulador de iPhone
+        run: |
+          source "construir/${{ matrix.app }}/datos.env"
+          cd "construir/${{ matrix.app }}"
+          xcodebuild -project "$PRODUCTO.xcodeproj" -scheme "$PRODUCTO" \
+            -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath compilado \
+            CODE_SIGNING_ALLOWED=NO build > compilacion.log 2>&1 || {
+              echo "=== ERRORES ==="; grep -E "error:|warning: .*deprecated" compilacion.log | head -40
+              echo "=== FINAL ==="; tail -40 compilacion.log; exit 1; }
+          tail -5 compilacion.log
+
+      - name: Probar en el simulador (debe decir ABRE BIEN)
+        run: bash herramientas/probar_simulador.sh "${{ matrix.app }}"
+
+      - name: Resumen
+        if: always()
+        run: |
+          {
+            echo "## ${{ matrix.app }}"
+            cat "pruebas/${{ matrix.app }}/resultado.txt" 2>/dev/null || echo "Sin resultado (fallo antes de la prueba)"
+            echo '```'
+            cat "pruebas/${{ matrix.app }}/registro.txt" 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar captura y resultado (se borran solos en 3 dias)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prueba-${{ matrix.app }}
+          path: pruebas/${{ matrix.app }}/
+          retention-days: 3
+          if-no-files-found: ignore
