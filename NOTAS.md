@@ -33,6 +33,11 @@
 
 ## Reglas de Apple a cuidar
 
+- ✅ 13 nov: **respaldo dentro de la app** (`plantilla/Sources/TukanApp.swift`, `enum Pagos`): esconde con CSS las partes de pago comunes
+  de Tukán (`.tukan-pago`, `#pago-tarjeta`, `.tukan-sugerencia`, `#pago-play`, `.boton-play`, `.modulo-precio`, `.solo-web`…), pone la clase
+  `tukan-ios` en `<html>` y **no abre** páginas de pago (pagos.tukanec.com, Plux, Payphone, PayPal, Stripe, Google Play, `r=play_compra`).
+  El servidor de cada programa además los esconde de verdad cuando el navegador dice `TukanIOS` (en curso, 13 nov).
+
 - **Pagos dentro de la app:** Apple obliga a usar su cobro (In‑App Purchase) para planes que se venden
   dentro de la app. Los programas se cobran por la web (Plux). En la app de iPhone **no** debe salir
   ningún botón de pagar ni precios: el servidor debe esconderlos cuando el navegador diga `TukanIOS`

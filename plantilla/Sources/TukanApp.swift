@@ -85,6 +85,10 @@ struct VistaWeb: UIViewRepresentable {
         // Marca para que el servidor sepa que es la app de iPhone
         // (por ejemplo, para no mostrar botones de pago dentro de la app).
         ajustes.applicationNameForUserAgent = "TukanIOS/\(Config.version)"
+        // Regla de Apple: dentro de la app de iPhone no se ven precios ni botones de pago de los planes.
+        // Respaldo por si el servidor todavia no los esconde (ver Pagos mas abajo).
+        ajustes.userContentController.addUserScript(
+            WKUserScript(source: Pagos.scriptOcultar, injectionTime: .atDocumentStart, forMainFrameOnly: false))
 
         let web = WKWebView(frame: .zero, configuration: ajustes)
         web.navigationDelegate = context.coordinator
@@ -128,6 +132,11 @@ struct VistaWeb: UIViewRepresentable {
                      decidePolicyFor accion: WKNavigationAction,
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
             guard let url = accion.request.url else { return decisionHandler(.allow) }
+            // Paginas de pago de los planes (Plux, Tukan Pagos, Google Play...): no se abren desde la app de iPhone.
+            if Pagos.esDePago(url) {
+                Prueba.anotar("BLOQUEADO pago: \(url.host ?? "")")
+                return decisionHandler(.cancel)
+            }
             let esquema = url.scheme?.lowercased() ?? ""
             if esquema == "tel" || esquema == "mailto" || esquema == "whatsapp" || esquema == "sms" {
                 UIApplication.shared.open(url)
@@ -149,7 +158,7 @@ struct VistaWeb: UIViewRepresentable {
                      createWebViewWith configuration: WKWebViewConfiguration,
                      for accion: WKNavigationAction,
                      windowFeatures: WKWindowFeatures) -> WKWebView? {
-            if let url = accion.request.url {
+            if let url = accion.request.url, !Pagos.esDePago(url) {
                 if let host = url.host, let propio = dominioPropio,
                    host == propio || host.hasSuffix("." + propio) {
                     webView.load(URLRequest(url: url))
@@ -244,4 +253,40 @@ extension Color {
                   green: Double((valor >> 8) & 0xFF) / 255,
                   blue: Double(valor & 0xFF) / 255)
     }
+}
+
+
+/// Regla de Apple (App Store 3.1.1): los planes de Tukan se pagan por la web, asi que la app de iPhone
+/// no muestra precios de los planes, ni botones o enlaces para pagarlos. El servidor de cada programa
+/// los esconde cuando el navegador dice «TukanIOS»; esto es el respaldo dentro de la app.
+enum Pagos {
+    /// Sitios de pago que nunca se abren desde la app.
+    static let sitios = ["pagos.tukanec.com", "pagoplux.com", "payphonetodoesposible.com", "paypal.com",
+                         "checkout.stripe.com", "play.google.com", "pay.google.com"]
+
+    static func esDePago(_ url: URL) -> Bool {
+        let host = (url.host ?? "").lowercased()
+        if sitios.contains(where: { host == $0 || host.hasSuffix("." + $0) }) { return true }
+        let resto = ((url.query ?? "") + "&" + url.path).lowercased()
+        return resto.contains("r=play_compra") || resto.contains("r=pagar_plan") || resto.contains("r=comprar_plan")
+    }
+
+    /// CSS que esconde las partes de pago comunes de los programas Tukan y marca la pagina como app de iPhone
+    /// (clase «tukan-ios» en <html>, para que el servidor pueda usar .tukan-ios en su CSS).
+    static let scriptOcultar = """
+    (function () {
+      var css = '.tukan-pago,#pago-tarjeta,.tukan-sugerencia,#pago-play,.boton-play,.modulo-precio,' +
+                '.tk-precio-plan,.precio-plan,.solo-web,[data-tukan-pago],[data-solo-web],' +
+                'a[href*="pagos.tukanec.com"],a[href*="pagoplux"],a[href*="payphone"],a[href*="play_compra"]' +
+                '{display:none!important}';
+      var poner = function () {
+        document.documentElement.classList.add('tukan-ios');
+        if (document.getElementById('tukan-ios-css')) return;
+        var s = document.createElement('style'); s.id = 'tukan-ios-css'; s.textContent = css;
+        (document.head || document.documentElement).appendChild(s);
+      };
+      poner();
+      document.addEventListener('DOMContentLoaded', poner);
+    })();
+    """
 }
