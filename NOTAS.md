@@ -51,6 +51,8 @@
 
 ## Historial
 
+- 13 nov 2026 (11:20): **17 de 22 ABRE BIEN** en el simulador: TuBroadcast (nativa), EN VIVO Tycoon, QF ERP, QF Flota, Flota Tukán, JD Entregas, JD Logística, TuAcademia, TuEvento, TuFactura, TuGroomer, TuGuardería, TuLavadora, TuMecánica, TuPlanner, TuSalón y TuSpa. Las otras 5 (QF Deportes, TuDron, TuHospedaje, TuVocalía, Tukán Mensajes) las canceló GitHub porque no había Mac libre («not acquired by Runner»), no por error del código: se volvieron a lanzar.
+
 - 13 nov 2026: TuBroadcast nativa para iPhone (primera versión) en `nativas/tubroadcast`, con su propio workflow.
 
 - 13 nov 2026: agregadas QF ERP, QF Flota y QF Deportes (21 en total). El workflow deja correr a la vez «todas» y una app sola sin cancelarse.
