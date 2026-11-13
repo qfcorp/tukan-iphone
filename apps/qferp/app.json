@@ -1,0 +1,15 @@
+{
+  "nombre": "QF ERP",
+  "nombre_corto": "QF ERP",
+  "producto": "QFERP",
+  "bundle_id": "com.qfproducciones.erp",
+  "url": "https://erp.tupassec.com/index.php?app=1",
+  "color_fondo": "#FF6600",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos de equipos, recibos y documentos del evento.",
+    "fotos": "Para adjuntar fotos y documentos.",
+    "ubicacion": "Para registrar el lugar del evento y de los vehiculos."
+  }
+}

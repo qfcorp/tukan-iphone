@@ -19,8 +19,10 @@
 6. ✅ 13 nov: agregadas **todas** las apps (18 en total): las 15 de Android que faltaban (mismo nombre, paquete, color e ícono que en
    `qfcorp/tukan-apps`) + el juego **EN VIVO Tycoon** (`apps/envivo`, juego.tukanec.com). La dirección abre con `app=ios`
    (u `origen=ios`) en vez de `app=play`, para que el servidor no muestre el cobro de Google Play.
-   - QF ERP y QF Flota siguen en su propio repo (`qfcorp/erp-qf-patches`, carpeta `apps_ios`), que es privado: está bloqueado
-     hasta el 1 de diciembre por el tope de $0 de GitHub.
+   - También **QF ERP**, **QF Flota** (erp.tupassec.com, mismos bundle ID que en `erp-qf-patches/apps_ios`) y **QF Deportes**
+     (`com.qfproducciones.app`, qfproducciones.com). Dimitry autorizó (13 nov) pasar sus cascarones a este repo público porque
+     `erp-qf-patches` es privado y GitHub lo tiene bloqueado hasta el 1 de diciembre. El código del ERP no se publica. Total: **21 apps**.
+   - 13 nov: Dimitry dijo que **Android no hace falta compilar ahora**, solo iPhone.
    - TuBroadcast (app nativa de cámara) **no** sirve como cascarón web: para iPhone habría que escribirla de nuevo en Swift.
 7. ⏳ Actualizar manuales y presentaciones de cada programa con «Disponible en iPhone».
 
@@ -44,6 +46,7 @@
 
 ## Historial
 
+- 13 nov 2026: agregadas QF ERP, QF Flota y QF Deportes (21 en total). El workflow deja correr a la vez «todas» y una app sola sin cancelarse.
 - 13 nov 2026: agregadas 16 apps (15 Tukán/JD + juego EN VIVO Tycoon). Generador probado con las 18 (todas «Listo»). Compilación y prueba en simulador en GitHub Actions.
 
 - 12 nov 2026 (tarde): textos de ficha para la App Store (`appstore/TEXTOS_APP_STORE.md`, Flota Tukán y TuDron, es/en), guía de primeros pasos y manual corto de iPhone (`docs/`, con PDF), sin precios ni pagos. Falta: capturas de la ficha, cuenta de demo del revisor y que el servidor esconda precios con `TukanIOS`.

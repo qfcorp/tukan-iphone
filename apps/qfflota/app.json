@@ -1,0 +1,15 @@
+{
+  "nombre": "QF Flota",
+  "nombre_corto": "QF Flota",
+  "producto": "QFFlota",
+  "bundle_id": "com.qfproducciones.flota",
+  "url": "https://erp.tupassec.com/flota.php?app=1",
+  "color_fondo": "#FF6600",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar la foto del recibo, de la gasolinera o del vehiculo.",
+    "fotos": "Para adjuntar fotos de recibos y del vehiculo.",
+    "ubicacion": "Para registrar el recorrido y las gasolineras."
+  }
+}

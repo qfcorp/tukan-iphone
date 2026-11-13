@@ -23,7 +23,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: compilar-iphone-${{ github.ref }}
+  group: compilar-iphone-${{ github.ref }}-${{ github.event.inputs.app || 'todas' }}
   cancel-in-progress: true
 
 jobs:

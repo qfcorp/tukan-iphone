@@ -1,0 +1,11 @@
+{
+  "nombre": "QF Deportes",
+  "nombre_corto": "QF Deportes",
+  "producto": "QFDeportes",
+  "bundle_id": "com.qfproducciones.app",
+  "url": "https://qfproducciones.com/",
+  "color_fondo": "#E5532D",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {}
+}
