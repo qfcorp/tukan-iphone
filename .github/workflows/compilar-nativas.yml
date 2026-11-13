@@ -47,6 +47,7 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             -derivedDataPath compilado \
             -skipPackagePluginValidation -skipMacroValidation \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=NO \
             CODE_SIGNING_ALLOWED=NO build > compilacion.log 2>&1 || {
               echo "=== ERRORES ==="; grep -E "error:" compilacion.log | sort -u | head -60
               echo "=== FINAL ==="; tail -60 compilacion.log; exit 1; }
