@@ -23,7 +23,12 @@
      (`com.qfproducciones.app`, qfproducciones.com). Dimitry autorizó (13 nov) pasar sus cascarones a este repo público porque
      `erp-qf-patches` es privado y GitHub lo tiene bloqueado hasta el 1 de diciembre. El código del ERP no se publica. Total: **21 apps**.
    - 13 nov: Dimitry dijo que **Android no hace falta compilar ahora**, solo iPhone.
-   - TuBroadcast (app nativa de cámara) **no** sirve como cascarón web: para iPhone habría que escribirla de nuevo en Swift.
+   - **TuBroadcast** no es cascarón web: se escribió una **app nativa en Swift** en `nativas/tubroadcast/` (13 nov) con
+     HaishinKit 2.3.0 (RTMP/RTMPS y SRT): cámara trasera/frontal, micrófono on/off, linterna, varias conexiones guardadas,
+     resolución 720p/1080p, fps, bitrate y enlaces de configuración `tubroadcast://set/v1?...` (formato Grove de Larix).
+     Se compila con `.github/workflows/compilar-nativas.yml` y se prueba con `nativas/probar_nativa.sh`.
+     **Falta** (para igualar a Android): licencia del Panel Tukán Central, control remoto (Tuner), overlays, retorno de audio,
+     grabación, NDI, HEVC y bitrate adaptable. La cámara real solo se puede probar en un iPhone (TestFlight).
 7. ⏳ Actualizar manuales y presentaciones de cada programa con «Disponible en iPhone».
 
 ## Reglas de Apple a cuidar
@@ -45,6 +50,8 @@
 - Apple Developer: **$99 al año** (lo paga Dimitry).
 
 ## Historial
+
+- 13 nov 2026: TuBroadcast nativa para iPhone (primera versión) en `nativas/tubroadcast`, con su propio workflow.
 
 - 13 nov 2026: agregadas QF ERP, QF Flota y QF Deportes (21 en total). El workflow deja correr a la vez «todas» y una app sola sin cancelarse.
 - 13 nov 2026: agregadas 16 apps (15 Tukán/JD + juego EN VIVO Tycoon). Generador probado con las 18 (todas «Listo»). Compilación y prueba en simulador en GitHub Actions.

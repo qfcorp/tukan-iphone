@@ -1,0 +1,68 @@
+name: Compilar y probar apps nativas de iPhone (TuBroadcast)
+
+# Apps que NO son cascaron web: tienen su propio codigo Swift en nativas/<app>/.
+# Repo PUBLICO: los minutos de Mac son gratis.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "nativas/**"
+      - ".github/workflows/compilar-nativas.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compilar-nativas-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tubroadcast:
+    runs-on: macos-15
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+
+      - name: Armar el proyecto de Xcode
+        run: bash nativas/tubroadcast/preparar.sh
+
+      - name: Compilar para el simulador de iPhone
+        run: |
+          cd construir/tubroadcast
+          xcodebuild -project TuBroadcast.xcodeproj -scheme TuBroadcast \
+            -configuration Debug -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath compilado \
+            -skipPackagePluginValidation -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO build > compilacion.log 2>&1 || {
+              echo "=== ERRORES ==="; grep -E "error:" compilacion.log | sort -u | head -60
+              echo "=== FINAL ==="; tail -60 compilacion.log; exit 1; }
+          tail -5 compilacion.log
+
+      - name: Probar en el simulador (debe decir ABRE BIEN)
+        run: bash nativas/probar_nativa.sh tubroadcast
+
+      - name: Resumen
+        if: always()
+        run: |
+          {
+            echo "## tubroadcast (nativa)"
+            cat pruebas/tubroadcast/resultado.txt 2>/dev/null || echo "Sin resultado (fallo antes de la prueba)"
+            echo '```'
+            cat pruebas/tubroadcast/registro.txt 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar captura y resultado (se borran solos en 3 dias)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prueba-tubroadcast
+          path: pruebas/tubroadcast/
+          retention-days: 3
+          if-no-files-found: ignore
