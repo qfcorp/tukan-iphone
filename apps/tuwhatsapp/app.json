@@ -1,0 +1,14 @@
+{
+  "nombre": "Tukán Mensajes",
+  "nombre_corto": "Tukán Mensajes",
+  "producto": "TukanMensajes",
+  "bundle_id": "com.tukansoftware.tuwhatsapp",
+  "url": "https://whatsapp.tukanec.com/?r=inicio&app=ios",
+  "color_fondo": "#14211F",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

@@ -1,6 +1,6 @@
 # Bloc de notas — Tukán iPhone (qfcorp/tukan-iphone)
 
-Última actualización: 12 nov 2026
+Última actualización: 13 nov 2026
 
 ## Plan
 
@@ -16,7 +16,12 @@
    - Agregar al workflow: firma automática + archivo `.ipa` + subida a **TestFlight**.
    - Crear cada app en App Store Connect con su bundle ID, para **todos los países**.
 5. ⏳ Probar en el iPhone de Dimitry con **TestFlight** y luego enviar a revisión de Apple.
-6. ⏳ Seguir con las demás apps Tukán en **orden alfabético**.
+6. ✅ 13 nov: agregadas **todas** las apps (18 en total): las 15 de Android que faltaban (mismo nombre, paquete, color e ícono que en
+   `qfcorp/tukan-apps`) + el juego **EN VIVO Tycoon** (`apps/envivo`, juego.tukanec.com). La dirección abre con `app=ios`
+   (u `origen=ios`) en vez de `app=play`, para que el servidor no muestre el cobro de Google Play.
+   - QF ERP y QF Flota siguen en su propio repo (`qfcorp/erp-qf-patches`, carpeta `apps_ios`), que es privado: está bloqueado
+     hasta el 1 de diciembre por el tope de $0 de GitHub.
+   - TuBroadcast (app nativa de cámara) **no** sirve como cascarón web: para iPhone habría que escribirla de nuevo en Swift.
 7. ⏳ Actualizar manuales y presentaciones de cada programa con «Disponible en iPhone».
 
 ## Reglas de Apple a cuidar
@@ -38,6 +43,8 @@
 - Apple Developer: **$99 al año** (lo paga Dimitry).
 
 ## Historial
+
+- 13 nov 2026: agregadas 16 apps (15 Tukán/JD + juego EN VIVO Tycoon). Generador probado con las 18 (todas «Listo»). Compilación y prueba en simulador en GitHub Actions.
 
 - 12 nov 2026 (tarde): textos de ficha para la App Store (`appstore/TEXTOS_APP_STORE.md`, Flota Tukán y TuDron, es/en), guía de primeros pasos y manual corto de iPhone (`docs/`, con PDF), sin precios ni pagos. Falta: capturas de la ficha, cuenta de demo del revisor y que el servidor esconda precios con `TukanIOS`.
 - 12 nov 2026: primera compilación: TuFlota ABRE BIEN; TuDron fallaba por el «&» de su dirección en la prueba (arreglado). Segunda: las dos ABRE BIEN.

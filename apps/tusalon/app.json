@@ -1,0 +1,14 @@
+{
+  "nombre": "TuSalón",
+  "nombre_corto": "TuSalón",
+  "producto": "TuSalon",
+  "bundle_id": "com.tukansoftware.tusalon",
+  "url": "https://tusalon.tukanec.com/?r=inicio&app=ios",
+  "color_fondo": "#1E5A4C",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "nombre": "TuEvento",
+  "nombre_corto": "TuEvento",
+  "producto": "TuEvento",
+  "bundle_id": "com.tukansoftware.tuevento",
+  "url": "https://tuevento.tukanec.com/?r=inicio&app=ios",
+  "color_fondo": "#4A1E2A",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

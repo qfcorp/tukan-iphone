@@ -1,0 +1,15 @@
+{
+  "nombre": "TuLavadora",
+  "nombre_corto": "TuLavadora",
+  "producto": "TuLavadora",
+  "bundle_id": "com.tukansoftware.tulavadora",
+  "url": "https://tulavadora.tukanec.com/?r=inicio&app=ios",
+  "color_fondo": "#086DBD",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos.",
+    "ubicacion": "Para mostrar la ubicacion del local."
+  }
+}

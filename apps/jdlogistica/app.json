@@ -1,0 +1,15 @@
+{
+  "nombre": "JD Logística",
+  "nombre_corto": "JD Logística",
+  "producto": "JDLogistica",
+  "bundle_id": "com.jdlogistica.sistema",
+  "url": "https://sistema.jdlogistica.com/index.php?app=ios",
+  "color_fondo": "#1F5C0C",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos.",
+    "ubicacion": "Para registrar el lugar de las guias y entregas."
+  }
+}

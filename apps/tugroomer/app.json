@@ -1,0 +1,14 @@
+{
+  "nombre": "TuGroomer",
+  "nombre_corto": "TuGroomer",
+  "producto": "TuGroomer",
+  "bundle_id": "com.tukansoftware.tugroomer",
+  "url": "https://tugroomer.tukanec.com/?r=inicio&app=ios",
+  "color_fondo": "#14213D",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

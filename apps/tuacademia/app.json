@@ -1,0 +1,14 @@
+{
+  "nombre": "TuAcademia",
+  "nombre_corto": "TuAcademia",
+  "producto": "TuAcademia",
+  "bundle_id": "com.tukansoftware.tuacademia",
+  "url": "https://tuacademia.tukanec.com/app.php?origen=ios",
+  "color_fondo": "#5B2B8A",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

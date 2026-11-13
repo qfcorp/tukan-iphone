@@ -1,0 +1,14 @@
+{
+  "nombre": "TuGuardería Canina",
+  "nombre_corto": "TuGuardería",
+  "producto": "TuGuarderia",
+  "bundle_id": "com.tukansoftware.tuguarderia",
+  "url": "https://tuguarderia.tukanec.com/app.php?app=ios",
+  "color_fondo": "#1F3B26",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {
+    "camara": "Para tomar fotos y adjuntarlas a los registros.",
+    "fotos": "Para adjuntar fotos y documentos."
+  }
+}

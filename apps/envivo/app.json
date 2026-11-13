@@ -1,0 +1,11 @@
+{
+  "nombre": "EN VIVO Tycoon",
+  "nombre_corto": "EN VIVO",
+  "producto": "EnVivoTycoon",
+  "bundle_id": "com.tukanec.envivo",
+  "url": "https://juego.tukanec.com/index.html?origen=ios",
+  "color_fondo": "#0D0F14",
+  "version": "1.0.0",
+  "compilacion": "1",
+  "permisos": {}
+}
