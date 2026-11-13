@@ -20,10 +20,18 @@ concurrency:
 
 jobs:
   tubroadcast:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
+
+      - name: Usar el Xcode mas nuevo de la Mac (HaishinKit 2.3 pide el SDK de iOS 26.x)
+        run: |
+          ls -d /Applications/Xcode*.app
+          NUEVO=$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)
+          echo "Uso: $NUEVO"
+          sudo xcode-select -s "$NUEVO/Contents/Developer"
+          xcodebuild -version
 
       - name: Instalar XcodeGen
         run: brew install xcodegen
