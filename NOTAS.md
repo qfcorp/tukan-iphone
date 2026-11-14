@@ -1,6 +1,6 @@
 # Bloc de notas — Tukán iPhone (qfcorp/tukan-iphone)
 
-Última actualización: 13 nov 2026
+Última actualización: 13 nov 2026 (noche)
 
 ## Plan
 
@@ -10,12 +10,23 @@
    - ⚠️ TuFlota muestra en su portada «USD 5 per month» y «7-day free trial». Antes de enviar a Apple, el servidor
      debe esconder precios y botones de pago cuando el navegador diga `TukanIOS` (ver «Reglas de Apple»).
    - El simulador está en inglés y la web se muestra en inglés; en un iPhone en español sale en español.
-4. ⏳ Cuando Apple active la cuenta (después de pagar los $99):
-   - Crear en App Store Connect la **clave de API** (Users and Access → Integrations → App Store Connect API, rol *App Manager*).
-   - Guardarla en Settings → Secrets: `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`.
-   - Agregar al workflow: firma automática + archivo `.ipa` + subida a **TestFlight**.
-   - Crear cada app en App Store Connect con su bundle ID, para **todos los países**.
-5. ⏳ Probar en el iPhone de Dimitry con **TestFlight** y luego enviar a revisión de Apple.
+4. ✅ 13 nov (noche): cuenta de Apple Developer **pagada y aprobada** (equipo `2CXYP5A9C9`, Qfcorp S.P.A. Simplificada).
+   - Clave de API de App Store Connect guardada en el secreto `ASC_KEY_P8` (ID `L2M6297P3F`).
+   - Las **22 fichas** creadas en App Store Connect (desarrollador «Tukán Software», idioma Español (México)).
+     TuBroadcast necesitó registrar a mano su App ID `com.tukansoftware.tubroadcast` en developer.apple.com.
+   - `.github/workflows/subir-testflight.yml` (app=todas, subir=si): arma sin firmar, firma al exportar con la clave de API
+     y sube con `altool`. Run 43542035757: **22/22 UPLOAD SUCCEEDED**.
+   - `.github/workflows/grupo-testflight.yml` + `herramientas/testflight_grupo.py`: crea en cada app el grupo interno
+     «Tukán» (acceso a todas las versiones) y mete a **todos los usuarios del equipo**. Volver a correrlo cada vez que se
+     agregue un usuario nuevo. Probado con API simulada y en real (22/22).
+   - Probador del iPhone: correo personal invitado como usuario del equipo con rol **Marketing** (Dimitry debe tocar
+     «Invitar» y aceptar el correo en el iPhone; después correr `grupo-testflight.yml`).
+   - En TestFlight NO se usa «código de canje»: se entra con el correo de invitación → «Ver en TestFlight».
+5. ⏳ Probar en el iPhone de Dimitry con **TestFlight** y luego enviar a revisión de Apple (capturas, descripción,
+   privacidad, cuenta demo para el revisor, declaración de comerciante UE).
+   - Internas (JD Entregas, JD Logística, QF ERP, QF Flota): primero intentar App Store pública; si Apple las rechaza,
+     quedan solo en TestFlight y hay que **subir versión nueva cada 90 días** (las versiones de TestFlight vencen a los 90 días:
+     las del 13 nov vencen ~11 feb 2027).
 6. ✅ 13 nov: agregadas **todas** las apps (18 en total): las 15 de Android que faltaban (mismo nombre, paquete, color e ícono que en
    `qfcorp/tukan-apps`) + el juego **EN VIVO Tycoon** (`apps/envivo`, juego.tukanec.com). La dirección abre con `app=ios`
    (u `origen=ios`) en vez de `app=play`, para que el servidor no muestre el cobro de Google Play.
