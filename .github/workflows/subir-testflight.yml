@@ -1,0 +1,185 @@
+name: Firmar y subir a TestFlight
+
+# Firma las apps de iPhone con la llave de App Store Connect y las sube a TestFlight.
+# - La llave (.p8) va en el secreto ASC_KEY_P8 (Settings > Secrets > Actions). Nunca en el codigo.
+# - Los ID de la llave, del emisor y del equipo no son secretos (sin el .p8 no sirven): van aqui abajo.
+# - La firma es automatica: Xcode crea solo el certificado, el App ID (bundle) y el perfil con la llave.
+# - Para SUBIR, la app tiene que existir antes en App Store Connect (Apps > + > Nueva app) con su bundle ID.
+#   Si todavia no existe, igual se firma y queda el .ipa como artifact (3 dias) y el resumen lo avisa.
+# - El numero de compilacion es el numero de esta corrida (github.run_number): siempre sube.
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: "App (todas, tubroadcast, tuflota, tudron...)"
+        required: true
+        default: "todas"
+      subir:
+        description: "Subir a TestFlight (si = sube; no = solo firma y deja el .ipa)"
+        required: true
+        default: "si"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testflight-${{ github.event.inputs.app }}
+  cancel-in-progress: false
+
+env:
+  ASC_KEY_ID: L2M6297P3F
+  ASC_ISSUER_ID: 3b2124e5-8b34-4b8b-8641-57b8f76dc992
+  APPLE_TEAM_ID: 2CXYP5A9C9
+
+jobs:
+  lista:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.lista.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: lista
+        env:
+          PEDIDA: ${{ github.event.inputs.app }}
+        run: |
+          if [ "$PEDIDA" = "todas" ]; then
+            APPS=$( (ls apps; echo tubroadcast) | python3 -c 'import json,sys; print(json.dumps(sorted({l.strip() for l in sys.stdin if l.strip()})))')
+          elif [ "$PEDIDA" = "tubroadcast" ] || [ -f "apps/$PEDIDA/app.json" ]; then
+            APPS="[\"$PEDIDA\"]"
+          else
+            echo "No existe la app $PEDIDA"; exit 1
+          fi
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+          echo "Apps: $APPS"
+
+  firmar:
+    needs: lista
+    runs-on: macos-26
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        app: ${{ fromJson(needs.lista.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Revisar que la llave este guardada
+        env:
+          P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          if [ -z "$P8" ]; then
+            echo "::error::Falta el secreto ASC_KEY_P8 (el archivo AuthKey_${ASC_KEY_ID}.p8) en Settings > Secrets > Actions"
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/llave"
+          printf '%s\n' "$P8" > "$RUNNER_TEMP/llave/AuthKey_${ASC_KEY_ID}.p8"
+          grep -q "BEGIN PRIVATE KEY" "$RUNNER_TEMP/llave/AuthKey_${ASC_KEY_ID}.p8" || {
+            echo "::error::El secreto ASC_KEY_P8 no parece un archivo .p8 (debe empezar con -----BEGIN PRIVATE KEY-----)"; exit 1; }
+          echo "LLAVE=$RUNNER_TEMP/llave/AuthKey_${ASC_KEY_ID}.p8" >> "$GITHUB_ENV"
+          echo "Llave lista."
+
+      - name: Usar el Xcode mas nuevo
+        run: |
+          NUEVO=$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)
+          echo "Uso: $NUEVO"
+          sudo xcode-select -s "$NUEVO/Contents/Developer"
+          xcodebuild -version
+
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+
+      - name: Armar el proyecto de Xcode
+        run: |
+          APP="${{ matrix.app }}"
+          if [ "$APP" = "tubroadcast" ]; then
+            bash nativas/tubroadcast/preparar.sh
+          else
+            python3 herramientas/generar.py "$APP"
+            (cd "construir/$APP" && xcodegen generate)
+          fi
+
+      - name: Firmar (archivo para la App Store)
+        run: |
+          APP="${{ matrix.app }}"
+          source "construir/$APP/datos.env"
+          cd "construir/$APP"
+          xcodebuild -project "$PRODUCTO.xcodeproj" -scheme "$PRODUCTO" \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/$APP.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$LLAVE" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            -skipPackagePluginValidation -skipMacroValidation \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            archive > firma.log 2>&1 || {
+              echo "=== ERRORES ==="; grep -E "error:|No profiles|No signing|requires a provisioning" firma.log | sort -u | head -40
+              echo "=== FINAL ==="; tail -60 firma.log; exit 1; }
+          tail -3 firma.log
+          echo "Firmado: $PRODUCTO $VERSION ($GITHUB_RUN_NUMBER)"
+
+      - name: Sacar el .ipa
+        run: |
+          APP="${{ matrix.app }}"
+          cat > "$RUNNER_TEMP/exportar.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>destination</key><string>export</string>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          xcodebuild -exportArchive -archivePath "$RUNNER_TEMP/$APP.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/exportar.plist" -exportPath "salidas/$APP" \
+            -allowProvisioningUpdates -authenticationKeyPath "$LLAVE" \
+            -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID" > exportar.log 2>&1 || {
+              grep -E "error" exportar.log | head -30; tail -40 exportar.log; exit 1; }
+          ls -la "salidas/$APP"
+
+      - name: Subir a TestFlight
+        if: github.event.inputs.subir == 'si'
+        id: subir
+        continue-on-error: true
+        run: |
+          APP="${{ matrix.app }}"
+          IPA=$(ls salidas/$APP/*.ipa | head -1)
+          mkdir -p ~/.appstoreconnect/private_keys
+          cp "$LLAVE" ~/.appstoreconnect/private_keys/
+          xcrun altool --upload-app -f "$IPA" -t ios \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" > subir.log 2>&1
+          RES=$?
+          cat subir.log | tail -30
+          if [ $RES -ne 0 ]; then
+            if grep -qiE "No suitable application records|Cannot determine the Apple ID|app record" subir.log; then
+              echo "::warning::$APP: falta crear la app en App Store Connect (Apps > + > Nueva app) con su bundle ID. El .ipa quedo firmado."
+            fi
+            exit 1
+          fi
+
+      - name: Resumen
+        if: always()
+        run: |
+          APP="${{ matrix.app }}"
+          {
+            echo "## $APP"
+            if ls salidas/$APP/*.ipa >/dev/null 2>&1; then echo "- Firmada: si (compilacion ${{ github.run_number }})"; else echo "- Firmada: NO (ver el paso Firmar)"; fi
+            if [ "${{ github.event.inputs.subir }}" = "si" ]; then
+              if [ "${{ steps.subir.outcome }}" = "success" ]; then echo "- TestFlight: SUBIDA (Apple la procesa en 10-30 min)";
+              else echo "- TestFlight: no se subio (si dice app record: falta crear la app en App Store Connect)"; fi
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar el .ipa (se borra solo en 3 dias)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipa-${{ matrix.app }}
+          path: salidas/${{ matrix.app }}/*.ipa
+          retention-days: 3
+          if-no-files-found: ignore
