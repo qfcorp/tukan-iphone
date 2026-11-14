@@ -176,12 +176,14 @@ def poner_paises(aid):
         return "ya tenia paises"
     st, r = pedir("GET", "/v1/territories?limit=200")
     ok(st, r, "leer paises")
-    paises = [t["id"] for t in r["data"] if t["id"] not in UE]
+    todos = [t["id"] for t in r["data"]]
+    paises = [p for p in todos if p not in UE]
     datos, incluidos = [], []
-    for i, p in enumerate(paises):
+    # Apple pide TODOS los paises: los de la UE van con available=False (falta la declaracion DSA)
+    for i, p in enumerate(todos):
         local = "${t%d}" % i
         datos.append({"type": "territoryAvailabilities", "id": local})
-        incluidos.append({"type": "territoryAvailabilities", "id": local, "attributes": {"available": True},
+        incluidos.append({"type": "territoryAvailabilities", "id": local, "attributes": {"available": p not in UE},
                           "relationships": {"territory": {"data": {"type": "territories", "id": p}}}})
     ok(*pedir("POST", "/v2/appAvailabilities", {
         "data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": True},
