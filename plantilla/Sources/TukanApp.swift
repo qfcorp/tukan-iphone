@@ -104,8 +104,12 @@ struct VistaWeb: UIViewRepresentable {
         web.scrollView.refreshControl = refrescar
 
         estado.webView = web
-        if let url = URL(string: Inicio.url) {
-            web.load(URLRequest(url: url))
+        // Privacidad: en el iPhone no se cargan anuncios ni rastreadores de terceros
+        // (Apple pide permiso de rastreo si los hay). Se bloquean antes de abrir la pagina.
+        SinRastreo.aplicar(a: ajustes.userContentController) {
+            if let url = URL(string: Inicio.url) {
+                web.load(URLRequest(url: url))
+            }
         }
         return web
     }
@@ -303,5 +307,35 @@ enum Inicio {
             return otra
         }
         return Config.url
+    }
+}
+
+
+/// Bloquea anuncios y rastreadores de terceros dentro de la app (Google Ads/Analytics,
+/// Meta Pixel, etc.). Asi la app no "rastrea" segun las reglas de Apple (5.1.2).
+enum SinRastreo {
+    static let dominios = [
+        "googlesyndication.com", "doubleclick.net", "googleadservices.com",
+        "google-analytics.com", "googletagmanager.com", "googletagservices.com",
+        "adservice.google.com", "connect.facebook.net", "facebook.com/tr",
+        "clarity.ms", "hotjar.com", "analytics.tiktok.com", "amazon-adsystem.com"]
+
+    static var reglas: String {
+        let lista = dominios.map { "{\"trigger\":{\"url-filter\":\"\($0)\"},\"action\":{\"type\":\"block\"}}" }
+        return "[" + lista.joined(separator: ",") + "]"
+    }
+
+    static func aplicar(a controlador: WKUserContentController, luego: @escaping () -> Void) {
+        guard let tienda = WKContentRuleListStore.default() else { luego(); return }
+        tienda.compileContentRuleList(forIdentifier: "SinRastreo", encodedContentRuleList: reglas) { lista, error in
+            DispatchQueue.main.async {
+                if let lista = lista {
+                    controlador.add(lista)
+                } else {
+                    Prueba.anotar("SinRastreo no se pudo aplicar: \(error?.localizedDescription ?? "")")
+                }
+                luego()
+            }
+        }
     }
 }
