@@ -59,7 +59,14 @@ def error_corto(respuesta):
     errores = respuesta.get("errors") if isinstance(respuesta, dict) else None
     if not errores:
         return json.dumps(respuesta)[:400]
-    return " | ".join("%s: %s" % (e.get("title", ""), e.get("detail", "")) for e in errores)[:900]
+    partes = []
+    for e in errores:
+        partes.append("%s: %s" % (e.get("title", ""), e.get("detail", "")))
+        # Apple pone la razon real en meta.associatedErrors
+        for ruta, asociados in ((e.get("meta") or {}).get("associatedErrors") or {}).items():
+            for a in asociados:
+                partes.append("  - %s %s" % (a.get("code", ""), a.get("detail") or a.get("title", "")))
+    return " | ".join(partes)[:3000]
 
 
 def subir_archivo(operaciones, contenido):
