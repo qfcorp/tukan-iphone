@@ -42,7 +42,9 @@ final class Motor: ObservableObject {
         await mixer.startRunning()
         if let vista { await mixer.addOutput(vista) }
         camaraLista = camara != nil
+        #if !targetEnvironment(simulator)
         if camara == nil { aviso = "Este equipo no tiene camara disponible." }
+        #endif
     }
 
     func cambiarCamara(_ ajustes: Ajustes) {

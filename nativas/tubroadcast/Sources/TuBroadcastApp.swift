@@ -26,6 +26,12 @@ struct TuBroadcastApp: App {
                     .task {
                         await StreamSessionBuilderFactory.shared.register(RTMPSessionFactory())
                         await StreamSessionBuilderFactory.shared.register(SRTSessionFactory())
+                        // Solo para las capturas de la App Store (argumento de arranque -enlaceDemo):
+                        // carga conexiones de ejemplo sin mostrar aviso.
+                        if let demo = UserDefaults.standard.string(forKey: "enlaceDemo"),
+                           let url = URL(string: demo), ajustes.conexiones.isEmpty {
+                            _ = ajustes.importarEnlace(url)
+                        }
                         iniciado = true
                     }
                 }

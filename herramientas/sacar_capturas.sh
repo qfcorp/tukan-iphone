@@ -42,21 +42,23 @@ xcrun simctl status_bar "$UDID" override --time "9:41" --dataNetwork wifi --wifi
 xcrun simctl install "$UDID" "$APP_PATH"
 for P in camera microphone photos location; do xcrun simctl privacy "$UDID" grant "$P" "$BUNDLE_ID" 2>/dev/null || true; done
 
+# Cada captura: espera, y argumentos de arranque (url -> -capturaURL; "argumentos": [...])
 python3 -c '
 import json, sys
 for c in json.load(open(sys.argv[1], encoding="utf-8")).get("capturas") or [{"espera": 8}]:
-    print(c.get("url", "-"), int(c.get("espera", 8)))
+    args = list(c.get("argumentos", []))
+    if c.get("url"):
+        args += ["-capturaURL", c["url"]]
+    print(str(int(c.get("espera", 8))) + "\t" + "\x1f".join(args))
 ' "$FICHA" > /tmp/capturas_$APP.txt
 
 N=0
-while read -r URL ESPERA; do
+while IFS=$'\t' read -r ESPERA JUNTOS; do
   N=$((N+1))
+  ARGS=()
+  [ -n "$JUNTOS" ] && IFS=$'\x1f' read -r -a ARGS <<< "$JUNTOS"
   xcrun simctl terminate "$UDID" "$BUNDLE_ID" 2>/dev/null || true
-  if [ "$URL" = "-" ]; then
-    xcrun simctl launch "$UDID" "$BUNDLE_ID" -AppleLanguages "(es-419)" -AppleLocale es_EC
-  else
-    xcrun simctl launch "$UDID" "$BUNDLE_ID" -AppleLanguages "(es-419)" -AppleLocale es_EC -capturaURL "$URL"
-  fi
+  xcrun simctl launch "$UDID" "$BUNDLE_ID" -AppleLanguages "(es-419)" -AppleLocale es_EC ${ARGS[@]+"${ARGS[@]}"}
   sleep "$ESPERA"
   ARCH="$SALIDA/$(printf '%02d' $N).png"
   xcrun simctl io "$UDID" screenshot --type=png "$ARCH" >/dev/null 2>&1

@@ -14,7 +14,20 @@
   "notas_revisor": "TuBroadcast no necesita cuenta. Para probar una transmisión: toque el engranaje (Ajustes) > «Agregar conexion», escriba una dirección RTMP (por ejemplo rtmp://a.rtmp.youtube.com/live2 con la clave de YouTube Live) o SRT (srt://servidor:puerto), toque «Guardar» y «Listo», y luego el botón «EN VIVO». La cámara y el micrófono solo se usan para la transmisión que el usuario inicia.",
   "capturas": [
     {
-      "espera": 6
+      "espera": 6,
+      "argumentos": [
+        "-enlaceDemo",
+        "tubroadcast://set/v1?conn[][url]=srt%3A%2F%2Fproductora.ejemplo.com%3A9000&conn[][name]=Estadio%20-%20vMix&conn[][url]=rtmp%3A%2F%2Fa.rtmp.youtube.com%2Flive2&conn[][name]=YouTube%20Live&conn[][key]=abcd-efgh-ijkl&enc[vid][res]=1080&enc[vid][fps]=30&enc[vid][bitrate]=4500"
+      ]
+    },
+    {
+      "espera": 6,
+      "argumentos": [
+        "-enlaceDemo",
+        "tubroadcast://set/v1?conn[][url]=srt%3A%2F%2Fproductora.ejemplo.com%3A9000&conn[][name]=Estadio%20-%20vMix&conn[][url]=rtmp%3A%2F%2Fa.rtmp.youtube.com%2Flive2&conn[][name]=YouTube%20Live&conn[][key]=abcd-efgh-ijkl&enc[vid][res]=1080&enc[vid][fps]=30&enc[vid][bitrate]=4500",
+        "-abrirAjustes",
+        "YES"
+      ]
     }
   ],
   "nativa": true,

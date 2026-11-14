@@ -11,6 +11,10 @@ struct PantallaCamara: View {
             Color.black.ignoresSafeArea()
             MTHKViewRepresentable(previewSource: motor, videoGravity: .resizeAspectFill)
                 .ignoresSafeArea()
+            #if targetEnvironment(simulator)
+            // El simulador no tiene camara: se muestra un fondo de ejemplo encima de la vista vacia.
+            FondoSimulador().ignoresSafeArea()
+            #endif
             VStack {
                 HStack {
                     etiquetaEstado
@@ -51,6 +55,10 @@ struct PantallaCamara: View {
             Prueba.anotar("CARGO TuBroadcast nativa - pantalla de camara abierta (camara: \(motor.camaraLista ? "si" : "no hay en el simulador"))")
         }
         .sheet(isPresented: $verAjustes) { PantallaAjustes().environmentObject(ajustes) }
+        .onAppear {
+            // Solo para las capturas de la App Store (argumento de arranque -abrirAjustes YES)
+            if UserDefaults.standard.bool(forKey: "abrirAjustes") { verAjustes = true }
+        }
         .alert(motor.aviso ?? "", isPresented: Binding(get: { motor.aviso != nil }, set: { if !$0 { motor.aviso = nil } })) {
             Button("Aceptar", role: .cancel) {}
         }
@@ -176,3 +184,22 @@ enum Prueba {
         try? (texto + "\n").write(to: archivo, atomically: true, encoding: .utf8)
     }
 }
+
+
+#if targetEnvironment(simulator)
+/// Fondo de ejemplo para el simulador (luces de escenario), porque no hay camara.
+struct FondoSimulador: View {
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [Color(red: 0.05, green: 0.06, blue: 0.16),
+                                    Color(red: 0.22, green: 0.10, blue: 0.35),
+                                    Color(red: 0.85, green: 0.38, blue: 0.12)],
+                           startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [Color.white.opacity(0.35), .clear], center: .init(x: 0.3, y: 0.35),
+                           startRadius: 5, endRadius: 260)
+            RadialGradient(colors: [Color.yellow.opacity(0.25), .clear], center: .init(x: 0.75, y: 0.25),
+                           startRadius: 5, endRadius: 220)
+        }
+    }
+}
+#endif
