@@ -3,7 +3,8 @@
     "estado": "enviada",
     "fecha": "2026-11-14 15:53 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
-    "envio_id": "039bf385-08c9-4d4c-9418-8bfe1fed50c5"
+    "envio_id": "039bf385-08c9-4d4c-9418-8bfe1fed50c5",
+    "apple": "WAITING_FOR_REVIEW"
   },
   "envivo": {
     "estado": "enviada",
@@ -20,60 +21,60 @@
     "apple": "WAITING_FOR_REVIEW"
   },
   "tudron": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuflota": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tufactura": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuwhatsapp": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tusalon": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuspa": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tugroomer": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuguarderia": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tulavadora": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tumecanica": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuevento": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuplanner": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuhospedaje": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuvocalia": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuacademia": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "qferp": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "qfflota": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "jdentregas": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "jdlogistica": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   }
 }
