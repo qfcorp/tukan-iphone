@@ -1,0 +1,115 @@
+name: Capturas para la App Store
+
+# Compila cada app para el simulador, saca sus capturas en el iPhone de 6.9"
+# (en espanol) y las guarda en publicacion/capturas/<app>/ dentro del repo.
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: "Apps separadas por coma, o 'todas' (las que tienen ficha)"
+        required: true
+        default: "todas"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: capturas-app-store
+  cancel-in-progress: false
+
+jobs:
+  lista:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.lista.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: lista
+        env:
+          PEDIDAS: ${{ github.event.inputs.apps }}
+        run: |
+          APPS=$(python3 -c '
+          import json, os, glob
+          p = os.environ["PEDIDAS"].strip()
+          fichas = sorted(os.path.basename(f)[:-5] for f in glob.glob("publicacion/fichas/*.json"))
+          lista = fichas if p == "todas" else [a.strip() for a in p.split(",") if a.strip()]
+          faltan = [a for a in lista if a not in fichas]
+          assert not faltan, "Sin ficha: %s" % faltan
+          print(json.dumps(lista))')
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"; echo "Apps: $APPS"
+
+  capturas:
+    needs: lista
+    runs-on: macos-26
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        app: ${{ fromJson(needs.lista.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Usar el Xcode mas nuevo
+        run: |
+          NUEVO=$(ls -d /Applications/Xcode_*.app | grep -v -i beta | sort -V | tail -1)
+          sudo xcode-select -s "$NUEVO/Contents/Developer"; xcodebuild -version
+
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+
+      - name: Armar y compilar para el simulador
+        run: |
+          APP="${{ matrix.app }}"
+          if [ -d "nativas/$APP" ]; then
+            bash "nativas/$APP/preparar.sh"
+            PRODUCTO=$(ls -d construir/$APP/*.xcodeproj | xargs -n1 basename | sed 's/.xcodeproj//')
+            BUNDLE=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["bundle_id"])' "publicacion/fichas/$APP.json")
+            EXTRA="-skipPackagePluginValidation -skipMacroValidation ARCHS=arm64 ONLY_ACTIVE_ARCH=NO"
+          else
+            python3 herramientas/generar.py "$APP"
+            (cd "construir/$APP" && xcodegen generate)
+            source "construir/$APP/datos.env"
+            BUNDLE="$BUNDLE_ID"; EXTRA=""
+          fi
+          cd "construir/$APP"
+          xcodebuild -project "$PRODUCTO.xcodeproj" -scheme "$PRODUCTO" -configuration Release \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath compilado $EXTRA CODE_SIGNING_ALLOWED=NO build > compilacion.log 2>&1 || {
+              grep -E "error:" compilacion.log | sort -u | head -40; tail -30 compilacion.log; exit 1; }
+          echo "APP_PATH=$PWD/compilado/Build/Products/Release-iphonesimulator/$PRODUCTO.app" >> "$GITHUB_ENV"
+          echo "BUNDLE=$BUNDLE" >> "$GITHUB_ENV"
+
+      - name: Sacar las capturas
+        run: bash herramientas/sacar_capturas.sh "${{ matrix.app }}" "$APP_PATH" "$BUNDLE"
+
+      - name: Guardar capturas
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-${{ matrix.app }}
+          path: publicacion/capturas/${{ matrix.app }}/
+          retention-days: 1
+
+  guardar:
+    needs: capturas
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: capturas-*
+          path: bajadas
+      - name: Subir las capturas al repo
+        run: |
+          for d in bajadas/capturas-*; do
+            [ -d "$d" ] || continue
+            APP=${d#bajadas/capturas-}
+            rm -rf "publicacion/capturas/$APP"; mkdir -p "publicacion/capturas/$APP"
+            cp "$d"/*.png "publicacion/capturas/$APP/"
+          done
+          git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
+          git add publicacion/capturas
+          git diff --cached --quiet && { echo "Sin capturas nuevas"; exit 0; }
+          git commit -m "Capturas de la App Store"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done

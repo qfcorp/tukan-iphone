@@ -43,13 +43,14 @@ jobs:
         env:
           PEDIDA: ${{ github.event.inputs.app }}
         run: |
-          if [ "$PEDIDA" = "todas" ]; then
-            APPS=$( (ls apps; echo tubroadcast) | python3 -c 'import json,sys; print(json.dumps(sorted({l.strip() for l in sys.stdin if l.strip()})))')
-          elif [ "$PEDIDA" = "tubroadcast" ] || [ -f "apps/$PEDIDA/app.json" ]; then
-            APPS="[\"$PEDIDA\"]"
-          else
-            echo "No existe la app $PEDIDA"; exit 1
-          fi
+          APPS=$(python3 -c '
+          import json, os
+          p = os.environ["PEDIDA"].strip()
+          todas = sorted(set(os.listdir("apps")) | {"tubroadcast"})
+          lista = todas if p == "todas" else [a.strip() for a in p.split(",") if a.strip()]
+          malas = [a for a in lista if a not in todas]
+          assert not malas, "No existe la app: %s" % malas
+          print(json.dumps(lista))')
           echo "apps=$APPS" >> "$GITHUB_OUTPUT"
           echo "Apps: $APPS"
 

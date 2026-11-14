@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukanec.envivo",
+  "subtitulo": "Crea tu productora de eventos",
+  "descripcion": "EN VIVO Tycoon es un juego de gestión: empiezas en un garaje con una vieja cámara y creces hasta transmitir la gran final del campeonato.\n\nARMA TU PRODUCTORA\n• Acepta eventos: cumpleaños, conciertos, partidos, conferencias y más.\n• Compra y mejora cámaras, luces, audio y vehículos.\n• Contrata y entrena a tu equipo.\n\nRESUELVE IMPREVISTOS\nEn cada evento pasa algo: se rompe un cable, se cae el internet, llueve o se va la luz. Tú decides cómo resolverlo y cada decisión cuenta.\n\nCRECE Y COMPITE\n• Sube de nivel, desbloquea nuevos lugares y eventos más grandes.\n• Misiones diarias, temporadas y logros.\n\nLa partida se guarda sola. Hecho en Ecuador por Tukán Software, inspirado en el trabajo real de las productoras de transmisiones en vivo.",
+  "palabras_clave": "tycoon,simulador,productora,eventos,transmision,gestion,negocio,camaras,estrategia,idle",
+  "texto_promocional": "Empieza en un garaje y llega a transmitir la gran final. ¡Resuelve los imprevistos en vivo!",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://juego.tukanec.com",
+  "url_privacidad": "https://juego.tukanec.com/privacidad.html",
+  "categoria": "GAMES",
+  "subcategorias": [
+    "GAMES_SIMULATION",
+    "GAMES_STRATEGY"
+  ],
+  "categoria_secundaria": "ENTERTAINMENT",
+  "contenido_terceros": false,
+  "necesita_demo": false,
+  "notas_revisor": "El juego se puede jugar sin crear cuenta: al abrir, siga el tutorial y toque «Jugar». La cuenta es opcional, solo para guardar la partida en la nube; se puede borrar desde Ajustes del juego (también en https://juego.tukanec.com/borrar-cuenta.html). El juego no tiene compras dentro de la app en iPhone.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "envivo"
+}

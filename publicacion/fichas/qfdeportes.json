@@ -1,0 +1,21 @@
+{
+  "bundle_id": "com.qfproducciones.app",
+  "subtitulo": "Fútbol de Ecuador al día",
+  "descripcion": "QF Deportes trae las noticias del fútbol ecuatoriano y del deporte en un solo lugar, de la mano de QF Producciones.\n\n• Noticias de LigaPro, Serie A y Serie B.\n• Resultados, previas y análisis.\n• Selección de Ecuador y ecuatorianos en el exterior.\n• Transmisiones y contenido de QF Producciones.\n\nLectura rápida y cómoda en tu iPhone, sin necesidad de crear cuenta.",
+  "palabras_clave": "futbol,ecuador,ligapro,noticias,deportes,resultados,serie a,serie b,seleccion,goles",
+  "texto_promocional": "Las noticias del fútbol ecuatoriano al día, de QF Producciones.",
+  "url_soporte": "https://qfproducciones.com",
+  "url_marketing": "https://qfproducciones.com",
+  "url_privacidad": "https://tukansoftware.com/privacidad.html",
+  "categoria": "SPORTS",
+  "categoria_secundaria": "NEWS",
+  "contenido_terceros": true,
+  "necesita_demo": false,
+  "notas_revisor": "No necesita cuenta. Abra la app para leer las noticias deportivas de QF Producciones (Ecuador).",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "qfdeportes"
+}

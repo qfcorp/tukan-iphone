@@ -1,0 +1,22 @@
+{
+  "bundle_id": "com.tukansoftware.tubroadcast",
+  "subtitulo": "Cámara en vivo por SRT y RTMP",
+  "descripcion": "TuBroadcast convierte tu iPhone en una cámara de transmisión en vivo. La señal sale directo de tu iPhone al destino que tú eliges, sin pasar por servidores intermedios.\n\nTRANSMITE A DONDE QUIERAS\n• RTMP y RTMPS: YouTube, Facebook, Kick, Twitch o tu propio servidor.\n• SRT: ideal para vMix, OBS y cualquier receptor SRT, en la misma red o por internet.\n• Guarda varias conexiones y cambia entre ellas con un toque.\n\nCÁMARA COMPLETA\n• Cámara trasera o frontal.\n• Micrófono encendido o apagado.\n• Linterna para lugares oscuros.\n\nCALIDAD A TU MEDIDA\n• Resolución 720p o 1080p.\n• Cuadros por segundo y bitrate ajustables.\n\nCONFIGURACIÓN RÁPIDA\n• Recibe la configuración de tu productora con un enlace de TuBroadcast y queda lista al instante.\n\nHecho en Ecuador por Tukán Software para productoras, iglesias, medios, deportes y creadores que transmiten en vivo.",
+  "palabras_clave": "srt,rtmp,streaming,transmision,en vivo,vmix,obs,youtube,camara,broadcast,live,encoder",
+  "texto_promocional": "Transmite en vivo desde tu iPhone por SRT o RTMP a vMix, OBS, YouTube o tu servidor.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuner.tukanec.com/?r=privacidad",
+  "categoria": "PHOTO_AND_VIDEO",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": false,
+  "notas_revisor": "TuBroadcast no necesita cuenta. Para probar una transmisión: toque el engranaje (Ajustes) > «Agregar conexion», escriba una dirección RTMP (por ejemplo rtmp://a.rtmp.youtube.com/live2 con la clave de YouTube Live) o SRT (srt://servidor:puerto), toque «Guardar» y «Listo», y luego el botón «EN VIVO». La cámara y el micrófono solo se usan para la transmisión que el usuario inicia.",
+  "capturas": [
+    {
+      "espera": 6
+    }
+  ],
+  "nativa": true,
+  "app": "tubroadcast"
+}

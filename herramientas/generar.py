@@ -234,7 +234,7 @@ def main():
                 "MARKETING_VERSION": cfg["version"],
                 "CURRENT_PROJECT_VERSION": str(cfg["compilacion"]),
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
-                "TARGETED_DEVICE_FAMILY": "1,2",
+                "TARGETED_DEVICE_FAMILY": "1",
                 "SWIFT_VERSION": "5.0",
                 "GENERATE_INFOPLIST_FILE": "NO",
                 "CODE_SIGN_STYLE": "Automatic",

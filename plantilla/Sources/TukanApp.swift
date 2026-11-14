@@ -64,7 +64,7 @@ final class EstadoWeb: ObservableObject {
     func recargar() {
         sinInternet = false
         if let web = webView {
-            if web.url == nil, let url = URL(string: Config.url) {
+            if web.url == nil, let url = URL(string: Inicio.url) {
                 web.load(URLRequest(url: url))
             } else {
                 web.reload()
@@ -104,7 +104,7 @@ struct VistaWeb: UIViewRepresentable {
         web.scrollView.refreshControl = refrescar
 
         estado.webView = web
-        if let url = URL(string: Config.url) {
+        if let url = URL(string: Inicio.url) {
             web.load(URLRequest(url: url))
         }
         return web
@@ -289,4 +289,19 @@ enum Pagos {
       document.addEventListener('DOMContentLoaded', poner);
     })();
     """
+}
+
+
+/// Direccion con la que abre la app. Normalmente es Config.url; solo para sacar
+/// capturas de la App Store se puede abrir otra pagina del MISMO sitio con
+/// `simctl launch ... -capturaURL https://...` (argumento de arranque).
+enum Inicio {
+    static var url: String {
+        if let otra = UserDefaults.standard.string(forKey: "capturaURL"),
+           let host = URL(string: otra)?.host,
+           host == URL(string: Config.url)?.host {
+            return otra
+        }
+        return Config.url
+    }
 }
