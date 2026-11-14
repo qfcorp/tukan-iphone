@@ -73,11 +73,11 @@ final class Motor: ObservableObject {
     /// Empieza a transmitir a la conexion activa.
     func transmitir(_ ajustes: Ajustes) {
         guard let conexion = ajustes.conexionActiva else {
-            aviso = "Primero agregue una conexion en Ajustes."
+            aviso = "Primero agregue una conexión en Ajustes."
             return
         }
         if let problema = conexion.problema { aviso = problema; return }
-        guard let url = conexion.direccionFinal else { aviso = "La direccion no es valida."; return }
+        guard let url = conexion.direccionFinal else { aviso = "La dirección no es válida."; return }
         Task {
             do {
                 guard let s = try await StreamSessionBuilderFactory.shared.make(url).setMode(.publish).build() else {
@@ -98,7 +98,7 @@ final class Motor: ObservableObject {
                     }
                 })
                 try await s.connect { [weak self] in
-                    Task { @MainActor in self?.aviso = "Se corto la conexion con el destino." }
+                    Task { @MainActor in self?.aviso = "Se cortó la conexión con el destino." }
                 }
             } catch {
                 aviso = "No se pudo conectar: \(error.localizedDescription)"

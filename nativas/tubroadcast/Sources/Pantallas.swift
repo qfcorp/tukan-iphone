@@ -31,7 +31,7 @@ struct PantallaCamara: View {
                 }
                 Spacer()
                 HStack(spacing: 28) {
-                    botonRedondo(motor.silencio ? "mic.slash.fill" : "mic.fill", "Microfono") { motor.alternarSilencio() }
+                    botonRedondo(motor.silencio ? "mic.slash.fill" : "mic.fill", "Micrófono") { motor.alternarSilencio() }
                     Button {
                         if motor.enVivo || motor.conectando { motor.detener() } else { motor.transmitir(ajustes) }
                     } label: {
@@ -41,8 +41,8 @@ struct PantallaCamara: View {
                             .overlay(Text(motor.enVivo ? "PARAR" : (motor.conectando ? "..." : "EN VIVO"))
                                 .font(.caption.bold()).foregroundColor(motor.enVivo ? .white : .black))
                     }
-                    .accessibilityLabel(motor.enVivo ? "Parar transmision" : "Empezar transmision")
-                    botonRedondo("arrow.triangle.2.circlepath.camera.fill", "Cambiar camara") { motor.cambiarCamara(ajustes) }
+                    .accessibilityLabel(motor.enVivo ? "Parar transmisión" : "Empezar transmisión")
+                    botonRedondo("arrow.triangle.2.circlepath.camera.fill", "Cambiar cámara") { motor.cambiarCamara(ajustes) }
                 }
                 .padding(.bottom, 8)
                 botonRedondo(motor.linterna ? "flashlight.on.fill" : "flashlight.off.fill", "Linterna") { motor.alternarLinterna() }
@@ -104,12 +104,12 @@ struct PantallaAjustes: View {
                         }
                     }
                     .onDelete { ajustes.conexiones.remove(atOffsets: $0) }
-                    Button("Agregar conexion") {
-                        editando = Conexion(nombre: "Conexion \(ajustes.conexiones.count + 1)", url: "srt://")
+                    Button("Agregar conexión") {
+                        editando = Conexion(nombre: "Conexión \(ajustes.conexiones.count + 1)", url: "srt://")
                     }
                 }
                 Section("Video") {
-                    Picker("Resolucion", selection: $ajustes.resolucion) {
+                    Picker("Resolución", selection: $ajustes.resolucion) {
                         ForEach(Resolucion.allCases) { Text($0.rawValue).tag($0) }
                     }
                     Picker("Cuadros por segundo", selection: $ajustes.fps) {
@@ -121,9 +121,9 @@ struct PantallaAjustes: View {
                     }
                 }
                 Section("Ayuda") {
-                    Text("El video va directo de este celular a su destino (YouTube, Facebook, vMix, OBS...). No pasa por servidores de Tukan.")
+                    Text("El video va directo de este celular a su destino (YouTube, Facebook, vMix, OBS...). No pasa por servidores de Tukán.")
                         .font(.footnote)
-                    Text("Tambien puede cargar la configuracion con un enlace tubroadcast://set/v1?... o larix://set/v1?...")
+                    Text("También puede cargar la configuración con un enlace tubroadcast://set/v1?... o larix://set/v1?...")
                         .font(.footnote)
                 }
             }
@@ -152,10 +152,10 @@ struct EditorConexion: View {
         NavigationStack {
             Form {
                 TextField("Nombre", text: $conexion.nombre)
-                TextField("Direccion (rtmp://, rtmps:// o srt://)", text: $conexion.url)
+                TextField("Dirección (rtmp://, rtmps:// o srt://)", text: $conexion.url)
                     .textInputAutocapitalization(.never).autocorrectionDisabled().keyboardType(.URL)
                 if conexion.tipo.hasPrefix("RTMP") {
-                    SecureField("Clave de transmision (stream key)", text: $conexion.clave)
+                    SecureField("Clave de transmisión (stream key)", text: $conexion.clave)
                 }
                 if conexion.tipo == "SRT" {
                     Text("Ejemplo SRT: srt://servidor:9000?streamid=camara1&latency=200000&passphrase=clave123")
@@ -165,7 +165,7 @@ struct EditorConexion: View {
                     Text(p).foregroundColor(.orange).font(.footnote)
                 }
             }
-            .navigationTitle("Conexion")
+            .navigationTitle("Conexión")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { cerrar() } }
                 ToolbarItem(placement: .confirmationAction) {
