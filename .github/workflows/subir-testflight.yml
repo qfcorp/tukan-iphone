@@ -100,7 +100,9 @@ jobs:
             (cd "construir/$APP" && xcodegen generate)
           fi
 
-      - name: Firmar (archivo para la App Store)
+      # El archivo se arma SIN firmar: firmar aqui pediria un perfil de desarrollo (necesita un iPhone registrado).
+      # La firma de verdad (certificado de distribucion + perfil App Store, sin iPhones) la hace el paso «Sacar el .ipa».
+      - name: Armar el archivo para la App Store
         run: |
           APP="${{ matrix.app }}"
           source "construir/$APP/datos.env"
@@ -108,12 +110,9 @@ jobs:
           xcodebuild -project "$PRODUCTO.xcodeproj" -scheme "$PRODUCTO" \
             -configuration Release -destination 'generic/platform=iOS' \
             -archivePath "$RUNNER_TEMP/$APP.xcarchive" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$LLAVE" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
             -skipPackagePluginValidation -skipMacroValidation \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
             CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
             archive > firma.log 2>&1 || {
               echo "=== ERRORES ==="; grep -E "error:|No profiles|No signing|requires a provisioning" firma.log | sort -u | head -40
@@ -121,7 +120,7 @@ jobs:
           tail -3 firma.log
           echo "Firmado: $PRODUCTO $VERSION ($GITHUB_RUN_NUMBER)"
 
-      - name: Sacar el .ipa
+      - name: Firmar y sacar el .ipa
         run: |
           APP="${{ matrix.app }}"
           cat > "$RUNNER_TEMP/exportar.plist" <<EOF
@@ -168,7 +167,7 @@ jobs:
           APP="${{ matrix.app }}"
           {
             echo "## $APP"
-            if ls salidas/$APP/*.ipa >/dev/null 2>&1; then echo "- Firmada: si (compilacion ${{ github.run_number }})"; else echo "- Firmada: NO (ver el paso Firmar)"; fi
+            if ls salidas/$APP/*.ipa >/dev/null 2>&1; then echo "- Firmada: si (compilacion ${{ github.run_number }})"; else echo "- Firmada: NO (ver los pasos Armar el archivo / Firmar y sacar el .ipa)"; fi
             if [ "${{ github.event.inputs.subir }}" = "si" ]; then
               if [ "${{ steps.subir.outcome }}" = "success" ]; then echo "- TestFlight: SUBIDA (Apple la procesa en 10-30 min)";
               else echo "- TestFlight: no se subio (si dice app record: falta crear la app en App Store Connect)"; fi
