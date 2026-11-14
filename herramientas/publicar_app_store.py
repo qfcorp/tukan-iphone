@@ -115,36 +115,31 @@ def poner_categorias_y_textos(aid, f):
     return info
 
 
+NIVELES = ["alcoholTobaccoOrDrugUseOrReferences", "contests", "gamblingSimulated", "gunsOrOtherWeapons",
+           "horrorOrFearThemes", "matureOrSuggestiveThemes", "medicalOrTreatmentInformation",
+           "profanityOrCrudeHumor", "sexualContentGraphicAndNudity", "sexualContentOrNudity",
+           "violenceCartoonOrFantasy", "violenceRealistic", "violenceRealisticProlongedGraphicOrSadistic"]
+SI_NO = ["advertising", "ageAssurance", "gambling", "healthOrWellnessTopics", "lootBox", "messagingAndChat",
+         "parentalControls", "socialMedia", "unrestrictedWebAccess", "userGeneratedContent"]
+
+
 def poner_edad(info, f):
+    """Clasificacion por edad: todo en NONE / False salvo lo que diga la ficha en "edad"."""
     st, r = pedir("GET", "/v1/appInfos/%s/ageRatingDeclaration" % info)
     ok(st, r, "leer clasificacion por edad")
     dec = r["data"]
-    actual = dec["attributes"]
-    propias = f.get("edad", {})
-    nuevos = {}
-    for clave, valor in actual.items():
-        if clave in propias:
-            nuevos[clave] = propias[clave]
-        elif valor is None and clave not in ("kidsAgeBand", "ageRatingOverride", "ageRatingOverrideV2",
-                                             "koreaAgeRatingOverride", "developerAgeRatingInfoUrl"):
-            # Booleanos -> False; niveles -> NONE
-            nuevos[clave] = "NONE" if clave[0].islower() and _es_nivel(clave) else False
-    if nuevos:
-        st, r = pedir("PATCH", "/v1/ageRatingDeclarations/" + dec["id"], {"data": {
-            "type": "ageRatingDeclarations", "id": dec["id"], "attributes": nuevos}})
-        if st not in (200, 201):
-            # Si algun nombre no le gusta, probar campo por campo
-            for clave, valor in nuevos.items():
-                pedir("PATCH", "/v1/ageRatingDeclarations/" + dec["id"], {"data": {
-                    "type": "ageRatingDeclarations", "id": dec["id"], "attributes": {clave: valor}}})
-
-
-def _es_nivel(clave):
-    booleanos = {"gambling", "lootBox", "unrestrictedWebAccess", "seventeenPlus", "messagingAndChat",
-                 "userGeneratedContent", "advertising", "ageAssurance", "healthOrWellnessTopics",
-                 "parentalControls", "isAdvertising", "isAgeAssurance", "isParentalControls",
-                 "isUserGeneratedContent", "isMessagingAndChat", "isHealthOrWellnessTopics"}
-    return clave not in booleanos
+    attrs = {n: "NONE" for n in NIVELES}
+    attrs.update({n: False for n in SI_NO})
+    attrs.update(f.get("edad", {}))
+    st, r = pedir("PATCH", "/v1/ageRatingDeclarations/" + dec["id"], {"data": {
+        "type": "ageRatingDeclarations", "id": dec["id"], "attributes": attrs}})
+    if st not in (200, 201):
+        # Quitar los campos que Apple no reconozca y probar otra vez
+        malos = [e.get("source", {}).get("pointer", "").split("/")[-1] for e in r.get("errors", [])]
+        for m in malos:
+            attrs.pop(m, None)
+        ok(*pedir("PATCH", "/v1/ageRatingDeclarations/" + dec["id"], {"data": {
+            "type": "ageRatingDeclarations", "id": dec["id"], "attributes": attrs}}), "clasificacion por edad")
 
 
 def poner_precio_gratis(aid):

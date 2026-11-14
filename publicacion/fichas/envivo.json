@@ -21,5 +21,9 @@
       "espera": 8
     }
   ],
-  "app": "envivo"
+  "app": "envivo",
+  "edad": {
+    "messagingAndChat": true,
+    "userGeneratedContent": true
+  }
 }
