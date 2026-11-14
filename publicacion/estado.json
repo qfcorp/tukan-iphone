@@ -4,7 +4,7 @@
   },
   "envivo": {
     "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)",
-    "error": "agregar al envio (409): appStoreVersions with id '46cc9c8c-9250-436b-9670-42d339669673' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. (2026-11-14 15:36 UTC)"
+    "error": "agregar al envio (409): appStoreVersions with id '46cc9c8c-9250-436b-9670-42d339669673' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. |   - ENTITY_ERROR.ATTRIBUTE.REQUIRED You must provide a value for the attribute 'violenceRealistic' with this request |   - ENTITY_ERROR.ATTRIBUTE.REQUIRED You must provide a value for the attribute 'sexualContentOrNudity' with this request |   - ENTITY_ERROR.ATTRIBUTE.REQUIRED You must provide a value for the attribute 'profanityOrCrudeHumor' with this request |   - ENTITY_ERROR.ATTRIBUTE.REQUIRED You must (2026-11-14 15:37 UTC)"
   },
   "qfdeportes": {
     "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)",
