@@ -1,6 +1,6 @@
 # Bloc de notas — Tukán iPhone (qfcorp/tukan-iphone)
 
-Última actualización: 13 nov 2026 (noche)
+Última actualización: 14 nov 2026
 
 ## Plan
 
@@ -22,7 +22,22 @@
    - Probador del iPhone: correo personal invitado como usuario del equipo con rol **Marketing** (Dimitry debe tocar
      «Invitar» y aceptar el correo en el iPhone; después correr `grupo-testflight.yml`).
    - En TestFlight NO se usa «código de canje»: se entra con el correo de invitación → «Ver en TestFlight».
-5. ⏳ Probar en el iPhone de Dimitry con **TestFlight** y luego enviar a revisión de Apple (capturas, descripción,
+5. 🚀 14 nov: **publicación en la App Store, 3 cada 3 horas** (pedido de Dimitry).
+   - Enviadas a revisión de Apple: **EN VIVO Tycoon** y **QF Deportes** (14 nov ~11:00 Ecuador) y **TuBroadcast** (~11:45).
+   - Todo automático en `.github/workflows/publicar-app-store.yml` (cada 3 horas) + `herramientas/publicar_app_store.py`:
+     llena textos, capturas, edad, precio gratis, países (sin la UE: falta declaración DSA), revisor y envía.
+     Lee `publicacion/fichas/<app>.json`, `publicacion/capturas/<app>/`, `publicacion/cola.json` (orden, pausada,
+     `subida_desde`) y guarda en `publicacion/estado.json`. Modos: tanda / preparar / enviar / estado.
+   - **Si Apple rechaza una app, la cola se pausa sola** y se abre un issue en GitHub.
+   - Capturas: `.github/workflows/capturas-app-store.yml` + `herramientas/sacar_capturas.sh` (iPhone 6.9", español, 9:41).
+     En la ficha: `"capturas": [{"espera": 8, "url": "...", "argumentos": [...]}]`.
+   - Secretos: `ASC_KEY_P8`, `REVISOR_TELEFONO` (puesto por Dimitry 14 nov), `DEMOS_REVISOR` (falta: JSON
+     `{"app": {"usuario": "...", "clave": "..."}}` con cuentas de prueba para el revisor; las 19 apps restantes lo necesitan).
+   - Privacidad de la app (no hay API): se llena en App Store Connect a mano. Hecha: TuBroadcast y QF Deportes (no recogen
+     datos), EN VIVO (nombre, correo, partida, chat, ID, uso y errores; vinculados, sin rastreo). **Falta en las otras 19.**
+   - Cambios en la plantilla: apps **solo iPhone** (sin iPad), **bloqueo de anuncios y rastreadores** (Google Ads/Analytics,
+     Meta Pixel...) para no necesitar permiso de rastreo, y argumento `-capturaURL` para capturas.
+6. ⏳ Probar en el iPhone de Dimitry con **TestFlight** y luego enviar a revisión de Apple (capturas, descripción,
    privacidad, cuenta demo para el revisor, declaración de comerciante UE).
    - Internas (JD Entregas, JD Logística, QF ERP, QF Flota): primero intentar App Store pública; si Apple las rechaza,
      quedan solo en TestFlight y hay que **subir versión nueva cada 90 días** (las versiones de TestFlight vencen a los 90 días:
