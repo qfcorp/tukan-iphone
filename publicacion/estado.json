@@ -3,10 +3,12 @@
     "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
   },
   "envivo": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)",
+    "error": "agregar al envio (409): appStoreVersions with id '46cc9c8c-9250-436b-9670-42d339669673' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. (2026-11-14 15:36 UTC)"
   },
   "qfdeportes": {
-    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
+    "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)",
+    "error": "agregar al envio (409): appStoreVersions with id 'd23256db-a4d3-4316-9beb-51592e17fe0a' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. (2026-11-14 15:36 UTC)"
   },
   "tudron": {
     "pendiente": "falta el telefono de contacto para Apple (secreto REVISOR_TELEFONO)"
