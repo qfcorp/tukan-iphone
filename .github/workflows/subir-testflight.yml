@@ -150,9 +150,11 @@ jobs:
           IPA=$(ls salidas/$APP/*.ipa | head -1)
           mkdir -p ~/.appstoreconnect/private_keys
           cp "$LLAVE" ~/.appstoreconnect/private_keys/
+          set +e
           xcrun altool --upload-app -f "$IPA" -t ios \
             --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" > subir.log 2>&1
           RES=$?
+          set -e
           cat subir.log | tail -30
           if [ $RES -ne 0 ]; then
             if grep -qiE "No suitable application records|Cannot determine the Apple ID|app record" subir.log; then
