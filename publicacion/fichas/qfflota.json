@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.qfproducciones.flota",
+  "subtitulo": "Gasolina, gastos y costo/km",
+  "descripcion": "QF Flota es la app de QF Producciones para llevar los vehículos y la unidad móvil de transmisión desde el iPhone.\n\n• Registra la gasolina en segundos: valor, galones, tanque lleno y gasolinera (con el GPS te sugiere la más cercana).\n• Gastos y servicios: lavado, peajes, parqueo, cambio de aceite, llantas, taller…\n• Kilometraje del tablero y aviso del próximo mantenimiento.\n• Viajes por etapas, con combustible, peajes y viáticos de cada tramo.\n• Foto del recibo con la cámara.\n• Informes: costo por km, rendimiento, comparación con el mes o año anterior, por conductor y por gasolinera, y Excel para compartir.\n• Sin señal no se pierde nada: lo escrito queda guardado en el teléfono hasta que vuelva el internet.\n\nHECHA PARA EL IPHONE\nAtajos en el ícono (Registrar gasolina, Informes, Agenda de mantenimiento), hoja de Compartir para los Excel y PDF, y pantalla propia sin conexión.\n\nEs una herramienta de trabajo: solo pueden entrar las personas a las que la empresa les creó un usuario, por ejemplo los choferes.\n\nHecho en Ecuador por QF Producciones y Tukán Software.",
+  "palabras_clave": "flota,gasolina,combustible,vehiculos,kilometraje,mantenimiento,costo por km,gastos,choferes",
+  "texto_promocional": "Registra la gasolina en segundos y mira el costo por km, el rendimiento y los informes de cada vehículo de QF Producciones.",
+  "url_soporte": "https://qfproducciones.com",
+  "url_marketing": "https://qfproducciones.com",
+  "url_privacidad": "https://erp.tupassec.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "QF Flota es el módulo de control de vehículos de una productora: gasolina, gastos, kilometraje, viajes e informes de costo por km. Lo usan los choferes y administradores de QF Producciones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas. Es una app interna de la empresa para sus empleados.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "qfflota",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

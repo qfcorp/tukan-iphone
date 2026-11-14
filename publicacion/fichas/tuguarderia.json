@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuguarderia",
+  "subtitulo": "Guardería canina en tu mano",
+  "descripcion": "TuGuardería Canina es la app de las guarderías de perros que trabajan con TuGuardería: el personal lleva el día y los dueños ven a su perro desde el iPhone.\n\nUNA APP, TU GUARDERÍA\n• La primera vez escribe el código de tu guardería (te lo da la guardería). La app lo recuerda y abre directo tu guardería, con su nombre, logo y colores.\n• El personal entra con su usuario y los dueños con su cédula y un PIN.\n\nPARA EL PERSONAL\n• Hoy: quién llegó, quién falta y quién se va, con un toque o escaneando la placa QR de cada perro.\n• La ficha de cada perro: raza, salud, alergias, vacunas con vencimiento y su placa QR.\n• La tarjeta del día: comió, jugó, durmió y un mensaje para el dueño, con fotos y videos.\n• Rutas de la camioneta: recogidas y entregas en orden, y el dueño ve la camioneta en vivo.\n• Hotel, peluquería, evaluaciones de entrada, incidentes y avisos del día.\n• Para el administrador: panel con lo cobrado, lo que falta cobrar, gastos y reportes.\n\nPARA LOS DUEÑOS\n• Ve a tu perro: tarjetas del día, fotos y videos.\n• Sigue la camioneta en vivo cuando viene a recoger o a dejar a tu perro.\n• Pide un día extra, peluquería u hotel, y mira tus recibos.\n• Avisos de la guardería y cumpleaños de tu perro.\n\nSEGURO Y ORDENADO\n• Cada persona ve solo lo que le corresponde.\n• Las claves y PIN van cifrados.\n\nPara entrar necesitas que tu guardería use TuGuardería y te dé tu usuario (personal) o tu PIN (dueños).\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "guarderia,canina,perros,mascotas,rutas,tarjeta del dia,hotel canino,fotos,llegadas",
+  "texto_promocional": "La app de tu guardería de perros: llegadas, rutas, fotos y la tarjeta del día, para el personal y los dueños.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuguarderia.tukanec.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuGuardería Canina es la app de las guarderías de perros que usan el programa TuGuardería: el personal registra el día y los dueños ven a su perro. La usan guarderías caninas de Ecuador, su personal y los dueños de los perros. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuguarderia",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

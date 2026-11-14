@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuhospedaje",
+  "subtitulo": "Hotel, hostal y hostería",
+  "descripcion": "TuHospedaje es el programa de tu hotel, hostal u hostería en el iPhone: reservas, calendario en vivo, recepción, limpieza, restaurante, caja y empleados, todo junto y al día para todo tu equipo.\n\nTU HOTEL DE HOY EN UNA PANTALLA\n• Llegadas, salidas, huéspedes en casa y ocupación de esta noche.\n• Reservas esperando anticipo, habitaciones por limpiar y daños abiertos.\n• Cada cargo ve lo suyo: dueño, gerente, recepción, limpieza, mantenimiento, restaurante, eventos y contador.\n\nRESERVAS Y CALENDARIO EN VIVO\n• Calendario de todas tus habitaciones que se actualiza solo en todos los teléfonos.\n• Reservas con tarifas por temporada, opciones (aire o ventilador, con o sin desayuno) e IVA.\n• Tu propia página de reservas y un asistente de reservas.\n\nRECEPCIÓN\n• Check-in con el registro de huéspedes, check-in rápido y pre-check-in desde el teléfono del huésped.\n• Cuenta de cada habitación: hospedaje, restaurante, minibar, lavandería y tours.\n• Check-out con la encuesta de satisfacción.\n\nLIMPIEZA Y MANTENIMIENTO\n• Lista de limpieza del día, tablero de habitaciones para tablet y modo sin internet.\n• Daños con foto, mantenimiento preventivo e historial de cada habitación.\n• Objetos olvidados y quejas.\n\nDINERO Y PERSONAL\n• Caja por turno con conteo ciego, gastos, proveedores y cuentas por cobrar.\n• Tablero del dueño con ganancias y pérdidas del mes.\n• Empleados, turnos, asistencia con QR y rol de pagos.\n\nY MÁS (según los módulos de tu cuenta)\n• Restaurante con pedidos a la habitación y tickets de desayuno.\n• Eventos y bodas, tours, spa y tienda de recepción.\n• Varias propiedades en un solo tablero.\n\nPara entrar necesitas la cuenta de TuHospedaje de tu hotel, con tu correo o usuario y tu contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "hotel,hostal,hosteria,reservas,recepcion,habitaciones,limpieza,huespedes,calendario,hospedaje",
+  "texto_promocional": "Reservas, calendario, recepción, limpieza y caja de tu hotel u hostería, al día para todo tu equipo.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuhospedaje.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "TRAVEL",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuHospedaje es el sistema de gestión de hoteles, hostales y hosterías: reservas, calendario, recepción, limpieza, restaurante y caja. Lo usan hoteles, hostales y hosterías y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuhospedaje",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuacademia",
+  "subtitulo": "Tu academia en el iPhone",
+  "descripcion": "TuAcademia es el sistema para academias de baile, música, natación y escuelas deportivas: alumnos, cursos, asistencia, pensiones y un portal para los padres, desde el iPhone.\n\nALUMNOS Y CURSOS\n• Ficha de cada alumno con su representante, curso, horario, nivel, instrumento o talla de vestuario.\n• Cursos por disciplina, edad, profesor, salón y horario. Varias sedes en la misma cuenta.\n• Ballet, contemporáneo, salsa, urbano, folclor, piano, guitarra, canto, violín, natación, fútbol y más (según los módulos de tu cuenta).\n\nASISTENCIA EN SEGUNDOS\n• Toma lista con un toque por alumno.\n• Lo que se trabajó en cada clase, con fotos que ven los padres.\n• Planificación de las clases del mes.\n\nPENSIONES AL DÍA\n• Pensiones del mes que se generan solas, con descuento por hermanos.\n• «Mensajes de hoy»: las familias con pensiones por vencer o vencidas, con el mensaje de WhatsApp listo para enviar.\n• Los padres suben el comprobante y el recibo sale solo.\n\nNIVELES Y CERTIFICADOS\n• Niveles con examen, acta y certificado con código QR que cualquiera puede verificar.\n\nRECITALES Y CLASES PARTICULARES\n• Coreografías u obras con sus participantes, papeles y tallas.\n• Clases 1 a 1 con el profesor, con cada clase descontada del paquete.\n\nPORTAL DE PADRES Y PROFESORES\n• Los padres ven asistencia, avance, nivel, próximos ensayos y recibos de sus hijos.\n• Cada profesor ve su lista y sus clases. Usuarios con permisos y bitácora.\n\nTODO POR MÓDULOS\nEnciende solo lo que tu academia necesita. Apagar un módulo no borra nada.\n\nPara entrar necesitas la cuenta de TuAcademia de tu academia, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "academia,alumnos,asistencia,baile,musica,natacion,pensiones,clases,recitales,profesores",
+  "texto_promocional": "Alumnos, asistencia, pensiones y portal de padres para tu academia de baile, música, natación o deportes.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuacademia.tukanec.com/index.php?v=privacidad",
+  "categoria": "EDUCATION",
+  "categoria_secundaria": "BUSINESS",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuAcademia es el sistema de gestión para academias de baile, música, natación y escuelas deportivas: alumnos, asistencia, pensiones y portal de padres. Lo usan academias y su personal en Ecuador, y los padres de familia. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuacademia",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

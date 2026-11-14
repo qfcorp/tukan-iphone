@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuspa",
+  "subtitulo": "Agenda y fichas para tu spa",
+  "descripcion": "TuSpa ordena tu spa desde el iPhone: la agenda de tus terapeutas y tus cabinas, las citas que piden tus clientes por internet, la ficha de salud firmada antes de cada tratamiento, los cobros, la caja del día y lo que le toca a cada terapeuta.\n\nAGENDA POR TERAPEUTA Y POR CABINA\n• Mira la agenda por terapeuta o por cabina, sin choques.\n• Cabinas de pareja y servicios en pareja con dos terapeutas.\n• Tiempo de preparación de la cabina entre cita y cita.\n• Bloqueos: almuerzo, permisos, vacaciones y mantenimiento de cabinas.\n• Recordatorios por WhatsApp con un toque.\n\nTUS CLIENTES RESERVAN SOLOS\n• Tu página de reservas: el cliente elige terapeuta, tratamiento, día y hora.\n• Tú decides si se aceptan solas o las revisas antes.\n\nFICHA DE SALUD Y DEL TRATAMIENTO\n• El cliente declara alergias, embarazo, presión o lesiones y firma en la pantalla.\n• Aviso en la agenda cuando el cliente declaró algo importante.\n• Ficha del tratamiento: productos usados, zona, intensidad, resultado y fotos con permiso.\n\nCOBRA Y CUADRA LA CAJA\n• Cobra tratamientos, productos, bonos, membresías y propinas.\n• Cobra al momento o a la cuenta del cliente (empresas y convenios).\n• Caja del día y cierre de caja.\n\nTU EQUIPO, CLARO\n• Los 4 tipos de terapeuta: dueño, empleado con sueldo o comisión, porcentaje y alquiler de cabina.\n• Comisiones, reparto del porcentaje, propinas y arriendos, sin cuentas a mano.\n• Portal para cada terapeuta y cuenta de recepción.\n\nMÁS PARA TU SPA\n• Bonos de sesiones, membresías mensuales y tarjetas de regalo.\n• Puntos para clientes fieles y clientes por recuperar.\n• Inventario de productos y aceites, y gastos.\n• Reportes: lo más vendido, quién vendió más y las horas más vacías.\n• Asistente con inteligencia artificial que arma la cita desde el mensaje del cliente.\n\nPara entrar necesitas la cuenta de tu spa, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "spa,terapeutas,cabinas,agenda,citas,masajes,tratamientos,fichas,comisiones,reservas",
+  "texto_promocional": "Agenda por terapeuta y cabina, fichas de salud, cobros y comisiones de tu spa, desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuspa.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "HEALTH_AND_FITNESS",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuSpa es el sistema de gestión para spas: agenda por terapeuta y cabina, fichas de salud del cliente, cobros, caja y comisiones. Lo usan spas y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuspa",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

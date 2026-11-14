@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tudron",
+  "subtitulo": "Bitácora y control de drones",
+  "descripcion": "TuDron es la bitácora y el centro de control para quien vuela drones: fotógrafos, productoras, topógrafos, inspectores y operadores de fumigación.\n\nSUS VUELOS, SOLOS\n• Sube el registro de vuelo (DJI, PX4, ArduPilot o CSV) y TuDron lo lee: duración, distancia, altura, batería, fotos y video.\n• Cada vuelo en el mapa con su recorrido, y gráficos de altura, velocidad y batería.\n• Comparte un vuelo con tu cliente por enlace.\n\nCLIMA PARA VOLAR\n• Viento a 10, 80 y 120 metros, ráfagas, lluvia, visibilidad y actividad solar.\n• Semáforo «se puede volar / con cuidado / no volar» según lo que aguanta cada dron.\n\nBATERÍAS Y MANTENIMIENTO\n• La salud de cada batería: ciclos, celdas, temperatura y vida útil.\n• Programas de mantenimiento por horas, ciclos o días, con avisos.\n• Drones, controles, baterías y accesorios con código QR.\n\nPILOTOS Y SEGURIDAD\n• Horas de cada piloto, licencias y documentos con aviso antes de vencer.\n• Lista de chequeo antes y después de volar, evaluación de riesgo e incidentes.\n\nMAPAS Y TOPOGRAFÍA\n• Planifica la misión de mapeo (traslape, altura, GSD).\n• Ortomosaicos, curvas de nivel y volúmenes con tus fotos.\n\nCLIENTES Y FUMIGACIÓN\n• Clientes, proyectos y cuentas de cobro por hora, vuelo o hectárea.\n• Fincas y lotes, órdenes de aplicación, dosis por hectárea, bodega de productos y certificado de aplicación.\n\nREPORTES\n• Bitácora oficial de vuelos para la autoridad de aviación o la aseguradora, y reportes del mes.\n\nPara entrar necesitas tu cuenta de TuDron, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "dron,drones,bitacora,vuelos,baterias,clima,mapas,fumigacion,pilotos,topografia",
+  "texto_promocional": "Vuelos, baterías, clima a la altura de vuelo, mapas y fumigación: la bitácora y el centro de control para quien vuela drones.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tudron.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuDron es una bitácora y centro de control para operadores de drones: vuelos, baterías, clima, pilotos, mapas y fumigación. Lo usan pilotos y empresas de drones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tudron",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

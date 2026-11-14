@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuevento",
+  "subtitulo": "Salones, quintas y haciendas",
+  "descripcion": "TuEvento es el sistema para salones de eventos, quintas y haciendas: tus fechas, cotizaciones, contratos, cobros y el día del evento, en el iPhone de todo tu equipo.\n\nFECHAS SIN DOBLE RESERVA\n• Calendario por espacio con horas de montaje y desmontaje: la misma fecha y hora no se puede vender dos veces.\n• «Próximos sábados» para ver de un vistazo lo que queda libre.\n• Fechas cerradas y lista de espera.\n\nDE LA CONSULTA A LA FIESTA\n• Cada evento pasa por consulta, cotizado, separado, confirmado y realizado.\n• Seguimiento de llamadas, visitas y degustaciones, con tareas por evento.\n• Página pública de tu local con «¿Está libre tu fecha?» y formulario que entra directo al sistema.\n\nCOTIZACIONES Y CONTRATOS\n• Catálogo y paquetes con IVA por producto y descuentos.\n• Cotización en PDF con QR y enlace para que el cliente la acepte desde su teléfono.\n• Contrato desde tus plantillas que el cliente firma con el dedo, con verificación por QR.\n\nCOBROS CLAROS\n• Cuotas automáticas, pagos, recibos y garantía por daños.\n• Lo vencido, lo que falta cobrar y mensajes de WhatsApp listos para recordar.\n• Gastos y ganancia real de cada evento.\n\nEL DÍA DEL EVENTO\n• Cronograma minuto a minuto con modo en vivo.\n• Personal, proveedores y mobiliario, y hoja del evento en PDF.\n• Invitados con invitación digital, confirmación, mesas, plano del salón e ingreso con QR.\n\nTU EQUIPO\n• Dueño, administradores, vendedores, coordinadores y usuarios de solo consulta.\n• Reportes de ventas, cobros, ocupación y metas.\n\nPara entrar necesitas la cuenta de TuEvento de tu negocio, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "eventos,salon,quinta,hacienda,reservas,cotizaciones,contratos,invitados,bodas,calendario",
+  "texto_promocional": "Fechas, cotizaciones, contratos y cobros de tu salón, quinta o hacienda, y el día del evento, desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuevento.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuEvento es el sistema de gestión para salones de eventos, quintas y haciendas: reservas, cotizaciones, contratos y cobros. Lo usan salones de eventos, quintas y haciendas en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuevento",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

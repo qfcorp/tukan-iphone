@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.qfproducciones.erp",
+  "subtitulo": "Sistema de QF Producciones",
+  "descripcion": "QF ERP es la app interna de QF Producciones para manejar la empresa desde el iPhone.\n\nCon tu usuario de la empresa puedes:\n• Ver y crear eventos, producciones y transmisiones.\n• Hacer cotizaciones y propuestas, con su PDF.\n• Llevar la facturación y la cobranza: facturas, cobros y cartera.\n• Registrar gastos de los eventos y gastos generales.\n• Manejar el personal técnico, sus asignaciones y liquidaciones.\n• Usar Flota: gasolina, gastos, servicios, viajes y costo por km de los vehículos.\n• Ver el panel financiero y los informes.\n\nHECHA PARA EL IPHONE\n• Atajos en el ícono (mantén presionado): Eventos, Facturación y Flota.\n• Los PDF y Excel se abren y se comparten con la hoja de Compartir o se guardan en Archivos.\n• Foto del recibo con la cámara y ubicación para la gasolinera, solo cuando tú lo pides.\n• Pantalla propia sin conexión: cuando vuelve la señal, la página se carga sola.\n• Jala hacia abajo para actualizar.\n\nEs una herramienta de trabajo: solo pueden entrar las personas a las que la empresa les creó un usuario.\n\nHecho en Ecuador por QF Producciones y Tukán Software.",
+  "palabras_clave": "erp,eventos,produccion,facturacion,cobranza,gastos,flota,cotizaciones,empresa,transmision",
+  "texto_promocional": "Eventos, cotizaciones, facturación, gastos, personal y flota de QF Producciones en tu iPhone, al instante.",
+  "url_soporte": "https://qfproducciones.com",
+  "url_marketing": "https://qfproducciones.com",
+  "url_privacidad": "https://erp.tupassec.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "QF ERP es el sistema de gestión de una productora de eventos y transmisiones en vivo: eventos, cotizaciones, facturación, gastos, personal y flota. Lo usa el equipo de QF Producciones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas. Es una app interna de la empresa para sus empleados.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "qferp",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

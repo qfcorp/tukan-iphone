@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tulavadora",
+  "subtitulo": "Lavadora y lubricadora",
+  "descripcion": "TuLavadora es el sistema para lavadoras y lubricadoras de autos: la cola de autos, el tablero del día, la caja y tus clientes, en tu iPhone.\n\nLLEGÓ UN AUTO\n• Escribe la placa: si ya vino antes, sale su ficha; si no, se registra en el momento.\n• Cada auto recibe su turno y la hora aproximada de entrega.\n• Fotos de entrada y salida, y hoja de recepción con los daños, firmada con el dedo.\n\nEL TABLERO DEL DÍA\n• Cada auto en su etapa: en cola, prelavado, lavado, secado, aspirado, control, listo y entregado.\n• Ningún auto se entrega sin pago.\n• «Tu auto está listo» por WhatsApp con un toque.\n\nTARIFAS A TU MEDIDA\n• Matriz de tarifas por tipo de vehículo (moto, auto, SUV, camioneta) y por qué tan sucio viene, con la duración de cada servicio.\n• Adicionales (encerado, motor, chasis, tapicería, ozono) y recargos (pelos de mascota, lodo, olor).\n\nAGENDA SIN CHOQUES\n• Por lavador y por bahía, por hora exacta o por cupos del día.\n• Tus clientes reservan desde su teléfono con su placa.\n\nCLIENTES Y VEHÍCULOS\n• Búsqueda por placa, marca o modelo, con el historial de cada vehículo.\n• Lubricadora: cambio de aceite con el kilometraje y aviso del próximo cambio.\n• Flotas y empresas con crédito, membresías por placa, paquetes y tarjetas de regalo.\n\nCAJA Y EQUIPO\n• Caja del día y cierre.\n• Comisiones de cada lavador, permisos por rol y cuenta de recepción.\n• Reportes del día y del mes.\n\nY MÁS\n• Lavado a domicilio y servicio de recoger y devolver el auto, con la ruta del chofer.\n• Sala de espera y enlace «sigue tu auto» para el cliente.\n• Conexión con TuMecánica para trabajar junto a un taller.\n\nPara entrar necesitas la cuenta de TuLavadora de tu negocio, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "lavadora,lavado,autos,vehiculos,placa,turnos,caja,lubricadora,clientes,aceite",
+  "texto_promocional": "Cola de autos, tablero del día, caja y clientes de tu lavadora de autos, desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tulavadora.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuLavadora es el sistema de gestión para lavadoras y lubricadoras de autos: cola de vehículos, tablero del día, agenda, clientes y caja. Lo usan lavadoras y lubricadoras de autos y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tulavadora",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

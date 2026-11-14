@@ -1,0 +1,66 @@
+name: Publicar en la App Store (3 cada 3 horas)
+
+# Cada 3 horas toma las 3 apps siguientes de publicacion/cola.json, llena su ficha
+# en App Store Connect (textos, capturas, edad, precio gratis, paises, revisor)
+# y las envia a revision de Apple. Si Apple rechaza alguna, la cola se pausa sola
+# y se abre un issue para avisar.
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: "tanda (la que toca), preparar (sin enviar), enviar (esas apps) o estado"
+        required: true
+        default: "tanda"
+      apps:
+        description: "Apps separadas por coma (para preparar o enviar)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: publicar-app-store
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ASC_KEY_ID: L2M6297P3F
+      ASC_ISSUER_ID: 3b2124e5-8b34-4b8b-8641-57b8f76dc992
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      REVISOR_TELEFONO: ${{ secrets.REVISOR_TELEFONO }}
+      DEMOS_REVISOR: ${{ secrets.DEMOS_REVISOR }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar lo necesario
+        run: pip install --quiet pyjwt cryptography
+      - name: Publicar
+        env:
+          MODO: ${{ github.event.inputs.modo || 'tanda' }}
+          APPS: ${{ github.event.inputs.apps || '' }}
+        run: python3 herramientas/publicar_app_store.py "$MODO" "$APPS" | tee salida.txt
+      - name: Guardar el estado en el repo
+        if: always()
+        run: |
+          git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
+          git add publicacion/estado.json publicacion/cola.json 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -qm "App Store: estado de la publicacion"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+      - name: Avisar si Apple rechazo algo
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -f publicacion/aviso.txt ] || exit 0
+          gh issue create --title "App Store: Apple rechazo una app (cola pausada)" --body-file publicacion/aviso.txt
+      - name: Resumen
+        if: always()
+        run: |
+          { echo '## Publicacion App Store'; echo '```'; cat salida.txt 2>/dev/null; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

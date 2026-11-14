@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuwhatsapp",
+  "subtitulo": "Chats de WhatsApp Business",
+  "descripcion": "Tukán Mensajes es la bandeja de chats de tu negocio, conectada a la API oficial de WhatsApp Business: todo tu equipo atiende las conversaciones del mismo número, con respuestas automáticas, pedidos y control del gasto.\n\nTU DÍA DE UN VISTAZO\n• Inicio con quién espera respuesta, lo cobrado hoy y lo que está en juego en tus ventas.\n• Ficha de cada cliente: etapa de la venta, valor, notas y seguimientos.\n• Modo oscuro.\n\nUNA BANDEJA PARA TODO EL EQUIPO\n• Todas las conversaciones de tu número de WhatsApp Business en un solo lugar, con sin leer, filtros y búsqueda.\n• Varios agentes: asigna chats, «Míos» y «Sin asignar», y reparto automático por turnos o por tema.\n• Fotos, audios, notas de voz, videos y documentos en el chat.\n• Respuestas rápidas y avisos de mensaje nuevo.\n\nRESPUESTAS AUTOMÁTICAS CON TUS REGLAS\n• Menú con botones, chatbots por pasos y horario de atención.\n• Nunca contesta solo a tus contactos personales.\n• Cada mensaje dice por qué se contestó o no, y hay un probador de reglas.\n\nVENDE DESDE EL CHAT\n• Catálogo de productos con foto, stock y detalle.\n• Carrito, pedidos y cotización en PDF sin salir de la conversación.\n• Embudo de ventas: nuevo, interesado, cotizado, ganado o perdido.\n• Seguimientos: «si no responde en 2 días, escribirle».\n\nCONTROL Y REPORTES\n• Tope de gasto mensual de mensajes, con avisos antes de llegar.\n• Campañas con plantillas aprobadas solo a quien aceptó promociones.\n• Reportes de mensajes, tiempo de respuesta y clientes por anuncio.\n\nTUS CONTACTOS EN ORDEN\n• Clientes, personales y desconocidos, con etiquetas, notas y campos propios.\n• Trae tus contactos desde un archivo de tu teléfono.\n\nPara entrar necesitas la cuenta de tu negocio, que te entrega Tukán Software, y un número de WhatsApp Business conectado.\n\nTukán Mensajes es un programa de Tukán Software (Ecuador). No es una app de WhatsApp ni de Meta y no está afiliada a ellas: usa la API oficial de WhatsApp Business.",
+  "palabras_clave": "chats,whatsapp business,mensajes,atencion,clientes,catalogo,pedidos,chatbot,ventas,equipo",
+  "texto_promocional": "Bandeja de chats de WhatsApp Business para tu equipo: responde, lleva tus ventas y controla el gasto de mensajes.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://whatsapp.tukanec.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "Tukán Mensajes es una bandeja de chats para que un equipo atienda los mensajes de WhatsApp Business de un negocio, con respuestas automáticas, pedidos y reportes. Lo usan negocios y sus equipos de atención en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuwhatsapp",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

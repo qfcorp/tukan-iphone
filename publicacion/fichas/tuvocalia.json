@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuvocalia",
+  "subtitulo": "Ligas, escuelas y federaciones",
+  "descripcion": "TuVocalía organiza tu liga, tu escuela deportiva o tu federación desde el iPhone: campeonatos, vocalía en vivo, árbitros, delegados, jugadores, alumnos y familias en un solo lugar.\n\nCAMPEONATOS SIN PAPELES\n• Equipos, jugadores y categorías con foto y carnet digital con código QR.\n• Fixture automático, tabla de posiciones, goleadores, tarjetas y sanciones al día.\n• Fases finales, llaves, tablas acumuladas y boletín oficial de cada fecha.\n\nVOCALÍA EN VIVO\n• El vocal registra presentes, goles y tarjetas con el reloj del partido.\n• Funciona aunque se caiga el internet: se envía sola al volver la señal.\n• El resultado sale al instante en la página de la liga.\n\nÁRBITROS Y DELEGADOS\n• Cada árbitro ve sus partidos designados y llena su informe.\n• Cada delegado maneja su plantilla e inscribe jugadores.\n\nESCUELAS DEPORTIVAS\n• Alumnos, grupos, horarios y asistencia.\n• Evaluaciones, niveles y exámenes de grado.\n• Portal para las familias: asistencia y avances de sus hijos.\n\nFEDERACIONES\n• Varias ligas y escuelas bajo un mismo paraguas, con campeonatos entre ligas.\n\nMUCHOS DEPORTES\n• Fútbol, básquet, vóley, ecuavóley, ciclismo, atletismo, natación, deportes de combate, tenis, pádel y más (según los módulos de tu cuenta).\n\nTU LIGA EN LÍNEA\n• Página pública con resultados, tablas y estadísticas para hinchas y jugadores.\n• Avisos de goles y resultados para quien sigue a su equipo.\n• Imágenes listas para redes sociales.\n\nTODO EN ORDEN\n• Usuarios con permisos: administrador, vocal, árbitro, delegado, profesor.\n• Protección de datos personales y bitácora de todo lo que se hace.\n• En español, inglés, francés, portugués e italiano.\n\nPara entrar necesitas la cuenta de TuVocalía de tu liga, escuela o federación, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "liga,campeonato,futbol,vocalia,fixture,arbitros,torneo,deportes,tabla,escuelas",
+  "texto_promocional": "Campeonatos, vocalía en vivo, escuelas deportivas y federaciones: tu liga completa desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuvocalia.com/index.php?v=privacidad",
+  "categoria": "SPORTS",
+  "categoria_secundaria": "BUSINESS",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuVocalía es el sistema de gestión para ligas deportivas, escuelas y federaciones: campeonatos, vocalía en vivo, árbitros, delegados y jugadores. Lo usan ligas, escuelas deportivas y federaciones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuvocalia",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

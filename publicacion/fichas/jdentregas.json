@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.jdlogistica.entregas",
+  "subtitulo": "Entregas de guías aéreas",
+  "descripcion": "JD Entregas es la app de los mensajeros de JD Logística para retirar y entregar guías aéreas.\n\nCada mensajero entra con su propio usuario y ve solo las guías que tiene asignadas: las que debe retirar en la aerolínea y las que debe entregar al cliente.\n\nAL ENTREGAR UNA GUÍA\n• Escanea el acta firmada con la cámara: la app encuentra la hoja, la recorta y la endereza, y junta varias páginas en un PDF.\n• Escribe el nombre y la cédula de quien recibe.\n• Toma la foto de la cédula de quien recibe.\n• Guarda la fecha y la ubicación de la entrega.\n• Si la guía se envía a Guayaquil, se registra en un toque.\n\nTODO QUEDA EN EL SISTEMA AL INSTANTE\nLa oficina ve quién recibió, cuándo y dónde, con el acta en PDF, y el cliente lo ve en su portal de seguimiento.\n\nFUNCIONA CON MALA SEÑAL\nLas fotos se suben una por una y, si se corta el internet, no se pierden: se vuelve a intentar con un toque.\n\nUso exclusivo del personal de JD Logística (fletes, carga, importación y exportación). Se necesita un usuario entregado por la empresa.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "entregas,guias,mensajeros,logistica,carga,acta,escaner,cedula,fletes,courier",
+  "texto_promocional": "La app de los mensajeros de JD Logística: escanea el acta firmada y registra cada entrega con cédula, fecha y ubicación.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://sistema.jdlogistica.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "JD Entregas es la app de los mensajeros de una empresa de logística y carga aérea para registrar la entrega de cada guía con acta escaneada, cédula, fecha y ubicación. La usan los mensajeros de JD Logística en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas. Es una app interna de la empresa para sus empleados.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "jdentregas",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

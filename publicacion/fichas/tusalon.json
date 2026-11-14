@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tusalon",
+  "subtitulo": "Peluquería y barbería",
+  "descripcion": "TuSalón ordena tu peluquería o barbería desde el iPhone: la agenda de todo tu equipo, las citas que piden tus clientes por internet, los cobros, la caja del día y lo que le toca a cada peluquero.\n\nTU AGENDA, SIN CRUCES\n• La agenda de cada silla y de cada peluquero, con su horario, almuerzo y vacaciones.\n• Crea una cita en segundos y recuérdala por WhatsApp con un toque.\n• Cada cliente recibe un enlace para confirmar, cancelar o cambiar su cita.\n\nTUS CLIENTES RESERVAN SOLOS\n• Tu página de reservas: el cliente elige peluquero, servicio, día y hora libre.\n• Tú decides si se aceptan solas o las revisas antes.\n\nCOBRA Y CUADRA LA CAJA\n• Cobra servicios, productos, paquetes y propinas.\n• Lo que cobró cada peluquero directamente.\n• Caja del día y cierre de caja.\n\nTU EQUIPO, CLARO\n• Los 4 tipos de peluquero: dueño, empleado con sueldo o comisión, porcentaje y alquiler de puesto.\n• Comisiones, reparto del porcentaje, propinas y arriendos, sin cuentas a mano.\n• Portal para cada peluquero y cuenta de recepción.\n\nTUS CLIENTES, BIEN ATENDIDOS\n• Historial, cumpleaños, alergias y notas de cada cliente.\n• Ficha técnica con la fórmula del color y fotos con permiso del cliente.\n• Paquetes de sesiones, tarjetas de regalo y puntos para clientes fieles.\n• Clientes por recuperar: quién dejó de venir.\n• Calificaciones después del servicio.\n\nREPORTES Y AYUDA\n• Lo más vendido, quién vendió más y las horas más vacías, mes a mes.\n• Inventario de productos y gastos.\n• Asistente con inteligencia artificial que arma la cita desde el mensaje del cliente.\n• Ayuda dentro de la app, a cualquier hora.\n\nPara entrar necesitas la cuenta de tu salón, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "peluqueria,barberia,salon,agenda,citas,reservas,comisiones,clientes,belleza,caja",
+  "texto_promocional": "Agenda, reservas en línea, cobros y comisiones de tu peluquería o barbería, desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tusalon.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuSalón es el sistema de gestión para peluquerías y barberías: agenda, reservas en línea, cobros, caja y comisiones del equipo. Lo usan peluquerías y barberías y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tusalon",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tuplanner",
+  "subtitulo": "Bodas y eventos sin estrés",
+  "descripcion": "TuPlanner es el sistema para wedding planners y organizadores de eventos: bodas, quince años, pedidas de mano, baby showers, graduaciones y eventos corporativos, de principio a fin y desde el iPhone.\n\nPLANIFICA CADA EVENTO\n• Lista de tareas por meses («12 meses antes», «6 meses antes»… «después del evento»), tuyas y de tu cliente.\n• Listas típicas de boda y de quince años para empezar en un toque.\n• Tablero de ideas con fotos, temática y paleta de colores.\n\nEL DINERO, CLARO\n• Presupuesto por proveedor: lugar, banquete, fotos, flores, música, vestido…, con lo estimado, lo contratado y lo pagado.\n• Quién le paga a cada proveedor: el cliente directo o tú dentro de tu contrato.\n• Honorarios fijos o por porcentaje, y comisiones de proveedores con lo que te falta cobrar.\n\nCOTIZACIONES Y CONTRATOS\n• Catálogo y paquetes con IVA por producto y descuentos.\n• Cotización en PDF con QR y enlace para que el cliente la acepte desde su teléfono.\n• Contrato desde tus plantillas que el cliente firma con el dedo, con verificación por QR.\n\nCOBROS\n• Cuotas, pagos, recibos y comprobantes que sube el cliente.\n• Lo vencido y mensajes de WhatsApp listos para recordar.\n\nTU CLIENTE, CONECTADO\n• Portal del cliente sin contraseña: su planificación, sus tareas, su presupuesto, sus pagos e ideas.\n\nEL DÍA DEL EVENTO\n• Cronograma minuto a minuto con modo en vivo, personal y proveedores.\n• Invitados con invitación digital, confirmación, mesas e ingreso con QR.\n• Lugares donde trabajas (haciendas, quintas, iglesias) con dirección y mapa.\n\nTU EQUIPO\n• Dueño, administradores, vendedores, coordinadores y usuarios de solo consulta.\n\nPara entrar necesitas la cuenta de TuPlanner de tu negocio, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "bodas,eventos,planner,wedding,tareas,presupuesto,proveedores,invitados,quince anos,cronograma",
+  "texto_promocional": "Tareas, presupuesto, proveedores y cobros de tus bodas y eventos, de principio a fin y desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuplanner.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuPlanner es el sistema de gestión para wedding planners y organizadores de eventos: tareas, presupuesto, proveedores, contratos y cobros. Lo usan organizadores de bodas y eventos y sus clientes en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuplanner",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

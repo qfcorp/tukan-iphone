@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tugroomer",
+  "subtitulo": "Peluquería canina y spa",
+  "descripcion": "TuGroomer es el sistema para peluquerías y spas de perros y gatos: la agenda, el tablero del día, las fichas de las mascotas y la caja, en tu iPhone.\n\nAGENDA SIN CHOQUES\n• Agenda por groomer y por estación (mesa de corte, tina, secadora): nunca se cruzan dos citas.\n• Por hora exacta o por cupos de mañana y tarde, con límite de perros grandes.\n• Citas recurrentes y aviso del próximo baño.\n\nTABLERO DEL DÍA\n• Cada mascota de la llegada a la entrega: por llegar, recibido, baño, secado, corte, listo y entregado.\n• Al marcar «listo», el mensaje al dueño queda listo para enviar por WhatsApp.\n\nLA FICHA DE CADA MASCOTA\n• Más de 240 razas de perros y gatos, tamaño por peso, pelo, temperamento, alergias y corte preferido con foto.\n• Carnet de vacunas con vencimiento: avisa o bloquea la cita si la antirrábica está vencida.\n• Fotos de antes y después, y la tarjeta del día para el dueño.\n\nTARIFAS CLARAS\n• Tarifa por servicio, tamaño y tipo de pelo, con la duración automática.\n• Adicionales y recargos (nudos, pulgas, comportamiento).\n\nCAJA\n• Cobra cada cita, vende productos, paquetes de baños y membresías.\n• Caja del día por forma de pago, cierre de caja y comisiones de cada groomer.\n\nPARA LOS DUEÑOS DE MASCOTAS\n• Tu página para que reserven desde el teléfono y entren con su cédula y un PIN.\n• Consentimientos firmados con el dedo y placa QR para mascotas perdidas.\n\nMÁS FUNCIONES POR MÓDULOS\nUnidad móvil y taxi canino con rutas, protocolo para gatos, lista de espera, inventario, varias sedes y conexión con guarderías.\n\nPara entrar necesitas la cuenta de TuGroomer de tu peluquería, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "peluqueria,canina,mascotas,perros,gatos,groomer,agenda,citas,spa,veterinaria",
+  "texto_promocional": "Agenda, tablero del día, fichas de mascotas y caja para tu peluquería y spa de perros y gatos.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tugroomer.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "LIFESTYLE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuGroomer es el sistema de gestión para peluquerías y spas de perros y gatos: agenda, fichas de mascotas, tablero del día y caja. Lo usan peluquerías caninas y sus dueños de mascotas en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tugroomer",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

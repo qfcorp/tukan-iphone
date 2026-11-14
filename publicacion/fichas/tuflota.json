@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.flotatukan",
+  "subtitulo": "Gastos y control de tu flota",
+  "descripcion": "Flota Tukán es el control de los vehículos de tu empresa en el iPhone: combustible, gastos, mantenimientos, viajes, fallas, llantas y conductores, todo en un solo lugar.\n\nREGISTRA EN SEGUNDOS\n• Combustible, gastos, servicios, ingresos y kilometraje.\n• Foto del recibo y de la gasolinera donde cargaste.\n• Si no hay señal, se guarda en el teléfono y se envía solo cuando vuelve el internet.\n\nSABE CUÁNTO CUESTA CADA VEHÍCULO\n• Rendimiento de tanque lleno a tanque lleno.\n• Costo por km, costo del mes y comparación entre vehículos.\n• Informes con gráficos, en PDF y en Excel.\n\nMANTENIMIENTO SIN OLVIDOS\n• Recordatorios de aceite, matrícula, seguro y licencias de conductores.\n• Revisión antes de salir desde el teléfono del conductor, con fotos.\n• Fallas con su taller: reportada, en el taller, reparada.\n• Llantas con su posición, kilómetros y rotación. Garantías por meses o kilómetros.\n\nTU EQUIPO\n• Cada conductor entra con su cuenta y ve solo sus vehículos.\n• Viajes con paradas y gastos. Agenda de quién usa cada vehículo.\n• Un resumen cada mañana por Telegram y correo con lo que hay que atender.\n\nEn español, inglés, francés, portugués e italiano.\n\nPara entrar necesitas la cuenta de tu flota, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "flota,vehiculos,combustible,gasolina,mantenimiento,conductores,viajes,gastos,camiones,llantas,taller",
+  "texto_promocional": "Combustible, gastos, mantenimiento, viajes y conductores de tus vehículos, desde el iPhone. Informes en PDF y Excel, listos para mandar.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tuflota.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "Flota Tukán es un programa para llevar el control de los vehículos de una empresa: combustible, gastos, mantenimiento y viajes. Lo usan empresas y conductores en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tuflota",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

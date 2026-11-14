@@ -2,8 +2,28 @@
   "orden": [
     "tubroadcast",
     "envivo",
-    "qfdeportes"
+    "qfdeportes",
+    "tudron",
+    "tuflota",
+    "tufactura",
+    "tuwhatsapp",
+    "tusalon",
+    "tuspa",
+    "tugroomer",
+    "tuguarderia",
+    "tulavadora",
+    "tumecanica",
+    "tuevento",
+    "tuplanner",
+    "tuhospedaje",
+    "tuvocalia",
+    "tuacademia",
+    "qferp",
+    "qfflota",
+    "jdentregas",
+    "jdlogistica"
   ],
   "por_tanda": 3,
-  "pausada": false
+  "pausada": false,
+  "subida_desde": "2026-11-14T02:30:00"
 }

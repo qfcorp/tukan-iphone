@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tufactura",
+  "subtitulo": "Facturación electrónica",
+  "descripcion": "TuFactura es la facturación electrónica de Ecuador en tu iPhone: haces la factura, se firma, se envía para su autorización y le llega a tu cliente por correo, en segundos.\n\nTuFactura es un programa privado de Tukán Software. No pertenece a ninguna entidad del gobierno ni la representa.\n\nFACTURA EN SEGUNDOS\n• Busca al cliente por cédula o RUC, o toca Consumidor final.\n• Agrega productos con el buscador o con el lector de código de barras.\n• La factura se guarda sola mientras la llenas.\n• Copia una factura anterior y cambia solo lo necesario.\n\nCADA LOCAL CON SU MARCA\n• Cada establecimiento con su logo, nombre comercial, dirección, teléfono, color y pie de página.\n• El PDF y el correo al cliente salen con la marca del local.\n• Puntos de emisión con su propia numeración.\n\nCOMPROBANTES ELECTRÓNICOS\n• Facturas electrónicas autorizadas, con su PDF y XML.\n• Si el servicio de autorización no responde, se reintenta solo.\n• Notas de crédito, anulaciones, guías de remisión y retenciones (según los módulos de tu cuenta).\n• Ambiente de pruebas para practicar antes de facturar de verdad.\n\nTUS CLIENTES Y PRODUCTOS\n• Los clientes se guardan solos al facturar; el nombre y la dirección se llenan con la cédula o el RUC.\n• Productos con valor con y sin IVA, costo, categoría y código de barras.\n• Importa tus clientes y productos desde Excel.\n\nENVÍA Y COBRA MEJOR\n• PDF y XML por correo o WhatsApp con un toque.\n• Lo que te debe cada cliente.\n\nREPORTES Y CONTADOR\n• Lo más vendido, mes a mes.\n• Libro de ventas en Excel, XML y PDF del mes en un ZIP para tu contador.\n\nTU EQUIPO, SEGURO\n• Usuarios con permisos: quién factura, en qué local y qué puede ver.\n• Tu firma electrónica se guarda cifrada.\n• Todo queda anotado en la bitácora.\n\nPara entrar necesitas la cuenta de TuFactura de tu empresa, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "factura,facturacion,electronica,comprobantes,clientes,ventas,contador,retenciones,ruc,negocio",
+  "texto_promocional": "Haz la factura, fírmala y envíala por correo a tu cliente en segundos, con la marca de cada local.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://factura.tukanec.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "FINANCE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuFactura es un programa de facturación electrónica para empresas de Ecuador: facturas con PDF y XML, notas de crédito, retenciones y reportes. Lo usan negocios y sus contadores en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tufactura",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

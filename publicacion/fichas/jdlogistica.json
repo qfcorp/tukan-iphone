@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.jdlogistica.sistema",
+  "subtitulo": "Guías, cobros y caja chica",
+  "descripcion": "JD Logística es el sistema de la oficina de JD Logística (fletes, carga, importación y exportación), ahora como app para iPhone.\n\nEN EL INICIO, LO PRINCIPAL\n• Caja chica: cuánto queda disponible, con aviso cuando hay que pedir la reposición.\n• Guías activas: solicitadas, retiradas y en espera de entrega.\n• Cuentas por cobrar con semáforo: cuántos días faltan para que venza cada factura o cuántos días de mora tiene.\n\nPANEL DE FACTURAS\n• Facturado, cobrado, por cobrar y vencido, por mes o por año.\n• Retenciones, facturas sin retención y lo que debe cada cliente.\n• Gráficas de facturación y de vencimientos.\n\nGUÍAS AÉREAS DE PRINCIPIO A FIN\n• Registro, retiro en la aerolínea, entrega al cliente o envío a Guayaquil.\n• Quién recibió, su cédula, la fecha, el lugar en el mapa y el acta escaneada en PDF.\n• Factura electrónica desde la misma guía.\n\nAdemás: facturas recibidas, retenciones en lote, caja chica, pagos a empleados y usuarios con permisos.\n\nUso exclusivo del personal de JD Logística. Se necesita un usuario entregado por la empresa.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "logistica,guias,cobros,caja chica,facturas,carga,fletes,importacion,exportacion,courier",
+  "texto_promocional": "El sistema de la oficina de JD Logística en tu iPhone: guías, facturas, cobros y caja chica al día.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://sistema.jdlogistica.com/privacidad.php",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "FINANCE",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "JD Logística es el sistema de oficina de una empresa de logística y carga: guías aéreas, facturación, cobros y caja chica. Lo usa el personal de JD Logística en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas. Es una app interna de la empresa para sus empleados.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "jdlogistica",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}

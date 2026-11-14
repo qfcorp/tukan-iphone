@@ -1,0 +1,25 @@
+{
+  "bundle_id": "com.tukansoftware.tumecanica",
+  "subtitulo": "Taller mecánico al día",
+  "descripcion": "TuMecánica es el sistema para talleres mecánicos: la recepción del vehículo, las órdenes de trabajo, los presupuestos, la agenda y la caja, en tu iPhone.\n\nRECIBE CADA VEHÍCULO BIEN\n• Kilometraje, gasolina, lo que trae (gata, llanta de emergencia, documentos) y lo que pide el cliente.\n• Daños marcados en el dibujo del vehículo, con fotos y la firma del cliente con el dedo.\n• Hoja de recepción en PDF para enviar por WhatsApp.\n\nÓRDENES DE TRABAJO\n• Tablero por etapas: recibido, diagnóstico, presupuesto, aprobado, esperando repuestos, en reparación, control de calidad, listo y entregado.\n• Mano de obra del catálogo y repuestos con su stock.\n• Foto de la pieza vieja en cada repuesto cambiado.\n\nPRESUPUESTOS QUE SE APRUEBAN\n• Presupuesto en PDF y por WhatsApp; el cliente lo ve en su teléfono.\n• Marca lo que el cliente aprobó y lo que no; lo pendiente queda para recordárselo.\n\nAGENDA SIN CHOQUES\n• Por mecánico y por bahía o elevador.\n• Mantenimiento programado y recordatorios por kilometraje y fecha: cambio de aceite, revisión técnica y matrícula.\n\nCAJA Y EQUIPO\n• Abonos y cobro final, caja del día y cierre.\n• Comisiones de los mecánicos y permisos por rol.\n• Reportes del día y del mes, ventas y ganancias.\n\nY MÁS\n• Inspección digital con semáforo, garantías, inventario con kárdex y compras a proveedores.\n• Cuentas por cobrar, flotas y aseguradoras.\n• Portal del cliente con citas en línea y el avance de su vehículo.\n• Conexión con TuLavadora.\n\nPara entrar necesitas la cuenta de TuMecánica de tu taller, con tu correo y contraseña, que te entrega Tukán Software.\n\nHecho en Ecuador por Tukán Software.",
+  "palabras_clave": "taller,mecanica,mecanico,ordenes de trabajo,presupuestos,vehiculos,repuestos,agenda,recepcion,autos",
+  "texto_promocional": "Recepción, órdenes de trabajo, presupuestos, agenda y caja de tu taller mecánico, desde el iPhone.",
+  "url_soporte": "https://tukansoftware.com",
+  "url_marketing": "https://tukansoftware.com",
+  "url_privacidad": "https://tumecanica.tukanec.com/?r=privacidad",
+  "categoria": "BUSINESS",
+  "categoria_secundaria": "PRODUCTIVITY",
+  "contenido_terceros": false,
+  "necesita_demo": true,
+  "notas_revisor": "TuMecánica es el sistema de gestión para talleres mecánicos: recepción de vehículos, órdenes de trabajo, presupuestos, agenda y caja. Lo usan talleres mecánicos y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "capturas": [
+    {
+      "espera": 8
+    }
+  ],
+  "app": "tumecanica",
+  "demo": {
+    "usuario": "",
+    "clave": ""
+  }
+}
