@@ -1,0 +1,20 @@
+name: Grupo interno de TestFlight
+
+# Crea en cada app el grupo interno "Tukán" y mete a los usuarios del equipo.
+# Así las apps salen solas en la app TestFlight del iPhone (sin código de canje).
+on:
+  workflow_dispatch:
+
+jobs:
+  grupo:
+    runs-on: ubuntu-latest
+    env:
+      ASC_KEY_ID: L2M6297P3F
+      ASC_ISSUER_ID: 3b2124e5-8b34-4b8b-8641-57b8f76dc992
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar lo necesario
+        run: pip install --quiet pyjwt cryptography
+      - name: Crear grupos y agregar probadores
+        run: python3 herramientas/testflight_grupo.py
