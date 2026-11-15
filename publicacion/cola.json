@@ -24,6 +24,7 @@
     "jdlogistica"
   ],
   "por_tanda": 3,
-  "pausada": false,
-  "subida_desde": "2026-11-14T02:30:00"
+  "pausada": true,
+  "subida_desde": "2026-11-14T02:30:00",
+  "motivo": "Apple rechazo: tubroadcast, envivo, qfdeportes"
 }
