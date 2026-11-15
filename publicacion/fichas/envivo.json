@@ -15,7 +15,7 @@
   "categoria_secundaria": "ENTERTAINMENT",
   "contenido_terceros": false,
   "necesita_demo": false,
-  "notas_revisor": "El juego se puede jugar sin crear cuenta: al abrir, siga el tutorial y toque «Jugar». La cuenta es opcional, solo para guardar la partida en la nube; se puede borrar desde Ajustes del juego (también en https://juego.tukanec.com/borrar-cuenta.html). El juego no tiene compras dentro de la app en iPhone.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: EN VIVO Tycoon is a management/simulation game for teens and adults: the player runs a live-event production company (cameras, lights, audio, crew) and solves on-air problems during events. Made in Ecuador by Tukán Software.\n\n3. How to use it: the game can be played without an account. Open the app, follow the short tutorial and tap \"Jugar\". Accept events, buy equipment with in-game coins, hire crew and solve incidents. An account is optional (only to save progress in the cloud): it can be created and deleted inside the app from Tienda > Tu cuenta > \"Borrar mi cuenta\" (also at https://juego.tukanec.com/borrar-cuenta.html). The player chat (red chat button) has a report option on every message; reporting a message also blocks that player. Players can also report another player from Soporte > \"Reportar a un jugador\".\n\n4. External services: our own game server (juego.tukanec.com) for cloud save, leaderboards and chat. No third-party analytics, no ads, no AI services. On iPhone there are no purchases of any kind: all store items use in-game coins earned by playing; real-money purchases are disabled and hidden in the iOS app.\n\n5. Regional differences: none. The game works the same in every region (Spanish and English).\n\n6. Regulated industry / third-party material: not applicable. All art, names and content are original.",
   "capturas": [
     {
       "espera": 8
@@ -25,5 +25,6 @@
   "edad": {
     "messagingAndChat": true,
     "userGeneratedContent": true
-  }
+  },
+  "video_revisor": ""
 }

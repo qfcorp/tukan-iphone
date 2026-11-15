@@ -11,11 +11,12 @@
   "categoria_secundaria": "NEWS",
   "contenido_terceros": true,
   "necesita_demo": false,
-  "notas_revisor": "No necesita cuenta. Abra la app para leer las noticias deportivas de QF Producciones (Ecuador).",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: QF Deportes is the official app of QF Producciones, a live-sports production company in Ecuador. It is for football fans in Ecuador who want news about the national leagues (LigaPro Serie A and B), the national team and Ecuadorian players abroad, plus QF Producciones live-stream announcements.\n\n3. How to use it (no account, no login): open the app; the home page lists the latest news. Tap any article to read it; use the menu to browse sections. No setup is needed.\n\n4. External services: our own website qfproducciones.com (news written by QF Producciones). Third-party advertising and analytics scripts are blocked inside the iOS app. No sign-in, no payments, no AI services.\n\n5. Regional differences: none. Content is the same in every region (news about Ecuadorian football).\n\n6. Regulated industry / third-party material: news is written by QF Producciones. Team names and logos appear only as editorial/news references; no match broadcasts or protected video are offered in the app.",
   "capturas": [
     {
       "espera": 8
     }
   ],
-  "app": "qfdeportes"
+  "app": "qfdeportes",
+  "video_revisor": ""
 }

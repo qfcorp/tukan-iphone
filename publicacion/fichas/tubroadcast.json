@@ -11,7 +11,7 @@
   "categoria_secundaria": "PRODUCTIVITY",
   "contenido_terceros": false,
   "necesita_demo": false,
-  "notas_revisor": "TuBroadcast no necesita cuenta. Para probar una transmisión: toque el engranaje (Ajustes) > «Agregar conexión», escriba una dirección RTMP (por ejemplo rtmp://a.rtmp.youtube.com/live2 con la clave de YouTube Live) o SRT (srt://servidor:puerto), toque «Guardar» y «Listo», y luego el botón «EN VIVO». La cámara y el micrófono solo se usan para la transmisión que el usuario inicia.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: TuBroadcast turns an iPhone into a live-streaming camera. It is for event production companies, churches, schools, sports leagues and content creators who need to send live video from a phone to a video mixer (vMix, OBS) or to YouTube/Facebook. Problem it solves: a dedicated hardware encoder is expensive; with TuBroadcast any iPhone becomes a camera that sends video over RTMP/RTMPS or SRT directly to the user's own destination.\n\n3. How to use it (no account, no login): open the app > tap the gear (Ajustes) > \"Agregar conexión\" > enter a destination, e.g. rtmp://a.rtmp.youtube.com/live2 plus a YouTube Live stream key, or srt://host:port for vMix/OBS > Guardar > Listo > tap \"EN VIVO\". Video and audio go straight from the iPhone to that destination. Camera switch, microphone mute, flashlight, resolution (720p/1080p), frame rate and bitrate are in the main screen and in Ajustes.\n\n4. External services: none operated by us. The app only connects to the RTMP/SRT destination that the user types (for example YouTube Live, Facebook Live, the user's own vMix/OBS). No analytics, no ads, no sign-in.\n\n5. Regional differences: none. The app works the same in every region.\n\n6. Regulated industry / third-party material: not applicable. The app does not provide or host any content; users stream their own camera to their own destinations.",
   "capturas": [
     {
       "espera": 6,
@@ -31,5 +31,6 @@
     }
   ],
   "nativa": true,
-  "app": "tubroadcast"
+  "app": "tubroadcast",
+  "video_revisor": ""
 }
