@@ -358,6 +358,13 @@ def preparar(app, datos_contacto):
 
 
 def enviar(aid, vid):
+    # Si Apple dejo un envio con "problemas sin resolver", se reenvia ese mismo
+    st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&filter[state]=UNRESOLVED_ISSUES&limit=5" % aid)
+    if st == 200 and r.get("data"):
+        envio = r["data"][0]["id"]
+        ok(*pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
+            "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}}), "volver a enviar a revision")
+        return envio
     st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&filter[state]=READY_FOR_REVIEW&limit=5" % aid)
     envio = r["data"][0]["id"] if st == 200 and r.get("data") else None
     if not envio:
