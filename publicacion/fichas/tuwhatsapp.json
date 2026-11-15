@@ -11,7 +11,7 @@
   "categoria_secundaria": "PRODUCTIVITY",
   "contenido_terceros": false,
   "necesita_demo": true,
-  "notas_revisor": "Tukán Mensajes es una bandeja de chats para que un equipo atienda los mensajes de WhatsApp Business de un negocio, con respuestas automáticas, pedidos y reportes. Lo usan negocios y sus equipos de atención en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: Tukán Mensajes is a shared inbox for small businesses in Ecuador (shops, salons, service companies) that sell and give support through WhatsApp Business. The whole team answers customers from one business number, assigns chats, uses quick replies and automatic menus, and records orders and follow-ups. Problem it solves: a business number can only be used on one phone; with Tukán Mensajes several employees can attend customers at the same time with order and history.\n\n3. How to use it: sign in with the demo account in the App Review Information section (a sample company with invented customers, products and orders; its phone number is fictitious and never sends real WhatsApp messages). After login: Inicio shows pending chats and today's sales; Bandeja lists conversations (open one to read and reply); Clientes shows the customer cards; Pedidos lists orders; Más has quick replies, automatic rules, team and reports. Accounts are created by Tukán Software for each business (B2B service); there is no self sign-up in the iOS app, so account deletion is handled by Tukán Software on request (info@tukansoftware.com), as described in https://whatsapp.tukanec.com/eliminar-datos.php. On iPhone there are no prices, plans or payments: businesses contract the service with Tukán Software outside the app.\n\n4. External services: Meta WhatsApp Business Platform (Cloud API) to send and receive the business's WhatsApp messages; Tukán Software is an approved Meta Tech Provider (business verification approved; app review approved on 5 Nov 2026). Optional AI suggested replies use Anthropic's Claude API only when the business enables them (disabled in the demo). Our own server whatsapp.tukanec.com. Web push notifications. No ads, no third-party analytics.\n\n5. Regional differences: none. The app works the same in every region (Spanish, with English available).\n\n6. Regulated industry / third-party material: not a regulated industry. WhatsApp is used only through Meta's official Business Platform under Meta's terms as an approved Tech Provider; the app is not affiliated with or endorsed by Meta beyond that program.",
   "capturas": [
     {
       "espera": 8
@@ -24,5 +24,6 @@
   },
   "edad": {
     "messagingAndChat": true
-  }
+  },
+  "video_revisor": ""
 }
