@@ -362,6 +362,11 @@ def enviar(aid, vid):
     st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&filter[state]=UNRESOLVED_ISSUES&limit=5" % aid)
     if st == 200 and r.get("data"):
         envio = r["data"][0]["id"]
+        # Como "Actualizar revision" en la web: volver a poner la version en ese envio
+        pedir("POST", "/v1/reviewSubmissionItems", {"data": {
+            "type": "reviewSubmissionItems",
+            "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": envio}},
+                              "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
         ok(*pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
             "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}}), "volver a enviar a revision")
         return envio
@@ -405,6 +410,8 @@ def revisar_enviadas(estado):
             d["estado"] = "aprobada"
         elif apple in ("IN_REVIEW",):
             d["estado"] = "en_revision"
+        elif apple in ("WAITING_FOR_REVIEW", "READY_FOR_REVIEW"):
+            d["estado"] = "enviada"
     return rechazadas
 
 
