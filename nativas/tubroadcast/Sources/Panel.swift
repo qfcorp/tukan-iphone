@@ -1,8 +1,10 @@
 // Contrato con el Panel Tukán Central: POST JSON a {servidor}/tubroadcast_api.php?a=...
 // (igual que Android, core/.../tuner/Tuner.kt; servidor: src/Broadcast.php). El VIDEO nunca pasa por aquí.
 //   activar       {codigo, dispositivo, modelo, versionApp}                     -> {ok, mensaje, licencia, token}
-//   apple_compra  {dispositivo, modelo, version, transaccion (JWS), app_cuenta} -> igual que activar + {codigo, plan, celulares, expira}
-//   liberar       {dispositivo, token}                                          -> {ok, mensaje, cambios_restantes}   (429 = sin cambios)
+//   apple_compra  {dispositivo, modelo, version, transaccion (JWS), app_cuenta} -> igual que activar + {codigo, plan, celulares, expira (unix s)}
+//                 errores: 400, 402 (firma mala, vencida, revocada...), 403 (paquete lleno), 429 -> siempre se muestra «mensaje»
+//   liberar       {dispositivo, token}                                          -> {ok, mensaje, cambios_restantes, codigo}
+//                 429 = sin cambios (se muestra el mensaje) · 401 = el token ya no sirve (el celular queda libre)
 //   latido        {dispositivo, token, controlCedido, versionAjustes, estadisticas} -> {ok, ordenes, licencia?, mensaje}
 import Foundation
 

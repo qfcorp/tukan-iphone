@@ -28,7 +28,7 @@ final class PruebasTienda: XCTestCase {
             let l = LlavePrueba.licencia(dispositivo: json["dispositivo"] as! String, plan: plan, modulos: ["rtmp", "srt", "abr"])
             return (200, ["ok": true, "mensaje": "¡Listo! Plan Completo activado.", "licencia": LlavePrueba.json(l),
                           "token": "token-apple-0123456789abcdef", "codigo": "TB-PAQU-ETE3", "plan": plan,
-                          "celulares": celulares, "expira": "2026-12-23"])
+                          "celulares": celulares, "expira": 1_798_000_000])
         }
     }
 
@@ -97,7 +97,7 @@ final class PruebasTienda: XCTestCase {
         // Licencia activa y código del paquete guardado para los otros celulares
         XCTAssertTrue(g.estado.esValida)
         XCTAssertEqual(g.limites(tipoConexion: "SRT"), .sinLimites)
-        XCTAssertEqual(g.paquete, Paquete(codigo: "TB-PAQU-ETE3", plan: "completo", celulares: 3, expira: "2026-12-23"))
+        XCTAssertEqual(g.paquete, Paquete(codigo: "TB-PAQU-ETE3", plan: "completo", celulares: 3, expira: "1798000000"))
 
         // La transacción quedó terminada (finish)
         var pendientes = 0

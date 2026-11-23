@@ -179,6 +179,11 @@ final class GestorLicencia: ObservableObject {
             if codigo == 429 {
                 return (false, r.mensaje.isEmpty ? "Ya no quedan cambios de celular por ahora." : r.mensaje)
             }
+            if codigo == 401 {
+                // El panel ya no reconoce este celular: queda libre igual (vuelve a la versión gratis).
+                borrarLicencia()
+                return (true, r.mensaje.isEmpty ? "Este celular ya no estaba activado. Volvió a la versión gratis." : r.mensaje)
+            }
             guard r.ok else { return (false, r.mensaje.isEmpty ? "No se pudo liberar este celular." : r.mensaje) }
             borrarLicencia()
             var texto = r.mensaje.isEmpty ? "Listo. Este celular quedó libre y volvió a la versión gratis." : r.mensaje

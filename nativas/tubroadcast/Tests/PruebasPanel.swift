@@ -82,7 +82,8 @@ final class PruebasPanel: XCTestCase {
         _ = await g.activar(codigo: "TB-ABCD-EFGH")
         XCTAssertTrue(g.estado.esValida)
         PanelFalso.responder = { accion, _ in
-            accion == "liberar" ? (200, ["ok": true, "mensaje": "Listo. Este celular quedó libre.", "cambios_restantes": 2])
+            accion == "liberar" ? (200, ["ok": true, "mensaje": "Listo. Este celular quedó libre.", "cambios_restantes": 2,
+                                         "codigo": "TB-ABCD-EFGH"])
                                 : (404, ["ok": false])
         }
         let (ok, mensaje) = await g.liberar()
@@ -112,6 +113,18 @@ final class PruebasPanel: XCTestCase {
         // La licencia sigue en este celular
         XCTAssertTrue(g.estado.esValida)
         XCTAssertTrue(g.tieneToken)
+    }
+
+    func testLiberarConTokenQueYaNoSirve401() async {
+        panelQueActiva()
+        let g = gestorDePrueba()
+        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+        PanelFalso.responder = { _, _ in (401, ["ok": false, "mensaje": "Este celular ya no está activado."]) }
+        let (ok, mensaje) = await g.liberar()
+        XCTAssertTrue(ok, "Si el panel ya no lo reconoce, el celular igual queda libre")
+        XCTAssertEqual(mensaje, "Este celular ya no está activado.")
+        XCTAssertFalse(g.estado.esValida)
+        XCTAssertFalse(g.tieneToken)
     }
 
     func testLatidoRenuevaLicencia() async {

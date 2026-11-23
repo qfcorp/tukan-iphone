@@ -76,11 +76,14 @@ jobs:
           echo "Simulador: $UDID"
           cd construir/tubroadcast
           set +e
+          # StoreKitTest necesita la app firmada (firma local «-», sin certificados): sin firma da SKInternalErrorDomain 3.
           xcodebuild test -project TuBroadcast.xcodeproj -scheme TuBroadcast \
             -configuration Debug -destination "platform=iOS Simulator,id=$UDID" \
             -derivedDataPath compilado \
             -skipPackagePluginValidation -skipMacroValidation \
-            ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO > pruebas.log 2>&1
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= > pruebas.log 2>&1
           RES=$?
           set -e
           grep -E "Test Case .*(passed|failed)|error:|Executed [0-9]+ test" pruebas.log | sed 's/^.*Test Case/Test Case/' > ../../pruebas/tubroadcast/pruebas.txt || true
