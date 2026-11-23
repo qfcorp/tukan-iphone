@@ -35,24 +35,52 @@ final class Motor: ObservableObject {
     var enVivo: Bool { estado == .open }
     var conectando: Bool { estado == .connecting }
 
+    private var prendiendo = false
+
     /// Prende la camara y el microfono (sin transmitir todavia).
+    /// Primero pide los permisos; la camara y el microfono se conectan por separado
+    /// para que si uno falla el otro siga, y el aviso dice cual fallo y por que.
     func prenderCamara(_ ajustes: Ajustes) async {
+        guard !prendiendo else { return }
+        prendiendo = true
+        defer { prendiendo = false }
         let posicion: AVCaptureDevice.Position = frontal ? .front : .back
         let camara = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: posicion)
-        do {
-            try await mixer.attachVideo(camara) { unidad in
-                unidad.isVideoMirrored = posicion == .front
+        var problemas: [String] = []
+        #if !targetEnvironment(simulator)
+        let conCamara = await Permisos.conceder(.video)
+        let conMicro = await Permisos.conceder(.audio)
+        if !conCamara { aviso = Permisos.avisoSinCamara }
+        else if !conMicro { aviso = Permisos.avisoSinMicrofono }
+        #else
+        let conCamara = true, conMicro = true
+        #endif
+        Permisos.prepararAudio()
+        if conCamara {
+            do {
+                try await mixer.attachVideo(camara) { unidad in
+                    unidad.isVideoMirrored = posicion == .front
+                }
+                try? await mixer.setFrameRate(Float64(ajustes.fps))
+            } catch {
+                problemas.append("cámara: \(Permisos.detalle(error))")
             }
-            try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            try? await mixer.setFrameRate(Float64(ajustes.fps))
-        } catch {
-            aviso = "No se pudo abrir la cámara o el micrófono: \(error.localizedDescription)"
+        }
+        if conMicro {
+            do {
+                try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            } catch {
+                problemas.append("micrófono: \(Permisos.detalle(error))")
+            }
+        }
+        if !problemas.isEmpty, aviso == nil {
+            aviso = "No se pudo abrir " + problemas.joined(separator: " · ")
         }
         await mixer.startRunning()
         if let vista { await mixer.addOutput(vista) }
-        camaraLista = camara != nil
+        camaraLista = conCamara && camara != nil && problemas.allSatisfy { !$0.hasPrefix("cámara") }
         #if !targetEnvironment(simulator)
-        if camara == nil { aviso = "Este equipo no tiene cámara disponible." }
+        if camara == nil, aviso == nil { aviso = "Este equipo no tiene cámara disponible." }
         #endif
     }
 
