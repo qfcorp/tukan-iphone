@@ -112,6 +112,9 @@ struct PantallaCamara: View {
             if motor.aviso == Limites.avisoCorte {
                 Button("Ver planes") { verPlanes = true }
             }
+            if Permisos.esAvisoDePermiso(motor.aviso) {
+                Button("Abrir Ajustes") { Permisos.abrirAjustes() }
+            }
             Button("Aceptar", role: .cancel) {}
         }
         .alert(gestor.mensaje ?? "", isPresented: Binding(get: { gestor.mensaje != nil && motor.aviso == nil },
