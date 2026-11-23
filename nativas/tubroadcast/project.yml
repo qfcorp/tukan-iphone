@@ -34,9 +34,9 @@ targets:
         UILaunchScreen:
           UIColorName: ColorFondo
         UIRequiresFullScreen: true
-        NSCameraUsageDescription: Para transmitir en vivo el video de la camara.
-        NSMicrophoneUsageDescription: Para transmitir en vivo el audio del microfono.
-        NSPhotoLibraryAddUsageDescription: Para guardar las grabaciones en la Galeria.
+        NSCameraUsageDescription: Para transmitir en vivo el video de la cámara.
+        NSMicrophoneUsageDescription: Para transmitir en vivo el audio del micrófono.
+        NSPhotoLibraryAddUsageDescription: Para guardar las grabaciones en la Galería.
         NSLocalNetworkUsageDescription: Para enviar el video a vMix u OBS en la misma red.
         UIBackgroundModes: [audio]
         CFBundleURLTypes:
@@ -62,3 +62,40 @@ targets:
         SWIFT_VERSION: "5.0"
         GENERATE_INFOPLIST_FILE: "NO"
         CODE_SIGN_STYLE: Automatic
+  # Pruebas (XCTest + StoreKitTest): licencia firmada, panel falso, compras con el archivo .storekit y límites gratis.
+  TuBroadcastTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+      - path: TuBroadcast.storekit
+        buildPhase: resources
+    dependencies:
+      - target: TuBroadcast
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_BUNDLE_IDENTIFIER: com.tukansoftware.tubroadcast.pruebas
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+schemes:
+  TuBroadcast:
+    build:
+      targets:
+        TuBroadcast: all
+        TuBroadcastTests: [test]
+    run:
+      config: Debug
+      # En el simulador (Xcode) las compras usan los 20 productos de ejemplo de este archivo.
+      storeKitConfiguration: TuBroadcast.storekit
+    test:
+      config: Debug
+      targets:
+        - TuBroadcastTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

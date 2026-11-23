@@ -1,0 +1,545 @@
+{
+  "identifier": "7A1C2B3D",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "3.99",
+      "familyShareable": false,
+      "internalID": "6760000017",
+      "localizations": [
+        {
+          "description": "Todo sin límites por 24 horas, 1 celular",
+          "displayName": "Pase de 24 horas (1 celular)",
+          "locale": "es_MX"
+        },
+        {
+          "description": "Todo sin límites por 24 horas, 1 celular",
+          "displayName": "Pase de 24 horas (1 celular)",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "tubroadcast.pase24.1",
+      "referenceName": "TuBroadcast pase24 1",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "6760000018",
+      "localizations": [
+        {
+          "description": "Todo sin límites por 24 horas, 3 celulares",
+          "displayName": "Pase de 24 horas (3 celulares)",
+          "locale": "es_MX"
+        },
+        {
+          "description": "Todo sin límites por 24 horas, 3 celulares",
+          "displayName": "Pase de 24 horas (3 celulares)",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "tubroadcast.pase24.3",
+      "referenceName": "TuBroadcast pase24 3",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "14.99",
+      "familyShareable": false,
+      "internalID": "6760000019",
+      "localizations": [
+        {
+          "description": "Todo sin límites por 24 horas, 5 celulares",
+          "displayName": "Pase de 24 horas (5 celulares)",
+          "locale": "es_MX"
+        },
+        {
+          "description": "Todo sin límites por 24 horas, 5 celulares",
+          "displayName": "Pase de 24 horas (5 celulares)",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "tubroadcast.pase24.5",
+      "referenceName": "TuBroadcast pase24 5",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "27.99",
+      "familyShareable": false,
+      "internalID": "6760000020",
+      "localizations": [
+        {
+          "description": "Todo sin límites por 24 horas, 10 celulares",
+          "displayName": "Pase de 24 horas (10 celulares)",
+          "locale": "es_MX"
+        },
+        {
+          "description": "Todo sin límites por 24 horas, 10 celulares",
+          "displayName": "Pase de 24 horas (10 celulares)",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "tubroadcast.pase24.10",
+      "referenceName": "TuBroadcast pase24 10",
+      "type": "Consumable"
+    }
+  ],
+  "settings": {
+    "_applicationInternalID": "6760000000",
+    "_askToBuyEnabled": false,
+    "_billingGracePeriodEnabled": false,
+    "_billingIssuesEnabled": false,
+    "_developerTeamID": "2CXYP5A9C9",
+    "_disableDialogs": false,
+    "_failTransactionsEnabled": false,
+    "_locale": "es_MX",
+    "_renewalBillingIssuesEnabled": false,
+    "_storefront": "ECU",
+    "_storeKitErrors": [],
+    "_timeRate": 0
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21600001",
+      "localizations": [],
+      "name": "TuBroadcast",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "5.99",
+          "familyShareable": false,
+          "groupNumber": 8,
+          "internalID": "6760000001",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 1 celular",
+              "displayName": "Básico mensual (1 celular)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 1 celular",
+              "displayName": "Básico mensual (1 celular)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.1.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast basico 1 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "59.99",
+          "familyShareable": false,
+          "groupNumber": 8,
+          "internalID": "6760000002",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 1 celular",
+              "displayName": "Básico anual (1 celular)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 1 celular",
+              "displayName": "Básico anual (1 celular)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.1.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast basico 1 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "15.99",
+          "familyShareable": false,
+          "groupNumber": 7,
+          "internalID": "6760000003",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 3 celulares",
+              "displayName": "Básico mensual (3 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 3 celulares",
+              "displayName": "Básico mensual (3 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.3.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast basico 3 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "159.99",
+          "familyShareable": false,
+          "groupNumber": 7,
+          "internalID": "6760000004",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 3 celulares",
+              "displayName": "Básico anual (3 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 3 celulares",
+              "displayName": "Básico anual (3 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.3.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast basico 3 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "24.99",
+          "familyShareable": false,
+          "groupNumber": 6,
+          "internalID": "6760000005",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 5 celulares",
+              "displayName": "Básico mensual (5 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 5 celulares",
+              "displayName": "Básico mensual (5 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.5.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast basico 5 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "249.99",
+          "familyShareable": false,
+          "groupNumber": 6,
+          "internalID": "6760000006",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 5 celulares",
+              "displayName": "Básico anual (5 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 5 celulares",
+              "displayName": "Básico anual (5 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.5.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast basico 5 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "44.99",
+          "familyShareable": false,
+          "groupNumber": 5,
+          "internalID": "6760000007",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 10 celulares",
+              "displayName": "Básico mensual (10 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 10 celulares",
+              "displayName": "Básico mensual (10 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.10.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast basico 10 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "449.99",
+          "familyShareable": false,
+          "groupNumber": 5,
+          "internalID": "6760000008",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP/RTMPS sin límites, 10 celulares",
+              "displayName": "Básico anual (10 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP/RTMPS sin límites, 10 celulares",
+              "displayName": "Básico anual (10 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.basico.10.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast basico 10 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "10.99",
+          "familyShareable": false,
+          "groupNumber": 4,
+          "internalID": "6760000009",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 1 celular",
+              "displayName": "Completo mensual (1 celular)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 1 celular",
+              "displayName": "Completo mensual (1 celular)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.1.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast completo 1 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "109.99",
+          "familyShareable": false,
+          "groupNumber": 4,
+          "internalID": "6760000010",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 1 celular",
+              "displayName": "Completo anual (1 celular)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 1 celular",
+              "displayName": "Completo anual (1 celular)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.1.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast completo 1 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 3,
+          "internalID": "6760000011",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 3 celulares",
+              "displayName": "Completo mensual (3 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 3 celulares",
+              "displayName": "Completo mensual (3 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.3.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast completo 3 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "299.99",
+          "familyShareable": false,
+          "groupNumber": 3,
+          "internalID": "6760000012",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 3 celulares",
+              "displayName": "Completo anual (3 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 3 celulares",
+              "displayName": "Completo anual (3 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.3.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast completo 3 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "47.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "internalID": "6760000013",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 5 celulares",
+              "displayName": "Completo mensual (5 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 5 celulares",
+              "displayName": "Completo mensual (5 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.5.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast completo 5 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "479.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "internalID": "6760000014",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 5 celulares",
+              "displayName": "Completo anual (5 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 5 celulares",
+              "displayName": "Completo anual (5 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.5.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast completo 5 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "89.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6760000015",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 10 celulares",
+              "displayName": "Completo mensual (10 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 10 celulares",
+              "displayName": "Completo mensual (10 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.10.mes",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "TuBroadcast completo 10 mes",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "899.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6760000016",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "RTMP y SRT sin límites, 10 celulares",
+              "displayName": "Completo anual (10 celulares)",
+              "locale": "es_MX"
+            },
+            {
+              "description": "RTMP y SRT sin límites, 10 celulares",
+              "displayName": "Completo anual (10 celulares)",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "tubroadcast.completo.10.anio",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "TuBroadcast completo 10 anio",
+          "subscriptionGroupID": "21600001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}

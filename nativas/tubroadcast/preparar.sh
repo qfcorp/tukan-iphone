@@ -6,7 +6,7 @@ AQUI="$(cd "$(dirname "$0")" && pwd)"
 RAIZ="$(cd "$AQUI/../.." && pwd)"
 SALIDA="$RAIZ/construir/tubroadcast"
 rm -rf "$SALIDA"; mkdir -p "$SALIDA"
-cp -R "$AQUI/Sources" "$AQUI/project.yml" "$SALIDA/"
+cp -R "$AQUI/Sources" "$AQUI/Tests" "$AQUI/TuBroadcast.storekit" "$AQUI/project.yml" "$SALIDA/"
 A="$SALIDA/Assets.xcassets"; mkdir -p "$A/AppIcon.appiconset" "$A/ColorFondo.colorset"
 echo '{"info":{"author":"xcode","version":1}}' > "$A/Contents.json"
 # Apple exige el icono sin transparencia: se pasa por JPEG y vuelve a PNG

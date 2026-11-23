@@ -28,10 +28,10 @@ struct Conexion: Codable, Identifiable, Equatable {
 
     /// Explica en palabras simples que esta mal (o nil si esta bien).
     var problema: String? {
-        if nombre.trimmingCharacters(in: .whitespaces).isEmpty { return "Ponga un nombre a la conexion." }
-        if tipo == "?" { return "La direccion debe empezar con rtmp://, rtmps:// o srt://" }
+        if nombre.trimmingCharacters(in: .whitespaces).isEmpty { return "Ponga un nombre a la conexión." }
+        if tipo == "?" { return "La dirección debe empezar con rtmp://, rtmps:// o srt://" }
         guard let u = URL(string: url.trimmingCharacters(in: .whitespaces)), let host = u.host, !host.isEmpty else {
-            return "La direccion no tiene servidor (ejemplo: srt://192.168.1.10:9000)."
+            return "La dirección no tiene servidor (ejemplo: srt://192.168.1.10:9000)."
         }
         if tipo == "SRT" && u.port == nil { return "En SRT falta el puerto (ejemplo: srt://servidor:9000)." }
         return nil
@@ -86,7 +86,7 @@ final class Ajustes: ObservableObject {
             let valor = item.value ?? ""
             switch item.name {
             case "conn[][url]":
-                nuevas.append(Conexion(nombre: "Conexion \(conexiones.count + nuevas.count + 1)", url: valor))
+                nuevas.append(Conexion(nombre: "Conexión \(conexiones.count + nuevas.count + 1)", url: valor))
             case "conn[][name]":
                 if !nuevas.isEmpty { nuevas[nuevas.count - 1].nombre = valor }
             case "conn[][key]", "conn[][streamid]":

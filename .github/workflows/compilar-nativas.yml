@@ -53,6 +53,43 @@ jobs:
               echo "=== FINAL ==="; tail -60 compilacion.log; exit 1; }
           tail -5 compilacion.log
 
+      - name: Pruebas automaticas (XCTest + StoreKitTest con TuBroadcast.storekit)
+        run: |
+          mkdir -p pruebas/tubroadcast
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, re, sys
+          datos = json.load(sys.stdin)["devices"]
+          op = []
+          for rt, eqs in datos.items():
+              if "iOS" not in rt:
+                  continue
+              ver = tuple(int(n) for n in re.findall(r"\d+", rt.split("iOS")[-1])[:2])
+              for e in eqs:
+                  n = e["name"]
+                  if not n.startswith("iPhone"):
+                      continue
+                  m = re.search(r"iPhone (\d+)", n)
+                  normal = 1 if m and not re.search(r"SE|Plus|Max|mini|Air|e$", n) else 0
+                  op.append((ver, normal, int(m.group(1)) if m else 0, e["udid"]))
+          print(max(op)[3] if op else "")
+          ')
+          echo "Simulador: $UDID"
+          cd construir/tubroadcast
+          set +e
+          xcodebuild test -project TuBroadcast.xcodeproj -scheme TuBroadcast \
+            -configuration Debug -destination "platform=iOS Simulator,id=$UDID" \
+            -derivedDataPath compilado \
+            -skipPackagePluginValidation -skipMacroValidation \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO > pruebas.log 2>&1
+          RES=$?
+          set -e
+          grep -E "Test Case .*(passed|failed)|error:|Executed [0-9]+ test" pruebas.log | sed 's/^.*Test Case/Test Case/' > ../../pruebas/tubroadcast/pruebas.txt || true
+          cat ../../pruebas/tubroadcast/pruebas.txt
+          if [ $RES -ne 0 ]; then
+            echo "=== FALLARON PRUEBAS ==="; grep -E "error:|failed|XCTAssert" pruebas.log | sort -u | head -80
+            echo "=== FINAL ==="; tail -80 pruebas.log; exit 1
+          fi
+
       - name: Probar en el simulador (debe decir ABRE BIEN)
         run: bash nativas/probar_nativa.sh tubroadcast
 
@@ -62,6 +99,11 @@ jobs:
           {
             echo "## tubroadcast (nativa)"
             cat pruebas/tubroadcast/resultado.txt 2>/dev/null || echo "Sin resultado (fallo antes de la prueba)"
+            echo
+            echo "### Pruebas XCTest"
+            echo '```'
+            cat pruebas/tubroadcast/pruebas.txt 2>/dev/null || echo "(no corrieron)"
+            echo '```'
             echo '```'
             cat pruebas/tubroadcast/registro.txt 2>/dev/null || true
             echo '```'
