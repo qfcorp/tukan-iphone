@@ -24,8 +24,9 @@ struct PantallaCamara: View {
             // El simulador no tiene camara: se muestra un fondo de ejemplo encima de la vista vacia.
             FondoSimulador().ignoresSafeArea()
             #endif
-            if limitesVista.marcaDeAgua {
-                // Marca de agua de la versión gratis (también va quemada en el video que sale).
+            if limitesVista.marcaDeAgua && !(motor.enVivo || motor.conectando) {
+                // Marca de agua de la versión gratis antes de salir en vivo. En vivo ya se ve
+                // la que va quemada en el video (antes salían dos).
                 VStack {
                     Spacer()
                     HStack {

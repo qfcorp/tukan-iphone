@@ -27,6 +27,13 @@ struct Limites: Equatable {
     var esGratis: Bool { self != .sinLimites }
 
     static let textoMarca = "TuBroadcast"
+    /// Tamaño y márgenes de la marca de agua quemada en el video.
+    /// El margen derecho deja la marca visible aunque la vista previa recorte los lados
+    /// (video 9:16 mostrado a pantalla completa en un iPhone de 19,5:9 recorta ~9% por lado).
+    static func medidasMarca(_ tamano: CGSize) -> (alto: CGFloat, derecha: CGFloat, abajo: CGFloat) {
+        let alto = max(24, min(tamano.width, tamano.height) * 0.07)
+        return (alto, tamano.width * 0.13, tamano.height * 0.06)
+    }
     static let avisoCorte = "La versión gratis transmite hasta 5 minutos. Activa un plan para seguir."
 
     /// Límites para una conexión según la licencia.
