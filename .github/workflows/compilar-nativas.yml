@@ -56,6 +56,10 @@ jobs:
       - name: Pruebas automaticas (XCTest + StoreKitTest con TuBroadcast.storekit)
         run: |
           mkdir -p pruebas/tubroadcast
+          xcrun simctl list runtimes
+          # Error de Apple (FB22237318): con los simuladores iOS 26.3 a 26.5, «xcodebuild test» no le pasa el .storekit a
+          # storekitd y SKTestSession falla («Error saving configuration file», SKInternalErrorDomain 3).
+          # Por eso se prefiere el iOS mas nuevo que sea 26.2 o anterior (o 26.6 o mas nuevo, ya arreglado).
           UDID=$(xcrun simctl list devices available -j | python3 -c '
           import json, re, sys
           datos = json.load(sys.stdin)["devices"]
@@ -64,6 +68,8 @@ jobs:
               if "iOS" not in rt:
                   continue
               ver = tuple(int(n) for n in re.findall(r"\d+", rt.split("iOS")[-1])[:2])
+              malo = (26, 3) <= ver <= (26, 5)
+              ver = (0 if malo else 1,) + ver
               for e in eqs:
                   n = e["name"]
                   if not n.startswith("iPhone"):
@@ -73,7 +79,7 @@ jobs:
                   op.append((ver, normal, int(m.group(1)) if m else 0, e["udid"]))
           print(max(op)[3] if op else "")
           ')
-          echo "Simulador: $UDID"
+          echo "Simulador: $UDID"; xcrun simctl list devices | grep "$UDID" || true
           cd construir/tubroadcast
           set +e
           # StoreKitTest necesita la app firmada (firma local «-», sin certificados): sin firma da SKInternalErrorDomain 3.
