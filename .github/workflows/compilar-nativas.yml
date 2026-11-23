@@ -21,7 +21,7 @@ concurrency:
 jobs:
   tubroadcast:
     runs-on: macos-26
-    timeout-minutes: 50
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +53,54 @@ jobs:
               echo "=== FINAL ==="; tail -60 compilacion.log; exit 1; }
           tail -5 compilacion.log
 
+      - name: Pruebas automaticas (XCTest + StoreKitTest con TuBroadcast.storekit)
+        run: |
+          mkdir -p pruebas/tubroadcast
+          xcrun simctl list runtimes
+          # Error de Apple (FB22237318): con los simuladores iOS 26.3 a 26.5, «xcodebuild test» no le pasa el .storekit a
+          # storekitd y SKTestSession falla («Error saving configuration file», SKInternalErrorDomain 3).
+          # Por eso se prefiere el iOS mas nuevo que sea 26.2 o anterior (o 26.6 o mas nuevo, ya arreglado).
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, re, sys
+          datos = json.load(sys.stdin)["devices"]
+          op = []
+          for rt, eqs in datos.items():
+              if "iOS" not in rt:
+                  continue
+              ver = tuple(int(n) for n in re.findall(r"\d+", rt.split("iOS")[-1])[:2])
+              malo = (26, 3) <= ver <= (26, 5)
+              ver = (0 if malo else 1,) + ver
+              for e in eqs:
+                  n = e["name"]
+                  if not n.startswith("iPhone"):
+                      continue
+                  m = re.search(r"iPhone (\d+)", n)
+                  normal = 1 if m and not re.search(r"SE|Plus|Max|mini|Air|e$", n) else 0
+                  op.append((ver, normal, int(m.group(1)) if m else 0, e["udid"]))
+          print(max(op)[3] if op else "")
+          ')
+          echo "Simulador: $UDID"; xcrun simctl list devices | grep "$UDID" || true
+          cd construir/tubroadcast
+          set +e
+          # StoreKitTest necesita la app firmada (firma local «-», sin certificados): sin firma da SKInternalErrorDomain 3.
+          xcodebuild test -project TuBroadcast.xcodeproj -scheme TuBroadcast \
+            -configuration Debug -destination "platform=iOS Simulator,id=$UDID" \
+            -derivedDataPath compilado \
+            -skipPackagePluginValidation -skipMacroValidation \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
+            -test-timeouts-enabled YES -default-test-execution-time-allowance 60 -maximum-test-execution-time-allowance 120 \
+            2>&1 | tee pruebas.log | grep --line-buffered -E "Test Case .*(passed|failed|skipped)|SKTestSession|error:|Executed [0-9]+ test"
+          RES=${PIPESTATUS[0]}
+          set -e
+          grep -E "Test Case .*(passed|failed)|error:|Executed [0-9]+ test" pruebas.log | sed 's/^.*Test Case/Test Case/' > ../../pruebas/tubroadcast/pruebas.txt || true
+          cat ../../pruebas/tubroadcast/pruebas.txt
+          if [ $RES -ne 0 ]; then
+            echo "=== FALLARON PRUEBAS ==="; grep -E "error:|failed|XCTAssert" pruebas.log | sort -u | head -80
+            echo "=== FINAL ==="; tail -80 pruebas.log; exit 1
+          fi
+
       - name: Probar en el simulador (debe decir ABRE BIEN)
         run: bash nativas/probar_nativa.sh tubroadcast
 
@@ -62,6 +110,11 @@ jobs:
           {
             echo "## tubroadcast (nativa)"
             cat pruebas/tubroadcast/resultado.txt 2>/dev/null || echo "Sin resultado (fallo antes de la prueba)"
+            echo
+            echo "### Pruebas XCTest"
+            echo '```'
+            cat pruebas/tubroadcast/pruebas.txt 2>/dev/null || echo "(no corrieron)"
+            echo '```'
             echo '```'
             cat pruebas/tubroadcast/registro.txt 2>/dev/null || true
             echo '```'

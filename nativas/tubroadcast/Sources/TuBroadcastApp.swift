@@ -9,15 +9,31 @@ import SwiftUI
 struct TuBroadcastApp: App {
     @StateObject private var ajustes = Ajustes()
     @StateObject private var motor = Motor()
+    @StateObject private var gestor: GestorLicencia
+    @StateObject private var tienda: Tienda
     @State private var iniciado = false
+    @Environment(\.scenePhase) private var fase
+
+    /// true cuando la app solo hospeda las pruebas (XCTest): no arranca latidos, compras ni cámara.
+    static let enPruebas = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+
+    init() {
+        let g = GestorLicencia(almacen: TuBroadcastApp.enPruebas ? AlmacenMemoria() : AlmacenLlavero())
+        _gestor = StateObject(wrappedValue: g)
+        _tienda = StateObject(wrappedValue: Tienda(gestor: g))
+    }
 
     var body: some Scene {
         WindowGroup {
             Group {
-                if iniciado {
+                if TuBroadcastApp.enPruebas {
+                    Text("TuBroadcast · pruebas")
+                } else if iniciado {
                     PantallaCamara()
                         .environmentObject(ajustes)
                         .environmentObject(motor)
+                        .environmentObject(gestor)
+                        .environmentObject(tienda)
                 } else {
                     ZStack {
                         Color.black.ignoresSafeArea()
@@ -36,11 +52,23 @@ struct TuBroadcastApp: App {
                             ajustes.resolucion = .p1080
                             ajustes.bitrateKbps = 4500
                         }
+                        // Licencia: latido con el panel cada 30 s y compras de Apple (renovaciones, pendientes).
+                        let m = motor
+                        gestor.estadisticas = { m.estadisticas }
+                        gestor.empezarLatidos()
+                        tienda.escucharTransacciones()
                         iniciado = true
+                        await tienda.revisarPendientes()
                     }
                 }
             }
             .preferredColorScheme(.dark)
+            .onChange(of: fase) { nueva in
+                if nueva == .active && !TuBroadcastApp.enPruebas {
+                    gestor.recalcular()
+                    Task { await gestor.latido() }
+                }
+            }
             .onOpenURL { url in
                 // tubroadcast://set/v1?... o larix://set/v1?... (configuracion por QR o enlace)
                 let n = ajustes.importarEnlace(url)

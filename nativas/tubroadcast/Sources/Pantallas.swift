@@ -4,7 +4,16 @@ import SwiftUI
 struct PantallaCamara: View {
     @EnvironmentObject var ajustes: Ajustes
     @EnvironmentObject var motor: Motor
+    @EnvironmentObject var gestor: GestorLicencia
+    @EnvironmentObject var tienda: Tienda
     @State private var verAjustes = false
+    @State private var verPlanes = false
+
+    /// Límites que se ven: los de la transmisión en curso o los que tendría la conexión activa.
+    private var limitesVista: Limites {
+        motor.enVivo || motor.conectando ? motor.limitesActuales
+            : gestor.limites(tipoConexion: ajustes.conexionActiva?.tipo ?? "RTMP")
+    }
 
     var body: some View {
         ZStack {
@@ -15,6 +24,23 @@ struct PantallaCamara: View {
             // El simulador no tiene camara: se muestra un fondo de ejemplo encima de la vista vacia.
             FondoSimulador().ignoresSafeArea()
             #endif
+            if limitesVista.marcaDeAgua {
+                // Marca de agua de la versión gratis (también va quemada en el video que sale).
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Text(Limites.textoMarca)
+                            .font(.system(size: 30, weight: .heavy))
+                            .foregroundColor(.white.opacity(0.75))
+                            .shadow(radius: 3)
+                            .padding(.trailing, 18)
+                            .padding(.bottom, 190)
+                            .accessibilityLabel("Marca de agua TuBroadcast de la versión gratis")
+                    }
+                }
+                .allowsHitTesting(false)
+            }
             VStack {
                 HStack {
                     etiquetaEstado
@@ -29,11 +55,25 @@ struct PantallaCamara: View {
                     Text("\(c.nombre) · \(c.tipo)").font(.footnote).padding(6)
                         .background(.black.opacity(0.5)).cornerRadius(6)
                 }
+                if limitesVista.esGratis && !motor.enVivo {
+                    Button { verPlanes = true } label: {
+                        Text("Versión gratis: 5 min · 720p · marca de agua. Ver planes")
+                            .font(.footnote.bold()).padding(8)
+                            .background(Color.orange.opacity(0.85)).cornerRadius(8)
+                    }
+                    .accessibilityLabel("Versión gratis. Ver planes")
+                }
                 Spacer()
                 HStack(spacing: 28) {
                     botonRedondo(motor.silencio ? "mic.slash.fill" : "mic.fill", "Micrófono") { motor.alternarSilencio() }
                     Button {
-                        if motor.enVivo || motor.conectando { motor.detener() } else { motor.transmitir(ajustes) }
+                        if motor.enVivo || motor.conectando {
+                            motor.detener()
+                        } else {
+                            gestor.recalcular()
+                            let tipo = ajustes.conexionActiva?.tipo ?? "RTMP"
+                            motor.transmitir(ajustes, limites: gestor.limites(tipoConexion: tipo))
+                        }
                     } label: {
                         Circle()
                             .fill(motor.enVivo ? Color.red : Color.white)
@@ -54,20 +94,41 @@ struct PantallaCamara: View {
             await motor.prenderCamara(ajustes)
             Prueba.anotar("CARGO TuBroadcast nativa - pantalla de camara abierta (camara: \(motor.camaraLista ? "si" : "no hay en el simulador"))")
         }
-        .sheet(isPresented: $verAjustes) { PantallaAjustes().environmentObject(ajustes) }
+        .sheet(isPresented: $verAjustes) {
+            PantallaAjustes().environmentObject(ajustes).environmentObject(gestor).environmentObject(tienda)
+        }
+        .sheet(isPresented: $verPlanes) {
+            NavigationStack {
+                PantallaPlanes()
+                    .toolbar { Button("Cerrar") { verPlanes = false } }
+            }
+            .environmentObject(gestor).environmentObject(tienda)
+        }
         .onAppear {
             // Solo para las capturas de la App Store (argumento de arranque -abrirAjustes YES)
             if UserDefaults.standard.bool(forKey: "abrirAjustes") { verAjustes = true }
         }
         .alert(motor.aviso ?? "", isPresented: Binding(get: { motor.aviso != nil }, set: { if !$0 { motor.aviso = nil } })) {
+            if motor.aviso == Limites.avisoCorte {
+                Button("Ver planes") { verPlanes = true }
+            }
             Button("Aceptar", role: .cancel) {}
         }
+        .alert(gestor.mensaje ?? "", isPresented: Binding(get: { gestor.mensaje != nil && motor.aviso == nil },
+                                                          set: { if !$0 { gestor.mensaje = nil } })) {
+            Button("Aceptar", role: .cancel) {}
+        }
+    }
+
+    private var textoRestante: String {
+        guard let r = motor.restanteGratis else { return "" }
+        return String(format: " · gratis: quedan %d:%02d", r / 60, r % 60)
     }
 
     private var etiquetaEstado: some View {
         HStack(spacing: 6) {
             Circle().fill(motor.enVivo ? Color.red : (motor.conectando ? Color.orange : Color.gray)).frame(width: 10, height: 10)
-            Text(motor.enVivo ? "EN VIVO \(motor.tiempoTexto)" : (motor.conectando ? "Conectando..." : "Listo"))
+            Text(motor.enVivo ? "EN VIVO \(motor.tiempoTexto)\(textoRestante)" : (motor.conectando ? "Conectando..." : "Listo"))
                 .font(.subheadline.bold())
         }
         .padding(8).background(.black.opacity(0.5)).cornerRadius(8)
@@ -84,12 +145,14 @@ struct PantallaCamara: View {
 
 struct PantallaAjustes: View {
     @EnvironmentObject var ajustes: Ajustes
+    @EnvironmentObject var gestor: GestorLicencia
     @Environment(\.dismiss) private var cerrar
     @State private var editando: Conexion?
 
     var body: some View {
         NavigationStack {
             Form {
+                SeccionLicencia()
                 Section("Conexiones") {
                     ForEach(ajustes.conexiones) { c in
                         HStack {
@@ -111,6 +174,11 @@ struct PantallaAjustes: View {
                 Section("Video") {
                     Picker("Resolución", selection: $ajustes.resolucion) {
                         ForEach(Resolucion.allCases) { Text($0.rawValue).tag($0) }
+                    }
+                    if ajustes.resolucion == .p1080,
+                       gestor.limites(tipoConexion: ajustes.conexionActiva?.tipo ?? "RTMP").maxResolucion == .p720 {
+                        Text("La versión gratis transmite en 720p. Con un plan sale en 1080p.")
+                            .font(.footnote).foregroundColor(.orange)
                     }
                     Picker("Cuadros por segundo", selection: $ajustes.fps) {
                         ForEach([24, 25, 30, 50, 60], id: \.self) { Text("\($0)").tag($0) }
