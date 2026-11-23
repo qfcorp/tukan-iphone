@@ -4,7 +4,8 @@
     "fecha": "2026-11-14 15:53 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
     "envio_id": "039bf385-08c9-4d4c-9418-8bfe1fed50c5",
-    "apple": "REJECTED"
+    "apple": "REJECTED",
+    "error": "volver a enviar a revision (409): appStoreVersions with id '50f969a7-555d-4235-bd4b-199d6e98c745' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. |   - STATE_ERROR Version is not ready to be submitted yet, please try again later. (2026-11-23 23:16 UTC)"
   },
   "envivo": {
     "estado": "rechazada",
@@ -35,7 +36,8 @@
     "estado": "enviada",
     "fecha": "2026-11-23 17:24 UTC",
     "version_id": "8dfb1c41-b7a1-47d1-a254-d07e55443db8",
-    "envio_id": "6e1cf6dc-9f75-4fe0-a640-24c7a91994bf"
+    "envio_id": "6e1cf6dc-9f75-4fe0-a640-24c7a91994bf",
+    "apple": "WAITING_FOR_REVIEW"
   },
   "tusalon": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
