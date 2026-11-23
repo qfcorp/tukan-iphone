@@ -67,7 +67,10 @@ final class PruebasTienda: XCTestCase {
     func testCargaLos20ProductosDeApple() async throws {
         let g = gestorDePrueba()
         let tienda = Tienda(gestor: g)
-        await tienda.cargarProductos()
+        XCTAssertFalse(tienda.hayPlanes, "Sin planes cargados no se muestran compras ni código")
+        await tienda.cargarProductos(avisar: false)
+        XCTAssertTrue(tienda.hayPlanes)
+        XCTAssertNil(tienda.aviso)
         XCTAssertEqual(tienda.productos.count, 20)
         let subs = tienda.productos.filter { $0.type == .autoRenewable }
         XCTAssertEqual(subs.count, 16)
