@@ -57,6 +57,7 @@ struct TuBroadcastApp: App {
                         gestor.estadisticas = { m.estadisticas }
                         gestor.empezarLatidos()
                         tienda.escucharTransacciones()
+                        await tienda.cargarProductos(avisar: false)
                         iniciado = true
                         await tienda.revisarPendientes()
                     }

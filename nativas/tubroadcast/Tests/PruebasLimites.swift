@@ -92,4 +92,19 @@ final class PruebasLimites: XCTestCase {
         XCTAssertNil(motor.restanteGratis)
         XCTAssertEqual(motor.segundos, 3 * 3600)
     }
+
+    func testMarcaDeAguaNoSeRecortaEnLaVistaPrevia() {
+        // Video vertical 720x1280 en pantalla de iPhone 16 Pro Max (1320x2868, relleno de pantalla):
+        // se recorta un pedazo por cada lado; la marca debe quedar dentro.
+        let video = CGSize(width: 720, height: 1280)
+        let pantalla = CGSize(width: 1320, height: 2868)
+        let escala = max(pantalla.width / video.width, pantalla.height / video.height)
+        let recortePorLado = (video.width * escala - pantalla.width) / 2 / escala
+        let m = Limites.medidasMarca(video)
+        XCTAssertGreaterThan(m.derecha, recortePorLado)
+        XCTAssertEqual(m.alto, 50.4, accuracy: 0.01)
+        XCTAssertGreaterThan(m.abajo, 0)
+        // Horizontal 1280x720: también con margen
+        XCTAssertGreaterThan(Limites.medidasMarca(CGSize(width: 1280, height: 720)).derecha, 100)
+    }
 }

@@ -189,12 +189,12 @@ final class Motor: ObservableObject {
             guard activa else { return }
             let texto = TextScreenObject(id: id)
             texto.string = Limites.textoMarca
-            let alto = max(24, min(tamano.width, tamano.height) * 0.07)
-            texto.attributes = [.font: UIFont.boldSystemFont(ofSize: alto),
+            let m = Limites.medidasMarca(tamano)
+            texto.attributes = [.font: UIFont.boldSystemFont(ofSize: m.alto),
                                 .foregroundColor: UIColor.white.withAlphaComponent(0.8)]
             texto.horizontalAlignment = .right
             texto.verticalAlignment = .bottom
-            texto.layoutMargin = .init(top: 0, left: 0, bottom: alto * 0.8, right: alto * 0.8)
+            texto.layoutMargin = .init(top: 0, left: 0, bottom: m.abajo, right: m.derecha)
             try? await mixer.screen.addChild(texto)
         }.value
     }

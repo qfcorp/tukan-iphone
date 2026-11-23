@@ -227,10 +227,12 @@ struct SeccionLicencia: View {
                     if !motivo.isEmpty && gestor.tieneToken { Text(motivo).font(.footnote).foregroundColor(.orange) }
                 }
             }
-            NavigationLink("Ver planes") { PantallaPlanes() }
-            NavigationLink("Activar con código") { PantallaActivarCodigo() }
-            Button("Restaurar compras") { Task { aviso = await tienda.restaurar() } }
-            Button("Gestionar suscripción") { Task { await tienda.gestionarSuscripcion() } }
+            if tienda.hayPlanes || gestor.tieneToken {
+                NavigationLink("Ver planes") { PantallaPlanes() }
+                NavigationLink("Activar con código") { PantallaActivarCodigo() }
+                Button("Restaurar compras") { Task { aviso = await tienda.restaurar() } }
+                Button("Gestionar suscripción") { Task { await tienda.gestionarSuscripcion() } }
+            }
             if gestor.tieneToken {
                 Button("Liberar este celular", role: .destructive) { confirmarLiberar = true }
                     .disabled(trabajando)
@@ -238,7 +240,9 @@ struct SeccionLicencia: View {
         } header: {
             Text("Licencia")
         } footer: {
-            Text("«Liberar este celular» deja libre su lugar en el plan para activar otro celular. No cancela tu suscripción de Apple: para cancelarla usa «Gestionar suscripción».")
+            if tienda.hayPlanes || gestor.tieneToken {
+                Text("«Liberar este celular» deja libre su lugar en el plan para activar otro celular. No cancela tu suscripción de Apple: para cancelarla usa «Gestionar suscripción».")
+            }
         }
         if let p = gestor.paquete, p.celulares > 1 {
             BloqueCodigo(codigo: p.codigo, celulares: p.celulares)

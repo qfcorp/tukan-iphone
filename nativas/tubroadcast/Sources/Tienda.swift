@@ -104,14 +104,19 @@ final class Tienda: ObservableObject {
             .sorted { (InfoProducto.de($0.id)?.orden ?? 9) < (InfoProducto.de($1.id)?.orden ?? 9) }
     }
 
-    func cargarProductos() async {
+    /// true cuando Apple ya tiene los planes a la venta. Mientras no los haya (contrato de apps pagadas
+    /// pendiente), la app no muestra compras ni «Activar con código» (regla 3.1.3(b) de Apple:
+    /// lo comprado por fuera solo se puede activar si también se vende dentro de la app).
+    var hayPlanes: Bool { !productos.isEmpty }
+
+    func cargarProductos(avisar: Bool = true) async {
         cargando = true
         defer { cargando = false }
         do {
             productos = try await Product.products(for: InfoProducto.todos)
-            if productos.isEmpty { aviso = "No se pudieron cargar los planes. Revisa tu internet e intenta otra vez." }
+            if productos.isEmpty && avisar { aviso = "No se pudieron cargar los planes. Revisa tu internet e intenta otra vez." }
         } catch {
-            aviso = "No se pudieron cargar los planes: \(error.localizedDescription)"
+            if avisar { aviso = "No se pudieron cargar los planes: \(error.localizedDescription)" }
         }
     }
 

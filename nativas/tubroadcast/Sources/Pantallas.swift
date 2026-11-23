@@ -24,8 +24,9 @@ struct PantallaCamara: View {
             // El simulador no tiene camara: se muestra un fondo de ejemplo encima de la vista vacia.
             FondoSimulador().ignoresSafeArea()
             #endif
-            if limitesVista.marcaDeAgua {
-                // Marca de agua de la versión gratis (también va quemada en el video que sale).
+            if limitesVista.marcaDeAgua && !(motor.enVivo || motor.conectando) {
+                // Marca de agua de la versión gratis antes de salir en vivo. En vivo ya se ve
+                // la que va quemada en el video (antes salían dos).
                 VStack {
                     Spacer()
                     HStack {
@@ -56,12 +57,18 @@ struct PantallaCamara: View {
                         .background(.black.opacity(0.5)).cornerRadius(6)
                 }
                 if limitesVista.esGratis && !motor.enVivo {
-                    Button { verPlanes = true } label: {
-                        Text("Versión gratis: 5 min · 720p · marca de agua. Ver planes")
+                    if tienda.hayPlanes {
+                        Button { verPlanes = true } label: {
+                            Text("Versión gratis: 5 min · 720p · marca de agua. Ver planes")
+                                .font(.footnote.bold()).padding(8)
+                                .background(Color.orange.opacity(0.85)).cornerRadius(8)
+                        }
+                        .accessibilityLabel("Versión gratis. Ver planes")
+                    } else {
+                        Text("Versión gratis: 5 min · 720p · marca de agua")
                             .font(.footnote.bold()).padding(8)
                             .background(Color.orange.opacity(0.85)).cornerRadius(8)
                     }
-                    .accessibilityLabel("Versión gratis. Ver planes")
                 }
                 Spacer()
                 HStack(spacing: 28) {
@@ -109,7 +116,7 @@ struct PantallaCamara: View {
             if UserDefaults.standard.bool(forKey: "abrirAjustes") { verAjustes = true }
         }
         .alert(motor.aviso ?? "", isPresented: Binding(get: { motor.aviso != nil }, set: { if !$0 { motor.aviso = nil } })) {
-            if motor.aviso == Limites.avisoCorte {
+            if motor.aviso == Limites.avisoCorte && tienda.hayPlanes {
                 Button("Ver planes") { verPlanes = true }
             }
             if Permisos.esAvisoDePermiso(motor.aviso) {
