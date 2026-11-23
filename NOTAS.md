@@ -1,6 +1,6 @@
 # Bloc de notas — Tukán iPhone (qfcorp/tukan-iphone)
 
-Última actualización: 14 nov 2026
+Última actualización: 23 nov 2026
 
 ## Plan
 
@@ -100,6 +100,19 @@ compra → `apple_compra` (panel falso con `URLProtocol`), pase 24 h, compra sin
 firmada válida / alterada / otra llave / vencida / otro celular, firma hecha con openssl (como el panel PHP) y límites gratis
 (720p, marca de agua, 5 minutos con reloj falso, también en el `Motor`).
 Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras ni cámara.
+- ✅ 23 nov 2026: run **45210059784** de `compilar-nativas.yml` en la rama: **38 de 38 pruebas pasan** y la app **ABRE BIEN**.
+- Ojo 1: error de Apple (FB22237318) con los simuladores **iOS 26.3 a 26.5**: `xcodebuild test` no carga el `.storekit` y
+  SKTestSession falla («Error saving configuration file», SKInternalErrorDomain 3). El workflow elige el simulador iOS más
+  nuevo que **no** esté en ese rango (hoy iOS 26.2 en la Mac de GitHub). Las pruebas se firman con firma local «-».
+- Ojo 2: dentro de XCTest, `Product.purchase()` se queda esperando la hoja de pago de Apple en el simulador. Las pruebas compran
+  con `SKTestSession.buyProduct(identifier:options:)` (con el `appAccountToken`) y pasan por `Tienda.procesar`, que es el mismo
+  camino que usa la app después de `purchase()`, `Transaction.updates` y `Transaction.unfinished`. `purchase()` en sí solo se
+  prueba a mano (TestFlight / sandbox).
+- Contrato final del panel (rama `tubroadcast-apple` de tukan-central, e70e276): `apple_compra` → 200 con `expira` en segundos
+  unix; errores 400 / 402 (firma mala, vencida, revocada, sandbox no permitido) / 403 (paquete lleno: usar «Liberar este
+  celular») / 429, y la app siempre muestra el `mensaje` del servidor (la compra queda sin terminar y se reintenta).
+  `liberar` → 200 `{ok, mensaje, cambios_restantes, codigo}`, 429 (se muestra el mensaje), 401 (el celular queda libre igual).
+  Con paquete de 1 celular, restaurar en otro iPhone mueve la compra a ese iPhone.
 
 **Falta antes de enviar a Apple:**
 1. En App Store Connect: crear los 20 productos con esos IDs (grupo «TuBroadcast»), precios, nombres en español, captura
@@ -134,6 +147,9 @@ Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras n
 - Apple Developer: **$99 al año** (lo paga Dimitry).
 
 ## Historial
+
+- 23 nov 2026: **TuBroadcast iPhone Pro** (rama `tubroadcast-ios-pro`): versión gratis con límites, compras con Apple (StoreKit 2),
+  activar con código, liberar celular y licencia del Panel Tukán Central. 38/38 pruebas y ABRE BIEN (run 45210059784).
 
 - 13 nov 2026 (13:35): JD Entregas y TuSpa relanzadas: **ABRE BIEN**. Con la plantilla sin precios, **las 22 apps de iPhone ABRE BIEN** (21 cascarones + TuBroadcast nativa).
 
