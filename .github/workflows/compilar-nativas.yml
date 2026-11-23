@@ -21,7 +21,7 @@ concurrency:
 jobs:
   tubroadcast:
     runs-on: macos-26
-    timeout-minutes: 50
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -89,8 +89,10 @@ jobs:
             -skipPackagePluginValidation -skipMacroValidation \
             ARCHS=arm64 ONLY_ACTIVE_ARCH=NO \
             CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= > pruebas.log 2>&1
-          RES=$?
+            DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
+            -test-timeouts-enabled YES -default-test-execution-time-allowance 60 -maximum-test-execution-time-allowance 120 \
+            2>&1 | tee pruebas.log | grep --line-buffered -E "Test Case .*(passed|failed|skipped)|SKTestSession|error:|Executed [0-9]+ test"
+          RES=${PIPESTATUS[0]}
           set -e
           grep -E "Test Case .*(passed|failed)|error:|Executed [0-9]+ test" pruebas.log | sed 's/^.*Test Case/Test Case/' > ../../pruebas/tubroadcast/pruebas.txt || true
           cat ../../pruebas/tubroadcast/pruebas.txt
