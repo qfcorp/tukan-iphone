@@ -35,6 +35,8 @@ COPYRIGHT = "2026 QFCORP S.A.S."
 UE = {"AUT", "BEL", "BGR", "HRV", "CYP", "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC",
       "HUN", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "POL", "PRT", "ROU", "SVK",
       "SVN", "ESP", "SWE"}
+# China continental: Apple pide evaluacion de seguridad y declaracion AIGC (nov 2026); no distribuimos alli
+SIN_DISTRIBUIR = UE | {"CHN"}
 EDITABLES = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED",
              "INVALID_BINARY"}
 RECHAZOS = {"REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}
@@ -165,27 +167,46 @@ def poner_precio_gratis(aid):
     return "gratis"
 
 
+def quitar_paises_bloqueados(disp_id):
+    """En una app que ya tiene paises, apaga China continental (y la UE) si estan encendidos."""
+    apagados = []
+    url = "/v2/appAvailabilities/%s/territoryAvailabilities?include=territory&limit=200" % disp_id
+    while url:
+        st, r = pedir("GET", url)
+        ok(st, r, "leer paises de la app")
+        for ta in r.get("data", []):
+            terr = ((ta.get("relationships") or {}).get("territory") or {}).get("data") or {}
+            if terr.get("id") in SIN_DISTRIBUIR and ta["attributes"].get("available"):
+                ok(*pedir("PATCH", "/v1/territoryAvailabilities/%s" % ta["id"], {"data": {
+                    "type": "territoryAvailabilities", "id": ta["id"], "attributes": {"available": False}}}),
+                   "apagar " + terr["id"])
+                apagados.append(terr["id"])
+        url = (r.get("links") or {}).get("next")
+    return apagados
+
+
 def poner_paises(aid):
     st, r = pedir("GET", "/v1/apps/%s/appAvailabilityV2" % aid)
     if st == 200 and r.get("data"):
-        return "ya tenia paises"
+        apagados = quitar_paises_bloqueados(r["data"]["id"])
+        return "ya tenia paises" + (" (apagados: %s)" % ",".join(apagados) if apagados else "")
     st, r = pedir("GET", "/v1/territories?limit=200")
     ok(st, r, "leer paises")
     todos = [t["id"] for t in r["data"]]
-    paises = [p for p in todos if p not in UE]
+    paises = [p for p in todos if p not in SIN_DISTRIBUIR]
     datos, incluidos = [], []
     # Apple pide TODOS los paises: los de la UE van con available=False (falta la declaracion DSA)
     for i, p in enumerate(todos):
         local = "${t%d}" % i
         datos.append({"type": "territoryAvailabilities", "id": local})
-        incluidos.append({"type": "territoryAvailabilities", "id": local, "attributes": {"available": p not in UE},
+        incluidos.append({"type": "territoryAvailabilities", "id": local, "attributes": {"available": p not in SIN_DISTRIBUIR},
                           "relationships": {"territory": {"data": {"type": "territories", "id": p}}}})
     ok(*pedir("POST", "/v2/appAvailabilities", {
         "data": {"type": "appAvailabilities", "attributes": {"availableInNewTerritories": True},
                  "relationships": {"app": {"data": {"type": "apps", "id": aid}},
                                    "territoryAvailabilities": {"data": datos}}},
         "included": incluidos}), "paises")
-    return "%d paises (sin la UE)" % len(paises)
+    return "%d paises (sin la UE ni China continental)" % len(paises)
 
 
 def ultima_compilacion(aid):
