@@ -21,6 +21,7 @@ import datetime
 import glob
 import hashlib
 import json
+import time
 import os
 import sys
 
@@ -384,13 +385,27 @@ def enviar(aid, vid):
     if st == 200 and r.get("data"):
         envio = r["data"][0]["id"]
         # Como "Actualizar revision" en la web: volver a poner la version en ese envio
-        pedir("POST", "/v1/reviewSubmissionItems", {"data": {
+        sti, ri = pedir("POST", "/v1/reviewSubmissionItems", {"data": {
             "type": "reviewSubmissionItems",
             "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": envio}},
                               "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
+        if sti not in (200, 201):
+            print("   aviso: agregar la version al envio viejo (%s): %s" % (sti, error_corto(ri)))
+        st2, r2 = pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
+            "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}})
+        if st2 in (200, 201):
+            return envio
+        # El envio viejo (con «Information Needed») no acepta la version nueva:
+        # se cancela y se hace un envio nuevo, como «Quitar de la revision» en la web.
+        print("   aviso: el envio viejo no se pudo reenviar (%s): %s; se cancela y se crea uno nuevo"
+              % (st2, error_corto(r2)))
         ok(*pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
-            "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}}), "volver a enviar a revision")
-        return envio
+            "type": "reviewSubmissions", "id": envio, "attributes": {"canceled": True}}}), "cancelar el envio viejo")
+        for _ in range(12):
+            time.sleep(10)
+            st3, r3 = pedir("GET", "/v1/reviewSubmissions/" + envio)
+            if st3 == 200 and r3["data"]["attributes"].get("state") not in ("CANCELING", "UNRESOLVED_ISSUES"):
+                break
     st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&filter[state]=READY_FOR_REVIEW&limit=5" % aid)
     envio = r["data"][0]["id"] if st == 200 and r.get("data") else None
     if not envio:
