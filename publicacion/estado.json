@@ -32,8 +32,10 @@
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuwhatsapp": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)",
-    "error": "agregar al envio (409): appStoreVersions with id '8dfb1c41-b7a1-47d1-a254-d07e55443db8' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. |   - STATE_ERROR.PPM.compliance.form.SECURITYASF395E.enforcement.PENDING_COLLECT.NEW_APP_SUBMISSION_BLOCK Cannot submit version due to unfulfilled compliance requirement. |   - STATE_ERROR.PPM.compliance.form.AIGENERATEFD1DE.enforcement.PENDING_COLLECT.NEW_APP_SUBMISSION_BLOCK Cannot submit version due to unfulfilled compliance requirement. (2026-11-23 17:22 UTC)"
+    "estado": "enviada",
+    "fecha": "2026-11-23 17:24 UTC",
+    "version_id": "8dfb1c41-b7a1-47d1-a254-d07e55443db8",
+    "envio_id": "6e1cf6dc-9f75-4fe0-a640-24c7a91994bf"
   },
   "tusalon": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
