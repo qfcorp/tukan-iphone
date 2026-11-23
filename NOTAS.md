@@ -57,6 +57,59 @@
      grabación, NDI, HEVC y bitrate adaptable. La cámara real solo se puede probar en un iPhone (TestFlight).
 7. ⏳ Actualizar manuales y presentaciones de cada programa con «Disponible en iPhone».
 
+## TuBroadcast iPhone Pro (23 nov 2026, rama `tubroadcast-ios-pro`)
+
+Decisiones de Dimitry (23 nov 2026), hechas en `nativas/tubroadcast`:
+
+- **Gratis** (sin plan): RTMP y SRT, máximo **720p**, marca de agua **«TuBroadcast»** quemada en el video que sale
+  (HaishinKit en modo `offscreen` + `TextScreenObject`) y también en la vista; la transmisión **se corta sola a los 5 minutos**
+  con el aviso «La versión gratis transmite hasta 5 minutos. Activa un plan para seguir.» (`Sources/Limites.swift`).
+- **Planes**: Básico = RTMP/RTMPS sin límites (con Básico, una conexión SRT va con los límites gratis); Completo = RTMP + SRT
+  sin límites; Pase 24 h = todo. Se decide por los módulos `rtmp` / `srt` de la licencia firmada.
+- **Compra dentro de la app con Apple (StoreKit 2)** (`Sources/Tienda.swift`). 20 productos, precios SOLO de Apple
+  (`Product.displayPrice`):
+  - Suscripciones auto-renovables, **un solo grupo «TuBroadcast»**: `tubroadcast.basico.N.mes`, `tubroadcast.basico.N.anio`,
+    `tubroadcast.completo.N.mes`, `tubroadcast.completo.N.anio`.
+  - Consumible: `tubroadcast.pase24.N`. N = 1, 3, 5, 10 celulares.
+  - Niveles sugeridos en el grupo (1 = el mayor; mes y año del mismo plan comparten nivel): Completo 10 → 1, Completo 5 → 2,
+    Completo 3 → 3, Completo 1 → 4, Básico 10 → 5, Básico 5 → 6, Básico 3 → 7, Básico 1 → 8.
+  - La compra lleva `appAccountToken` = UUID guardado en el llavero. Luego la app manda al panel
+    `POST https://panel.tukanec.com/tubroadcast_api.php?a=apple_compra` con
+    `{dispositivo, modelo, version, versionApp, transaccion: <jwsRepresentation>, app_cuenta: <UUID en minúsculas>}`.
+    Respuesta = la de `activar` + `{codigo, plan, celulares, expira}`. Si `celulares > 1` se muestra el código del paquete
+    («Comparte este código con los otros celulares del paquete») con botones Copiar y Compartir.
+  - La transacción solo se termina (`finish`) cuando el panel la acepta; sin internet queda pendiente y se reintenta al abrir la
+    app (`Transaction.unfinished`) o con «Restaurar compras» (`AppStore.sync`). Se escucha `Transaction.updates` (renovaciones).
+  - «Gestionar suscripción» abre `AppStore.showManageSubscriptions`.
+- **Activar con código** `TB-XXXX-XXXX` (pagaron por fuera o los otros celulares del paquete): `POST a=activar`, mismo JSON que
+  Android `{codigo, dispositivo, modelo, versionApp}`. Regla de Apple 3.1.1 / 3.1.3(b): la app **no** tiene enlaces ni textos
+  para comprar fuera (ni web, ni precios externos, ni Plux): solo el campo del código.
+- **Liberar este celular** (Ajustes > Licencia): `POST a=liberar {dispositivo, token}` → `{ok, mensaje, cambios_restantes}`;
+  con 429 se muestra el mensaje del servidor. Al liberar, la app vuelve a la versión gratis.
+- **Licencia** (`Sources/Licencia.swift`, `Sources/GestorLicencia.swift`): firma ECDSA P-256 verificada con CryptoKit y la
+  **misma llave pública que Android**; latido cada 30 s con licencia (`a=latido`, 401 = vuelve a gratis); sin internet vale
+  hasta 72 h. Id del celular = UUID propio en el llavero (no IDFA).
+- **Pantalla Planes**: productos agrupados por 1/3/5/10 celulares, mensual/anual/pase, texto de renovación automática y enlaces a
+  [Términos](https://tukansoftware.com/terminos.html) y [Privacidad](https://tuner.tukanec.com/?r=privacidad).
+- El video sale vertical u horizontal según cómo se tenga el celular al tocar EN VIVO (antes siempre 1280×720).
+
+**Pruebas** (`nativas/tubroadcast/Tests`, target `TuBroadcastTests`, corren en `compilar-nativas.yml`, paso «Pruebas automaticas»):
+StoreKitTest con `TuBroadcast.storekit` (20 productos, precios de ejemplo; también está en el esquema para el simulador),
+compra → `apple_compra` (panel falso con `URLProtocol`), pase 24 h, compra sin internet que se reintenta, activar con código
+(bien, código malo, firma falsa, sin internet), liberar (OK y 429), latido (renueva, 401, sin internet, más de 72 h), licencia
+firmada válida / alterada / otra llave / vencida / otro celular, firma hecha con openssl (como el panel PHP) y límites gratis
+(720p, marca de agua, 5 minutos con reloj falso, también en el `Motor`).
+Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras ni cámara.
+
+**Falta antes de enviar a Apple:**
+1. En App Store Connect: crear los 20 productos con esos IDs (grupo «TuBroadcast»), precios, nombres en español, captura
+   para revisión de cada uno, y aceptar el **Acuerdo de apps de pago** (datos bancarios y fiscales).
+2. Panel: `apple_compra`, `apple_notificacion` y `liberar` (lo está haciendo otro compañero en `tukan-central`). El panel debe
+   comparar `app_cuenta` con el `appAccountToken` del JWS sin importar mayúsculas.
+3. Actualizar en App Store Connect la **privacidad de la app** (ahora sí se manda al panel: id propio del celular, modelo y
+   compras, para que funcione la app; sin rastreo) y las notas para el revisor (cómo probar las compras y el código).
+4. Probar en un iPhone real con TestFlight (sandbox): cámara, marca de agua en YouTube/vMix, corte a los 5 minutos, compra.
+
 ## Reglas de Apple a cuidar
 
 - ✅ 13 nov: **respaldo dentro de la app** (`plantilla/Sources/TukanApp.swift`, `enum Pagos`): esconde con CSS las partes de pago comunes

@@ -138,7 +138,7 @@ final class Tienda: ObservableObject {
 
     /// Manda una transacción verificada al panel y, si el panel la acepta, la termina (finish).
     /// Si no hay internet NO se termina: StoreKit la vuelve a entregar y se reintenta.
-    func procesar(_ verificacion: VerificationResult<Transaction>) async -> ResultadoCompra {
+    func procesar(_ verificacion: VerificationResult<StoreKit.Transaction>) async -> ResultadoCompra {
         guard case .verified(let t) = verificacion else {
             return .error("Apple no pudo verificar la compra. Intenta otra vez.")
         }
@@ -165,8 +165,8 @@ final class Tienda: ObservableObject {
         do { try await AppStore.sync() } catch {
             return "No se pudo hablar con Apple: \(error.localizedDescription)"
         }
-        var ultima: VerificationResult<Transaction>?
-        for await v in Transaction.currentEntitlements {
+        var ultima: VerificationResult<StoreKit.Transaction>?
+        for await v in StoreKit.Transaction.currentEntitlements {
             if case .verified(let t) = v, InfoProducto.de(t.productID) != nil, t.revocationDate == nil {
                 if case .verified(let u)? = ultima, u.purchaseDate >= t.purchaseDate { continue }
                 ultima = v
@@ -185,7 +185,7 @@ final class Tienda: ObservableObject {
 
     /// Compras que quedaron sin terminar (por ejemplo, sin internet al comprar).
     func revisarPendientes() async {
-        for await v in Transaction.unfinished {
+        for await v in StoreKit.Transaction.unfinished {
             _ = await procesar(v)
         }
     }
@@ -194,7 +194,7 @@ final class Tienda: ObservableObject {
     func escucharTransacciones() {
         guard escucha == nil else { return }
         escucha = Task { [weak self] in
-            for await v in Transaction.updates {
+            for await v in StoreKit.Transaction.updates {
                 guard let self else { return }
                 _ = await self.procesar(v)
             }

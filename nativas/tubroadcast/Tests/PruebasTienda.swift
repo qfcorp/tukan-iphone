@@ -101,7 +101,7 @@ final class PruebasTienda: XCTestCase {
 
         // La transacción quedó terminada (finish)
         var pendientes = 0
-        for await _ in Transaction.unfinished { pendientes += 1 }
+        for await _ in StoreKit.Transaction.unfinished { pendientes += 1 }
         XCTAssertEqual(pendientes, 0)
     }
 
@@ -128,7 +128,7 @@ final class PruebasTienda: XCTestCase {
         XCTAssertTrue(m.contains("Restaurar compras"))
         XCTAssertFalse(g.estado.esValida)
         var pendientes = 0
-        for await _ in Transaction.unfinished { pendientes += 1 }
+        for await _ in StoreKit.Transaction.unfinished { pendientes += 1 }
         XCTAssertEqual(pendientes, 1, "La compra queda sin terminar para mandarla al panel cuando haya internet")
 
         // Vuelve el internet: se reintenta y queda activa
@@ -136,7 +136,7 @@ final class PruebasTienda: XCTestCase {
         await tienda.revisarPendientes()
         XCTAssertTrue(g.estado.esValida)
         pendientes = 0
-        for await _ in Transaction.unfinished { pendientes += 1 }
+        for await _ in StoreKit.Transaction.unfinished { pendientes += 1 }
         XCTAssertEqual(pendientes, 0)
     }
 }
