@@ -1,11 +1,9 @@
 {
   "tubroadcast": {
-    "estado": "rechazada",
-    "fecha": "2026-11-14 15:53 UTC",
+    "estado": "enviada",
+    "fecha": "2026-11-23 23:23 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
-    "envio_id": "039bf385-08c9-4d4c-9418-8bfe1fed50c5",
-    "apple": "PREPARE_FOR_SUBMISSION",
-    "error": "volver a enviar a revision (409): appStoreVersions with id '50f969a7-555d-4235-bd4b-199d6e98c745' is not in valid state.: This resource cannot be reviewed, please check associated errors to see why. |   - STATE_ERROR Version is not ready to be submitted yet, please try again later. (2026-11-23 23:22 UTC)"
+    "envio_id": "ba4fa365-66b4-4bd7-9a3e-b35572bf9eda"
   },
   "envivo": {
     "estado": "rechazada",
@@ -70,7 +68,8 @@
     "estado": "enviada",
     "fecha": "2026-11-23 23:21 UTC",
     "version_id": "846647ef-d716-48f0-b71c-0b86423ddaa4",
-    "envio_id": "a6e8d040-b723-41e6-b11b-0b92a375ac9f"
+    "envio_id": "a6e8d040-b723-41e6-b11b-0b92a375ac9f",
+    "apple": "WAITING_FOR_REVIEW"
   },
   "tuacademia": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
