@@ -39,7 +39,8 @@ final class PruebasTienda: XCTestCase {
     func comprarEnPrueba(_ id: String, _ g: GestorLicencia) async throws -> VerificationResult<StoreKit.Transaction> {
         guard #available(iOS 17.0, *) else { throw XCTSkip("SKTestSession.buyProduct necesita iOS 17") }
         _ = try await sesion.buyProduct(identifier: id, options: [.appAccountToken(g.appCuenta)])
-        return try XCTUnwrap(await StoreKit.Transaction.latest(for: id), "No apareció la transacción de \(id)")
+        let ultima = await StoreKit.Transaction.latest(for: id)
+        return try XCTUnwrap(ultima, "No apareció la transacción de \(id)")
     }
 
     /// Lee el contenido (payload) de un JWS de StoreKit.
@@ -89,7 +90,8 @@ final class PruebasTienda: XCTestCase {
         await tienda.cargarProductos()
         XCTAssertNotNil(tienda.productos.first { $0.id == "tubroadcast.completo.3.mes" })
 
-        let resultado = await tienda.procesar(try await comprarEnPrueba("tubroadcast.completo.3.mes", g))
+        let compra = try await comprarEnPrueba("tubroadcast.completo.3.mes", g)
+        let resultado = await tienda.procesar(compra)
         guard case .listo(let r) = resultado else { return XCTFail("La compra debía quedar lista: \(resultado)") }
         XCTAssertEqual(r.codigo, "TB-PAQU-ETE3")
 
