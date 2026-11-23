@@ -11,7 +11,7 @@
   "categoria_secundaria": "BUSINESS",
   "contenido_terceros": false,
   "necesita_demo": true,
-  "notas_revisor": "TuVocalía es el sistema de gestión para ligas deportivas, escuelas y federaciones: campeonatos, vocalía en vivo, árbitros, delegados y jugadores. Lo usan ligas, escuelas deportivas y federaciones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: TuVocalía is management software for amateur sports leagues, sports schools and federations in Ecuador (football, futsal, basketball, volleyball). League staff register teams and players, schedule matches, fill in the official match sheet (\"vocalía\": lineups, goals, cards, referee), and the app calculates standings, top scorers and suspensions automatically. It also handles team fees and receipts. Problem it solves: leagues still use paper match sheets and spreadsheets; TuVocalía gives them one place for the whole tournament and publishes results for players and fans.\n\n3. How to use it: sign in with the demo account in the App Review Information section (a sample organization with invented data). After login: Resumen shows today's matches and alerts; Competencia lists tournaments, teams, fixtures and standings (open a match to see/fill its vocalía); Alumnos/Jugadores shows player cards; Dinero shows fees and receipts; Mi cuenta has profile and logout. Accounts are created by Tukán Software for each league (B2B service); there is no self sign-up in the iOS app, and account deletion is handled on request (info@tukansoftware.com). On iPhone there are no prices, plans or payments: organizations contract the service with Tukán Software outside the app.\n\n4. External services: our own server (tuvocalia.com); WhatsApp and Telegram links/notifications to send results and reminders (optional, configured by the league); email (SMTP); Cloudflare (hosting/CDN); YouTube links for match videos (optional). Optional AI help answers use Anthropic's Claude API. No ads, no third-party analytics.\n\n5. Regional differences: none. The app works the same in every region (Spanish).\n\n6. Regulated industry / third-party material: not regulated. Player data (which may include minors in youth leagues) is entered and managed only by the league's authorized staff, under our privacy policy (https://tuvocalia.com/index.php?v=privacidad).",
   "capturas": [
     {
       "espera": 8
@@ -21,5 +21,6 @@
   "demo": {
     "usuario": "",
     "clave": ""
-  }
+  },
+  "video_revisor": ""
 }

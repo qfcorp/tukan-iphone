@@ -11,7 +11,7 @@
   "categoria_secundaria": "PRODUCTIVITY",
   "contenido_terceros": false,
   "necesita_demo": true,
-  "notas_revisor": "TuDron es una bitácora y centro de control para operadores de drones: vuelos, baterías, clima, pilotos, mapas y fumigación. Lo usan pilotos y empresas de drones en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: TuDron is management software for professional drone operators and companies in Ecuador (aerial photography, agriculture, inspection). It keeps the drone and battery inventory, the flight logbook, pre-flight checklists, maintenance, weather for each flight, clients, quotes and documents (licenses, insurance). Problem it solves: operators must keep flight and maintenance records for clients and authorities and usually do it on paper; TuDron keeps them organized and ready to show.\n\n3. How to use it: sign in with the demo account in the App Review Information section (a sample organization with invented data). After login: Drones lists the aircraft (open one to see hours and maintenance); Baterías shows battery cycles; Bitácora is the flight logbook (add a flight); Chequeo is the pre-flight checklist; Clientes and Cotizaciones handle customers and quotes. The iOS app does not fly or control drones; it only records information. Accounts are created by Tukán Software for each operator (B2B service); there is no self sign-up in the iOS app, and account deletion is handled on request (info@tukansoftware.com). On iPhone there are no prices, plans or payments: operators contract the service with Tukán Software outside the app.\n\n4. External services: our own server (tudron.tukanec.com); Open-Meteo for weather forecasts; OpenStreetMap/Leaflet maps for flight locations; optional import of DJI flight log files that the user uploads; WhatsApp and Telegram notifications (optional); email (SMTP); Cloudflare (hosting/CDN). No ads, no third-party analytics.\n\n5. Regional differences: none. The app works the same in every region (Spanish).\n\n6. Regulated industry / third-party material: drone flights are regulated by each country's civil aviation authority (in Ecuador, the DGAC). TuDron does not authorize or perform flights; it only helps operators keep their own records. Not affiliated with DJI.",
   "capturas": [
     {
       "espera": 8
@@ -21,5 +21,6 @@
   "demo": {
     "usuario": "",
     "clave": ""
-  }
+  },
+  "video_revisor": ""
 }

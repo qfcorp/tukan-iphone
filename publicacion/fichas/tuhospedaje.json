@@ -11,7 +11,7 @@
   "categoria_secundaria": "TRAVEL",
   "contenido_terceros": false,
   "necesita_demo": true,
-  "notas_revisor": "TuHospedaje es el sistema de gestión de hoteles, hostales y hosterías: reservas, calendario, recepción, limpieza, restaurante y caja. Lo usan hoteles, hostales y hosterías y su personal en Ecuador. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: TuHospedaje is a property management system for small hotels, hostels and country inns (hosterías) in Ecuador. Front-desk staff see the room calendar, take reservations, do check-in and check-out, add charges to the guest's bill (restaurant, minibar, tours, breakfast) and close the daily cash register. Problem it solves: small hotels manage bookings on paper or spreadsheets and get double bookings across online travel agencies; TuHospedaje keeps everything in one calendar.\n\n3. How to use it: sign in with the demo account in the App Review Information section (a sample organization with invented data). After login: Calendario shows rooms by day (tap a free cell to create a reservation); open a reservation to do Check-in; the guest bill (Cuenta) lets you add charges; Check-out closes the stay; Caja shows the day's cash. Accounts are created by Tukán Software for each property (B2B service); there is no self sign-up in the iOS app, and account deletion is handled on request (info@tukansoftware.com). On iPhone there are no prices, plans or payments for our service: properties contract it with Tukán Software outside the app. Guest charges recorded in the app are the hotel's own accounting, not purchases inside the app.\n\n4. External services: our own server (tuhospedaje.tukanec.com); calendar sync with Airbnb, Booking.com and Expedia through standard iCal links that the hotel pastes (no login to those platforms); WhatsApp and Telegram notifications (optional); email (SMTP); Cloudflare (hosting/CDN). No ads, no third-party analytics.\n\n5. Regional differences: none. The app works the same in every region (Spanish).\n\n6. Regulated industry / third-party material: not applicable. Not affiliated with Airbnb, Booking.com or Expedia; it only reads the public iCal calendars the hotel provides.",
   "capturas": [
     {
       "espera": 8
@@ -21,5 +21,6 @@
   "demo": {
     "usuario": "",
     "clave": ""
-  }
+  },
+  "video_revisor": ""
 }

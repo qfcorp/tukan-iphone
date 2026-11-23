@@ -1,9 +1,11 @@
 {
   "orden": [
-    "tubroadcast",
     "envivo",
     "qfdeportes",
+    "tubroadcast",
     "tuwhatsapp",
+    "tuvocalia",
+    "tuhospedaje",
     "tudron",
     "tuflota",
     "tufactura",
@@ -15,8 +17,6 @@
     "tumecanica",
     "tuevento",
     "tuplanner",
-    "tuhospedaje",
-    "tuvocalia",
     "tuacademia",
     "qferp",
     "qfflota",
