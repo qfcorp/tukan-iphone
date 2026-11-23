@@ -32,6 +32,16 @@ final class PruebasTienda: XCTestCase {
         }
     }
 
+    /// Compra en la sesión de pruebas (sin ventanas) con el appAccountToken del llavero y devuelve la transacción verificada,
+    /// igual que la entrega Product.purchase(). En el simulador, purchase() se queda esperando la hoja de pago de Apple
+    /// dentro de XCTest; por eso las pruebas compran con SKTestSession.buyProduct y luego pasan por Tienda.procesar
+    /// (el mismo camino que usa la app después de purchase(), Transaction.updates y Transaction.unfinished).
+    func comprarEnPrueba(_ id: String, _ g: GestorLicencia) async throws -> VerificationResult<StoreKit.Transaction> {
+        guard #available(iOS 17.0, *) else { throw XCTSkip("SKTestSession.buyProduct necesita iOS 17") }
+        _ = try await sesion.buyProduct(identifier: id, options: [.appAccountToken(g.appCuenta)])
+        return try XCTUnwrap(await StoreKit.Transaction.latest(for: id), "No apareció la transacción de \(id)")
+    }
+
     /// Lee el contenido (payload) de un JWS de StoreKit.
     func contenidoJWS(_ jws: String) -> [String: Any] {
         let partes = jws.split(separator: ".")
@@ -77,9 +87,9 @@ final class PruebasTienda: XCTestCase {
         let g = gestorDePrueba()
         let tienda = Tienda(gestor: g)
         await tienda.cargarProductos()
-        let producto = try XCTUnwrap(tienda.productos.first { $0.id == "tubroadcast.completo.3.mes" })
+        XCTAssertNotNil(tienda.productos.first { $0.id == "tubroadcast.completo.3.mes" })
 
-        let resultado = await tienda.comprar(producto)
+        let resultado = await tienda.procesar(try await comprarEnPrueba("tubroadcast.completo.3.mes", g))
         guard case .listo(let r) = resultado else { return XCTFail("La compra debía quedar lista: \(resultado)") }
         XCTAssertEqual(r.codigo, "TB-PAQU-ETE3")
 
@@ -112,7 +122,8 @@ final class PruebasTienda: XCTestCase {
         await tienda.cargarProductos()
         let producto = try XCTUnwrap(tienda.productos.first { $0.id == "tubroadcast.pase24.1" })
         XCTAssertEqual(producto.type, .consumable)
-        guard case .listo = await tienda.comprar(producto) else { return XCTFail("El pase debía quedar listo") }
+        let v = try await comprarEnPrueba("tubroadcast.pase24.1", g)
+        guard case .listo = await tienda.procesar(v) else { return XCTFail("El pase debía quedar listo") }
         let jws = try XCTUnwrap(PanelFalso.ultimo("apple_compra")?.json["transaccion"] as? String)
         XCTAssertEqual(contenidoJWS(jws)["productId"] as? String, "tubroadcast.pase24.1")
         XCTAssertTrue(g.estado.esValida)
@@ -123,8 +134,8 @@ final class PruebasTienda: XCTestCase {
         let g = gestorDePrueba()
         let tienda = Tienda(gestor: g)
         await tienda.cargarProductos()
-        let producto = try XCTUnwrap(tienda.productos.first { $0.id == "tubroadcast.basico.1.mes" })
-        guard case .error(let m) = await tienda.comprar(producto) else { return XCTFail("Sin internet debía dar error") }
+        let v = try await comprarEnPrueba("tubroadcast.basico.1.mes", g)
+        guard case .error(let m) = await tienda.procesar(v) else { return XCTFail("Sin internet debía dar error") }
         XCTAssertTrue(m.contains("Restaurar compras"))
         XCTAssertFalse(g.estado.esValida)
         var pendientes = 0
