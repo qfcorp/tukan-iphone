@@ -32,11 +32,11 @@
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuwhatsapp": {
-    "estado": "enviada",
+    "estado": "aprobada",
     "fecha": "2026-11-23 17:24 UTC",
     "version_id": "8dfb1c41-b7a1-47d1-a254-d07e55443db8",
     "envio_id": "6e1cf6dc-9f75-4fe0-a640-24c7a91994bf",
-    "apple": "WAITING_FOR_REVIEW"
+    "apple": "READY_FOR_DISTRIBUTION"
   },
   "tusalon": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
@@ -66,11 +66,11 @@
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuvocalia": {
-    "estado": "enviada",
+    "estado": "en_revision",
     "fecha": "2026-11-23 23:21 UTC",
     "version_id": "846647ef-d716-48f0-b71c-0b86423ddaa4",
     "envio_id": "a6e8d040-b723-41e6-b11b-0b92a375ac9f",
-    "apple": "WAITING_FOR_REVIEW"
+    "apple": "IN_REVIEW"
   },
   "tuacademia": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
