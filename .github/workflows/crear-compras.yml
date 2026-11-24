@@ -1,0 +1,28 @@
+name: Crear compras de TuBroadcast en App Store Connect
+
+# Crea (o completa) las 16 suscripciones y los 4 pases de 24 horas de TuBroadcast,
+# con precios en todos los países de la app y los avisos V2 al Panel Tukán Central.
+# Se puede correr varias veces: lo que ya existe no se duplica.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: crear-compras
+  cancel-in-progress: false
+
+jobs:
+  crear:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      ASC_KEY_ID: L2M6297P3F
+      ASC_ISSUER_ID: 3b2124e5-8b34-4b8b-8641-57b8f76dc992
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar lo necesario
+        run: pip install --quiet pyjwt cryptography
+      - name: Revisar la lista (sin Apple)
+        run: python3 herramientas/crear_compras.py probar
+      - name: Crear en App Store Connect
+        run: python3 herramientas/crear_compras.py
