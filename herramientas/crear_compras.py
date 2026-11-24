@@ -94,7 +94,8 @@ def todos(pedir, ok, ruta):
 
 
 def correr():
-    from asc import app_id, error_corto, pedir
+    from asc import error_corto, pedir
+    from publicar_app_store import app_id
 
     def ok(st, r, que):
         if st not in (200, 201, 204):
