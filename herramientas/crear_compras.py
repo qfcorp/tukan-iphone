@@ -202,8 +202,11 @@ def correr():
                "países " + c["id"])
         st, r = pedir("GET", "/v2/inAppPurchases/%s/iapPriceSchedule" % iid)
         if st == 200 and r.get("data"):
-            print("  %-28s ya tenía precio" % c["id"])
-            continue
+            # Apple crea el horario vacío: solo cuenta si ya tiene un precio puesto
+            st2, r2 = pedir("GET", "/v1/inAppPurchasePriceSchedules/%s/manualPrices?limit=1" % r["data"]["id"])
+            if st2 == 200 and r2.get("data"):
+                print("  %-28s ya tenía precio" % c["id"])
+                continue
         puntos, _ = todos(pedir, ok, "/v2/inAppPurchases/%s/pricePoints?filter[territory]=USA&limit=200" % iid)
         pp = mas_cercano([(p["id"], p["attributes"]["customerPrice"]) for p in puntos], c["precio"])
         ok(*pedir("POST", "/v1/inAppPurchasePriceSchedules", {
