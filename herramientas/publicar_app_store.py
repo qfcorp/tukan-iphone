@@ -479,8 +479,9 @@ def revisar_enviadas(estado):
         apple = a.get("appVersionState") or a.get("appStoreState")
         d["apple"] = apple
         if apple in RECHAZOS or a.get("appStoreState") in RECHAZOS:
+            if d.get("estado") != "rechazada":   # solo los rechazos nuevos abren aviso
+                rechazadas.append(app)
             d["estado"] = "rechazada"
-            rechazadas.append(app)
         elif apple in ("READY_FOR_DISTRIBUTION", "READY_FOR_SALE", "PENDING_DEVELOPER_RELEASE",
                        "ACCEPTED", "PROCESSING_FOR_DISTRIBUTION"):
             d["estado"] = "aprobada"
@@ -491,6 +492,47 @@ def revisar_enviadas(estado):
     return rechazadas
 
 
+def enviar_versiones_nuevas(estado):
+    """(25 nov 2026) Apps aprobadas con «crear_version» en su ficha: si la última compilación trae otro número
+    de versión (p. ej. TuBroadcast 1.0.1 con las compras de Apple), crea la versión y la envía sola, aunque
+    la cola esté pausada. Devuelve la lista de apps enviadas."""
+    enviadas = []
+    for app, d in estado.items():
+        if d.get("estado") != "aprobada":
+            continue
+        try:
+            f = ficha_de(app)
+        except Exception:  # noqa: BLE001
+            continue
+        if not f.get("crear_version"):
+            continue
+        aid = app_id(f["bundle_id"])
+        try:
+            _, version, _ = ultima_compilacion(aid)
+        except NoLista:
+            continue
+        if version == d.get("version_aprobada") or version == d.get("version"):
+            continue
+        print("== %s (version nueva %s)" % (app, version))
+        try:
+            aid, vid, pasos = preparar(app, contacto())
+            print("   ficha lista: " + "; ".join(pasos))
+            if f.get("compras_con_version"):
+                print("   " + enviar_compras(aid))
+            envio = enviar(aid, vid)
+            estado[app] = {"estado": "enviada", "fecha": ahora(), "version_id": vid, "envio_id": envio,
+                           "version": version, "version_aprobada": d.get("version_aprobada") or d.get("version")}
+            enviadas.append(app)
+            print("   ENVIADA A REVISION (version %s)" % version)
+        except NoLista as e:
+            d["pendiente"] = str(e)
+            print("   todavia no: %s" % e)
+        except Exception as e:  # noqa: BLE001
+            d["error"] = "%s (%s)" % (str(e)[:600], ahora())
+            print("   ERROR: %s" % e)
+    return enviadas
+
+
 def ahora():
     return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -499,6 +541,8 @@ def tanda(solo=None):
     cola = leer(os.path.join(PUB, "cola.json"), {"orden": [], "por_tanda": 3, "pausada": False})
     estado = leer(os.path.join(PUB, "estado.json"), {})
     rechazadas = revisar_enviadas(estado)
+    if not solo:
+        enviar_versiones_nuevas(estado)
     aviso = []
     if rechazadas and not solo:
         cola["pausada"] = True

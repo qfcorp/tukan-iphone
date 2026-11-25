@@ -4,7 +4,8 @@
     "fecha": "2026-11-23 23:23 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
     "envio_id": "ba4fa365-66b4-4bd7-9a3e-b35572bf9eda",
-    "apple": "WAITING_FOR_REVIEW"
+    "apple": "WAITING_FOR_REVIEW",
+    "version": "1.0.0"
   },
   "envivo": {
     "estado": "rechazada",
