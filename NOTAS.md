@@ -1,6 +1,6 @@
 # Bloc de notas — Tukán iPhone (qfcorp/tukan-iphone)
 
-Última actualización: 23 nov 2026
+Última actualización: 25 nov 2026
 
 ## Plan
 
@@ -124,6 +124,20 @@ Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras n
    compras, para que funcione la app; sin rastreo) y las notas para el revisor (cómo probar las compras y el código).
 4. Probar en un iPhone real con TestFlight (sandbox): cámara, marca de agua en YouTube/vMix, corte a los 5 minutos, compra.
 
+## EN VIVO Tycoon 1.0.1: compras con Apple (25 nov 2026)
+
+- La plantilla trae el puente `tukanAppStore` (`plantilla/Sources/TiendaApple.swift`, StoreKit 2) solo si `apps/<app>/app.json`
+  tiene `"compras_apple": true` (hoy solo `envivo`). El juego lo usa desde `js/appstore.js` (repo `qfcorp/envivo-tycoon`):
+  acciones `productos`, `comprar` (con `cuenta` = `apple_cuenta` → appAccountToken), `terminar`, `pendientes`, `restaurar`
+  y el evento de ventana `tukanAppStore`. Revisado el 25 nov: los dos lados calzan (nombres, parámetros y respuestas).
+- Lista de compras: `publicacion/compras/envivo.json` (sale de `php server/bin/apple_productos.php` en el juego; ids
+  `envivo.<id>`, nombre <= 30, detalle <= 45, `precio_usd`, `tipo` CONSUMABLE / NON_CONSUMABLE). Si cambia el catálogo
+  del juego, volver a generarla. `python3 herramientas/crear_compras.py probar` también revisa estas listas (sin Apple).
+- Crear/completar en App Store Connect: workflow `crear-compras.yml` con `modo=envivo` (se puede repetir; no duplica).
+- Captura de revisión de las compras: `publicacion/capturas/envivo/revision/tienda.png` (1290x2796, Tienda > Créditos,
+  sacada con el arnés de `tests/test_appstore.js` del juego). No entra en las capturas de la ficha (solo `capturas/envivo/*.png`).
+- Ficha: `"crear_version": true` y `"compras_con_version": true` (las compras se mandan a revisión junto con la versión 1.0.1).
+
 ## Reglas de Apple a cuidar
 
 - ✅ 13 nov: **respaldo dentro de la app** (`plantilla/Sources/TukanApp.swift`, `enum Pagos`): esconde con CSS las partes de pago comunes
@@ -148,6 +162,9 @@ Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras n
 - Apple Developer: **$99 al año** (lo paga Dimitry).
 
 ## Historial
+
+- 25 nov 2026: **EN VIVO Tycoon 1.0.1**: lista de 28 compras de Apple (`publicacion/compras/envivo.json`), captura de revisión,
+  ficha con versión nueva + compras y notas del revisor con cómo probar las compras.
 
 - 23 nov 2026: **TuBroadcast iPhone Pro** (rama `tubroadcast-ios-pro`): versión gratis con límites, compras con Apple (StoreKit 2),
   activar con código, liberar celular y licencia del Panel Tukán Central. 38/38 pruebas y ABRE BIEN (run 45210059784).

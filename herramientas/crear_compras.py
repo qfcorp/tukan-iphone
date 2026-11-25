@@ -14,6 +14,8 @@ Uso:  python3 herramientas/crear_compras.py [probar]
       probar = solo muestra lo que haría (sin llamar a Apple).
       python3 herramientas/crear_compras.py capturas <carpeta>
       sube planes_01.png / _03 / _05 / _10 como captura de revisión de cada compra.
+      python3 herramientas/crear_compras.py lista <bundle> <lista.json> [carpeta_capturas]
+      compras simples de una app web (p. ej. publicacion/compras/envivo.json); «probar» también revisa esas listas.
 """
 import json
 import os
@@ -382,6 +384,32 @@ def probar():
     for p in subs + cons:
         print("  %-28s %-26s US$%7.2f" % (p["id"], p["nombre"], p["precio"]))
     print("OK: 20 productos, nombres de hasta 30 letras y descripciones de hasta 45.")
+    carpeta = os.path.join(REPO, "publicacion", "compras")
+    for archivo in sorted(os.listdir(carpeta)) if os.path.isdir(carpeta) else []:
+        if archivo.endswith(".json"):
+            probar_lista(os.path.join(carpeta, archivo))
+
+
+def probar_lista(ruta):
+    """Revisa (sin Apple) una lista del modo «lista»: claves, ids únicos con el prefijo de la app, nombres <= 30,
+    detalles <= 45, precio y tipo válidos. El prefijo es el nombre del archivo: compras/envivo.json → «envivo.»."""
+    import re
+    lista = json.load(open(ruta, encoding="utf-8"))
+    prefijo = os.path.splitext(os.path.basename(ruta))[0] + "."
+    assert isinstance(lista, list) and lista, ruta
+    ids = set()
+    for c in lista:
+        faltan = {"id", "nombre", "detalle", "precio_usd", "tipo"} - set(c)
+        assert not faltan, (ruta, c.get("id"), "faltan", faltan)
+        assert c["id"].startswith(prefijo) and re.fullmatch(r"[A-Za-z0-9._]+", c["id"]), (ruta, c["id"])
+        assert c["id"] not in ids, (ruta, "repetido", c["id"])
+        ids.add(c["id"])
+        assert 0 < len(c["nombre"]) <= 30, (ruta, c["id"], c["nombre"])
+        assert 0 < len(c["detalle"]) <= 45, (ruta, c["id"], c["detalle"])
+        assert c["tipo"] in ("CONSUMABLE", "NON_CONSUMABLE"), (ruta, c["id"], c["tipo"])
+        assert float(c["precio_usd"]) > 0, (ruta, c["id"])
+    print("OK: %s · %d compras (%d de una sola vez), nombres <= 30 y detalles <= 45." % (
+        os.path.relpath(ruta, REPO), len(lista), sum(c["tipo"] == "NON_CONSUMABLE" for c in lista)))
 
 
 if __name__ == "__main__":
