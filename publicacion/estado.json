@@ -8,11 +8,10 @@
     "version": "1.0.0"
   },
   "envivo": {
-    "estado": "rechazada",
-    "fecha": "2026-11-14 15:38 UTC",
+    "estado": "enviada",
+    "fecha": "2026-11-25 17:26 UTC",
     "version_id": "46cc9c8c-9250-436b-9670-42d339669673",
-    "envio_id": "55d668d0-4390-4ef9-9da2-16e932910201",
-    "apple": "REJECTED"
+    "envio_id": "b0078533-14d9-4207-b110-54018ae34b83"
   },
   "qfdeportes": {
     "estado": "aprobada",
