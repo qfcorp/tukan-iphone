@@ -87,8 +87,15 @@ struct VistaWeb: UIViewRepresentable {
         ajustes.applicationNameForUserAgent = "TukanIOS/\(Config.version)"
         // Regla de Apple: dentro de la app de iPhone no se ven precios ni botones de pago de los planes.
         // Respaldo por si el servidor todavia no los esconde (ver Pagos mas abajo).
-        ajustes.userContentController.addUserScript(
-            WKUserScript(source: Pagos.scriptOcultar, injectionTime: .atDocumentStart, forMainFrameOnly: false))
+        // Apps con compras de Apple (Config.comprasApple): la página vende con StoreKit por el puente «tukanAppStore»
+        // (TiendaApple.swift) y ella misma esconde Plux/PayPal; ahí no se usa el ocultador genérico de pagos.
+        let puente: PuenteTienda? = Config.comprasApple ? PuenteTienda() : nil
+        if let puente {
+            ajustes.userContentController.addScriptMessageHandler(puente, contentWorld: .page, name: PuenteTienda.nombre)
+        } else {
+            ajustes.userContentController.addUserScript(
+                WKUserScript(source: Pagos.scriptOcultar, injectionTime: .atDocumentStart, forMainFrameOnly: false))
+        }
 
         let web = WKWebView(frame: .zero, configuration: ajustes)
         web.navigationDelegate = context.coordinator
@@ -104,6 +111,8 @@ struct VistaWeb: UIViewRepresentable {
         web.scrollView.refreshControl = refrescar
 
         estado.webView = web
+        puente?.web = web
+        context.coordinator.puente = puente   // la configuración del WKWebView guarda el puente; esto lo deja vivo y a mano
         // Privacidad: en el iPhone no se cargan anuncios ni rastreadores de terceros
         // (Apple pide permiso de rastreo si los hay). Se bloquean antes de abrir la pagina.
         SinRastreo.aplicar(a: ajustes.userContentController) {
@@ -119,6 +128,7 @@ struct VistaWeb: UIViewRepresentable {
     final class Coordinador: NSObject, WKNavigationDelegate, WKUIDelegate {
         let estado: EstadoWeb
         let dominioPropio: String?
+        var puente: PuenteTienda?
 
         init(estado: EstadoWeb) {
             self.estado = estado
