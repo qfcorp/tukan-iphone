@@ -1,0 +1,198 @@
+[
+    {
+        "id": "envivo.creditos_250",
+        "nombre": "250 créditos",
+        "detalle": "Paquete de 250 créditos",
+        "precio_usd": 1.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.creditos_700",
+        "nombre": "700 créditos",
+        "detalle": "700 créditos (+40 % extra)",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.creditos_1500",
+        "nombre": "1.500 créditos",
+        "detalle": "1.500 créditos (+50 % extra)",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.creditos_3200",
+        "nombre": "3.200 créditos",
+        "detalle": "3.200 créditos (+60 % extra)",
+        "precio_usd": 19.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.bienvenida",
+        "nombre": "Oferta de bienvenida",
+        "detalle": "150 créditos, camarógrafo senior y 3 cables",
+        "precio_usd": 0.99,
+        "tipo": "NON_CONSUMABLE"
+    },
+    {
+        "id": "envivo.inicio",
+        "nombre": "Paquete de inicio",
+        "detalle": "Cámara pro, técnico nivel 3 y 200 créditos",
+        "precio_usd": 2.99,
+        "tipo": "NON_CONSUMABLE"
+    },
+    {
+        "id": "envivo.tarjeta_mensual",
+        "nombre": "Tarjeta mensual",
+        "detalle": "30 días: reclama 20 créditos cada día",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.vip30",
+        "nombre": "Pase VIP 30 días",
+        "detalle": "Ventajas VIP por 30 días. No se renueva solo",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pase_premium",
+        "nombre": "Pase de Temporada Premium",
+        "detalle": "Premio premium en los 40 niveles del pase",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pase_semanal",
+        "nombre": "Mini Pase Semanal",
+        "detalle": "Premio premium de hasta 8 niveles esta semana",
+        "precio_usd": 1.49,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pase_premium_plus",
+        "nombre": "Pase de Temporada Premium Plus",
+        "detalle": "Pase Premium y 10 niveles ya desbloqueados",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pack_obra_s",
+        "nombre": "Pack de obra S",
+        "detalle": "10 h de aceleradores de obra y materiales",
+        "precio_usd": 1.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pack_obra_m",
+        "nombre": "Pack de obra M",
+        "detalle": "30 h de aceleradores de obra y materiales",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pack_obra_l",
+        "nombre": "Pack de obra L",
+        "detalle": "80 h de aceleradores de obra y materiales",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.pase_copa",
+        "nombre": "Pase de Copa",
+        "detalle": "+5 eventos por día en la Copa de esta semana",
+        "precio_usd": 2.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.equipo_obra_2",
+        "nombre": "Equipo de obra extra",
+        "detalle": "+1 equipo de obra para siempre en tu sede",
+        "precio_usd": 2.99,
+        "tipo": "NON_CONSUMABLE"
+    },
+    {
+        "id": "envivo.fondo_crecimiento",
+        "nombre": "Fondo de crecimiento",
+        "detalle": "Créditos y materiales al subir tu sede",
+        "precio_usd": 19.99,
+        "tipo": "NON_CONSUMABLE"
+    },
+    {
+        "id": "envivo.tarjeta_semanal",
+        "nombre": "Tarjeta semanal",
+        "detalle": "7 días: 15 créditos y materiales cada día",
+        "precio_usd": 1.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_vip_s",
+        "nombre": "Oferta VIP: Primer impulso",
+        "detalle": "300 créditos, dinero del juego y 5 cables",
+        "precio_usd": 1.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_vip_m",
+        "nombre": "Oferta VIP: En ascenso",
+        "detalle": "900 créditos, dinero del juego y repuestos",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_vip_l",
+        "nombre": "Oferta VIP: Gran producción",
+        "detalle": "2.000 créditos, dinero del juego y repuestos",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_campeon",
+        "nombre": "Oferta del campeón",
+        "detalle": "1.000 créditos, dinero del juego y repuestos",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_sede_5",
+        "nombre": "Oferta Sede nivel 5",
+        "detalle": "800 créditos, dinero del juego y repuestos",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_sede_10",
+        "nombre": "Oferta Sede nivel 10",
+        "detalle": "1.800 créditos, dinero del juego y repuestos",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.regreso_s",
+        "nombre": "Oferta de regreso",
+        "detalle": "150 créditos, dinero del juego y repuestos",
+        "precio_usd": 0.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.regreso_m",
+        "nombre": "Oferta de regreso Plus",
+        "detalle": "900 créditos, dinero del juego y repuestos",
+        "precio_usd": 4.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.regreso_l",
+        "nombre": "Gran oferta de regreso",
+        "detalle": "2.000 créditos, dinero del juego y repuestos",
+        "precio_usd": 9.99,
+        "tipo": "CONSUMABLE"
+    },
+    {
+        "id": "envivo.oferta_novato",
+        "nombre": "Oferta de novato",
+        "detalle": "200 créditos, dinero del juego y repuestos",
+        "precio_usd": 0.99,
+        "tipo": "NON_CONSUMABLE"
+    }
+]
