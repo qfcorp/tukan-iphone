@@ -276,6 +276,94 @@ def subir_capturas(carpeta):
     print("LISTO: %d capturas de revisión subidas." % hechas)
 
 
+def crear_desde_lista(bundle, ruta_lista, carpeta_capturas=None):
+    """(25 nov 2026) Compras simples (consumibles y «una sola vez») de una app web, p. ej. EN VIVO Tycoon.
+    ruta_lista: JSON [{id, nombre (<=30), detalle (<=45), precio_usd, tipo: CONSUMABLE|NON_CONSUMABLE}].
+    Crea lo que falta, pone texto en es-MX, países de la app, precio (punto de Apple más cercano, EE. UU. como base)
+    y, si hay carpeta_capturas/<id>.png o carpeta_capturas/tienda.png, la captura de revisión. Se puede repetir."""
+    import hashlib
+    from asc import error_corto, pedir, subir_archivo
+    from publicar_app_store import app_id
+
+    def ok(st, r, que):
+        if st not in (200, 201, 204):
+            raise RuntimeError("%s (%s): %s" % (que, st, error_corto(r)))
+        return r
+
+    lista = json.load(open(ruta_lista, encoding="utf-8"))
+    aid = app_id(bundle)
+    r = ok(*pedir("GET", "/v1/apps/%s/appAvailabilityV2" % aid), "leer disponibilidad")
+    ta, _ = todos(pedir, ok, "/v2/appAvailabilities/%s/territoryAvailabilities?include=territory&limit=200" % r["data"]["id"])
+    paises = sorted({t["relationships"]["territory"]["data"]["id"] for t in ta if t["attributes"].get("available")})
+    print("App %s: %s · %d países · %d compras en la lista" % (bundle, aid, len(paises), len(lista)))
+    iaps = {i["attributes"]["productId"]: i for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]}
+    for c in lista:
+        nombre = nombre_corto(c["nombre"])
+        detalle = c["detalle"][:45]
+        iap = iaps.get(c["id"])
+        if not iap:
+            iap = ok(*pedir("POST", "/v2/inAppPurchases", {"data": {"type": "inAppPurchases", "attributes": {
+                "name": c["id"], "productId": c["id"], "inAppPurchaseType": c["tipo"], "familySharable": False,
+                "reviewNote": c.get("nota_revisor") or ("In-game item for EN VIVO Tycoon, delivered by our server after it "
+                                                       "verifies the signed StoreKit transaction. Test: Tienda tab > store.")},
+                "relationships": {"app": {"data": {"type": "apps", "id": aid}}}}}), "crear " + c["id"])["data"]
+        iid = iap["id"]
+        locs, _ = todos(pedir, ok, "/v2/inAppPurchases/%s/inAppPurchaseLocalizations" % iid)
+        if not any(l["attributes"]["locale"] == LOCALE for l in locs):
+            ok(*pedir("POST", "/v1/inAppPurchaseLocalizations", {"data": {"type": "inAppPurchaseLocalizations",
+                "attributes": {"locale": LOCALE, "name": nombre, "description": detalle},
+                "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": iid}}}}}), "texto " + c["id"])
+        st, r = pedir("GET", "/v2/inAppPurchases/%s/inAppPurchaseAvailability" % iid)
+        if st != 200 or not r.get("data"):
+            ok(*pedir("POST", "/v1/inAppPurchaseAvailabilities", {"data": {"type": "inAppPurchaseAvailabilities",
+                "attributes": {"availableInNewTerritories": False},
+                "relationships": {"inAppPurchase": {"data": {"type": "inAppPurchases", "id": iid}},
+                                  "availableTerritories": {"data": [{"type": "territories", "id": p} for p in paises]}}}}),
+               "países " + c["id"])
+        con_precio = False
+        st, r = pedir("GET", "/v2/inAppPurchases/%s/iapPriceSchedule" % iid)
+        if st == 200 and r.get("data"):
+            st2, r2 = pedir("GET", "/v1/inAppPurchasePriceSchedules/%s/manualPrices?limit=1" % r["data"]["id"])
+            con_precio = st2 == 200 and bool(r2.get("data"))
+        precio_txt = "ya tenía precio"
+        if not con_precio:
+            puntos, _ = todos(pedir, ok, "/v2/inAppPurchases/%s/pricePoints?filter[territory]=USA&limit=200" % iid)
+            pp = mas_cercano([(p["id"], p["attributes"]["customerPrice"]) for p in puntos], float(c["precio_usd"]))
+            ok(*pedir("POST", "/v1/inAppPurchasePriceSchedules", {
+                "data": {"type": "inAppPurchasePriceSchedules",
+                         "relationships": {"inAppPurchase": {"data": {"type": "inAppPurchases", "id": iid}},
+                                           "baseTerritory": {"data": {"type": "territories", "id": "USA"}},
+                                           "manualPrices": {"data": [{"type": "inAppPurchasePrices", "id": "${precio}"}]}}},
+                "included": [{"type": "inAppPurchasePrices", "id": "${precio}", "attributes": {"startDate": None},
+                              "relationships": {"inAppPurchasePricePoint": {"data": {"type": "inAppPurchasePricePoints", "id": pp[0]}}}}]}),
+               "precio " + c["id"])
+            precio_txt = "US$%s" % pp[1]
+        captura_txt = ""
+        if carpeta_capturas:
+            ruta = next((x for x in (os.path.join(carpeta_capturas, c["id"] + ".png"),
+                                     os.path.join(carpeta_capturas, "tienda.png")) if os.path.exists(x)), None)
+            if ruta:
+                contenido = open(ruta, "rb").read()
+                md5 = hashlib.md5(contenido).hexdigest()
+                st, r = pedir("GET", "/v2/inAppPurchases/%s/appStoreReviewScreenshot" % iid)
+                actual = (r.get("data") or None) if st == 200 else None
+                if not (actual and actual["attributes"].get("sourceFileChecksum") == md5):
+                    if actual:
+                        pedir("DELETE", "/v1/inAppPurchaseAppStoreReviewScreenshots/" + actual["id"])
+                    r = ok(*pedir("POST", "/v1/inAppPurchaseAppStoreReviewScreenshots", {"data": {
+                        "type": "inAppPurchaseAppStoreReviewScreenshots",
+                        "attributes": {"fileName": os.path.basename(ruta), "fileSize": len(contenido)},
+                        "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": iid}}}}}),
+                        "reservar captura " + c["id"])
+                    subir_archivo(r["data"]["attributes"]["uploadOperations"], contenido)
+                    ok(*pedir("PATCH", "/v1/inAppPurchaseAppStoreReviewScreenshots/" + r["data"]["id"], {"data": {
+                        "type": "inAppPurchaseAppStoreReviewScreenshots", "id": r["data"]["id"],
+                        "attributes": {"uploaded": True, "sourceFileChecksum": md5}}}), "confirmar captura " + c["id"])
+                    captura_txt = " · captura subida"
+        print("  %-34s %-15s %s%s" % (c["id"], c["tipo"], precio_txt, captura_txt))
+    print("LISTO: %d compras de %s." % (len(lista), bundle))
+
+
 def probar():
     subs, cons = productos()
     assert len(subs) == 16 and len(cons) == 4, (len(subs), len(cons))
@@ -301,5 +389,8 @@ if __name__ == "__main__":
         probar()
     elif sys.argv[1:2] == ["capturas"]:
         subir_capturas(sys.argv[2])
+    elif sys.argv[1:2] == ["lista"]:
+        # python3 herramientas/crear_compras.py lista <bundle> <lista.json> [carpeta_capturas]
+        crear_desde_lista(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) > 4 else None)
     else:
         correr()
