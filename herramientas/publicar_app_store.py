@@ -411,11 +411,19 @@ def poner_revisor(v, app, f, datos_contacto):
            "datos del revisor")
 
 
+MIN_CAPTURAS = 3
+
+
 def preparar(app, datos_contacto):
     f = ficha_de(app)
     if f.get("esperar"):
         # "esperar": "motivo" en la ficha = todavia no se envia (ej. falta instalar un arreglo en el servidor)
         raise NoLista("en espera: " + str(f["esperar"]))
+    # Apple rechaza si las capturas solo muestran la pantalla de entrar (regla 2.3.3): minimo 3 fotos de la app por dentro
+    if len(glob.glob(os.path.join(PUB, "capturas", app, "*.png"))) < MIN_CAPTURAS:
+        raise NoLista("faltan las fotos de la app por dentro (minimo %d en publicacion/capturas/%s)" % (MIN_CAPTURAS, app))
+    if "{video}" in f.get("notas_revisor", "") and not f.get("video_revisor"):
+        raise NoLista("falta el video de la app grabado en el iPhone (\"video_revisor\" en la ficha)")
     aid = app_id(f["bundle_id"])
     build_id, version, compilacion = ultima_compilacion(aid)
     v = version_editable(aid, version if f.get("crear_version") else None)
