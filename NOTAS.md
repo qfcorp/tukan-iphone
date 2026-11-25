@@ -31,8 +31,9 @@
    - **Si Apple rechaza una app, la cola se pausa sola** y se abre un issue en GitHub.
    - Capturas: `.github/workflows/capturas-app-store.yml` + `herramientas/sacar_capturas.sh` (iPhone 6.9", español, 9:41).
      En la ficha: `"capturas": [{"espera": 8, "url": "...", "argumentos": [...]}]`.
-   - Secretos: `ASC_KEY_P8`, `REVISOR_TELEFONO` (puesto por Dimitry 14 nov), `DEMOS_REVISOR` (falta: JSON
-     `{"app": {"usuario": "...", "clave": "..."}}` con cuentas de prueba para el revisor; las 19 apps restantes lo necesitan).
+   - Secretos: `ASC_KEY_P8`, `REVISOR_TELEFONO` (puesto por Dimitry 14 nov), `DEMOS_REVISOR` (opcional, JSON `{"app": {"usuario": "...", "clave": "..."}}`) y **`REVISOR_CLAVE`** (25 nov: la misma
+     contraseña del revisor de Google Play en todas las apps; el usuario `revisor.google@tukanec.com` va en `"demo"` de cada ficha).
+     Ficha con `"esperar": "motivo"` = no se envía todavía.
    - Privacidad de la app (no hay API): se llena en App Store Connect a mano. Hecha: TuBroadcast y QF Deportes (no recogen
      datos), EN VIVO (nombre, correo, partida, chat, ID, uso y errores; vinculados, sin rastreo). **Falta en las otras 19.**
    - Cambios en la plantilla: apps **solo iPhone** (sin iPad), **bloqueo de anuncios y rastreadores** (Google Ads/Analytics,

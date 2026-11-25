@@ -11,7 +11,7 @@
   "categoria_secundaria": "BUSINESS",
   "contenido_terceros": false,
   "necesita_demo": true,
-  "notas_revisor": "TuAcademia es el sistema de gestión para academias de baile, música, natación y escuelas deportivas: alumnos, asistencia, pensiones y portal de padres. Lo usan academias y su personal en Ecuador, y los padres de familia. La cuenta de prueba trae datos de ejemplo. En iPhone no hay compras ni pagos dentro de la app: los clientes contratan el servicio con Tukán Software fuera de la app, como servicio entre empresas.",
+  "notas_revisor": "1. Screen recording (physical iPhone, latest iOS): {video}\n\n2. Purpose and audience: TuAcademia is management software for dance, music, swimming and sports academies in Ecuador. The academy owner and staff manage students, courses and schedules, take attendance, plan classes, record evaluations, levels/exams and recitals, and keep track of the monthly fees the academy charges its students (with receipts, simple accounting and the academy's own electronic invoices). Parents use a family portal to see attendance and progress. Problem it solves: academies still use paper lists, WhatsApp and spreadsheets; TuAcademia puts students, classes and fees in one place.\n\n3. How to use it: sign in with the demo account in the App Review Information section (a sample academy, \"Academia Ejemplo Tukán\", with invented data). After login: Resumen shows today's classes, fees and the getting-started checklist; the ☰ menu has Alumnos (students), Cursos y horarios, Asistencia (tap P/T/A to mark present, late or absent), Clases particulares, Planificar clases, Evaluaciones, Videos, Niveles y exámenes, Recitales; Dinero shows the fees the academy collects from its students, Contabilidad and Factura electrónica (the academy's own invoices). The bottom bar has Resumen, Alumnos, Asistencia, Pagos and Más. Accounts are created by Tukán Software for each academy (B2B service); there is no self sign-up in the iOS app, and account deletion is handled on request (info@tukansoftware.com). On iPhone there are no prices, plans or payments for our software: academies contract the service with Tukán Software outside the app. The fees shown inside the app are real-world class fees between the academy and its students' families, not digital content.\n\n4. External services: our own server (tuacademia.tukanec.com); WhatsApp and Telegram links/notifications for reminders (optional, configured by the academy); email (SMTP); Cloudflare (hosting/CDN); YouTube links for class videos (optional); Ecuador's electronic invoicing system for the academy's own invoices (optional). Optional AI help answers use Anthropic's Claude API. No ads, no third-party analytics.\n\n5. Regional differences: none. The app works the same in every region (Spanish).\n\n6. Regulated industry / third-party material: not regulated. Student data (which may include minors) is entered and managed only by the academy's authorized staff, under our privacy policy (https://tuacademia.tukanec.com/index.php?v=privacidad).",
   "capturas": [
     {
       "espera": 8
@@ -19,7 +19,9 @@
   ],
   "app": "tuacademia",
   "demo": {
-    "usuario": "",
+    "usuario": "revisor.google@tukanec.com",
     "clave": ""
-  }
+  },
+  "video_revisor": "https://drive.google.com/file/d/1Wh5xDlsSIV2djlm12ZXXzN8pHmfKH7k0/view",
+  "esperar": "instalar en el servidor el arreglo que esconde los planes de Tukan en iPhone"
 }

@@ -358,6 +358,19 @@ def poner_compilacion(v, build_id):
               {"data": {"type": "builds", "id": build_id}}), "elegir la version subida")
 
 
+def cuenta_revisor(app, f, demos):
+    """Cuenta de prueba para Apple. Orden: DEMOS_REVISOR[app] (JSON) y, si falta la clave, la ficha
+    ("demo": {"usuario": ...}) con la clave del secreto REVISOR_CLAVE (la misma contrasena del revisor en todas
+    las apps, 13 nov 2026). La clave nunca se escribe en el repo ni en el registro."""
+    demo = dict(demos.get(app) or {})
+    ficha = f.get("demo") or {}
+    if not demo.get("usuario"):
+        demo["usuario"] = ficha.get("usuario", "")
+    if not demo.get("clave"):
+        demo["clave"] = ficha.get("clave") or os.environ.get("REVISOR_CLAVE", "")
+    return demo
+
+
 def poner_revisor(v, app, f, datos_contacto):
     demos = {}
     try:
@@ -380,7 +393,7 @@ def poner_revisor(v, app, f, datos_contacto):
         notas = notas.replace("{video}", f["video_revisor"])
     attrs["notes"] = notas[:4000]
     if f.get("necesita_demo"):
-        demo = demos.get(app) or {}
+        demo = cuenta_revisor(app, f, demos)
         if demo.get("usuario") and demo.get("clave"):
             attrs.update(demoAccountRequired=True, demoAccountName=demo["usuario"],
                          demoAccountPassword=demo["clave"])
@@ -400,6 +413,9 @@ def poner_revisor(v, app, f, datos_contacto):
 
 def preparar(app, datos_contacto):
     f = ficha_de(app)
+    if f.get("esperar"):
+        # "esperar": "motivo" en la ficha = todavia no se envia (ej. falta instalar un arreglo en el servidor)
+        raise NoLista("en espera: " + str(f["esperar"]))
     aid = app_id(f["bundle_id"])
     build_id, version, compilacion = ultima_compilacion(aid)
     v = version_editable(aid, version if f.get("crear_version") else None)

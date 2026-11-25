@@ -36,6 +36,7 @@ jobs:
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       REVISOR_TELEFONO: ${{ secrets.REVISOR_TELEFONO }}
       DEMOS_REVISOR: ${{ secrets.DEMOS_REVISOR }}
+      REVISOR_CLAVE: ${{ secrets.REVISOR_CLAVE }}
     steps:
       - uses: actions/checkout@v4
       - name: Instalar lo necesario
