@@ -162,6 +162,8 @@ def main():
         f.write("    static let url = %s\n" % swift_texto(cfg["url"]))
         f.write("    static let colorFondo = %s\n" % swift_texto(cfg["color_fondo"]))
         f.write("    static let version = %s\n" % swift_texto(cfg["version"]))
+        # (25 nov 2026) Compras dentro de la app con Apple (TiendaApple.swift): solo apps que venden algo digital
+        f.write("    static let comprasApple = %s\n" % ("true" if cfg.get("compras_apple") else "false"))
         f.write("}\n")
 
     # Iconos y color

@@ -5,7 +5,8 @@
   "bundle_id": "com.tukanec.envivo",
   "url": "https://juego.tukanec.com/index.html?origen=ios",
   "color_fondo": "#0D0F14",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compilacion": "1",
-  "permisos": {}
+  "permisos": {},
+  "compras_apple": true
 }
