@@ -21,5 +21,6 @@
   "demo": {
     "usuario": "",
     "clave": ""
-  }
+  },
+  "no_listada": true
 }

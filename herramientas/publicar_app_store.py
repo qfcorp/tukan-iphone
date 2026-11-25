@@ -291,7 +291,9 @@ def enviar_compras(aid):
 
 
 def poner_version(v, version, f):
-    attrs = {"copyright": COPYRIGHT, "releaseType": "AFTER_APPROVAL"}
+    # App no listada (uso interno de una empresa): se publica a mano, despues de que Apple acepte la solicitud de
+    # distribucion no listada (developer.apple.com/contact/request/unlisted-app/); asi nunca sale publica por error
+    attrs = {"copyright": COPYRIGHT, "releaseType": "MANUAL" if f.get("no_listada") else "AFTER_APPROVAL"}
     if version and v["attributes"].get("versionString") != version:
         attrs["versionString"] = version
     ok(*pedir("PATCH", "/v1/appStoreVersions/" + v["id"], {"data": {
@@ -391,6 +393,8 @@ def poner_revisor(v, app, f, datos_contacto):
         if not f.get("video_revisor"):
             raise NoLista("falta el video de la app grabado en el iPhone (\"video_revisor\" en la ficha)")
         notas = notas.replace("{video}", f["video_revisor"])
+    if f.get("no_listada"):
+        notas = NOTA_NO_LISTADA + "\n\n" + notas
     attrs["notes"] = notas[:4000]
     if f.get("necesita_demo"):
         demo = cuenta_revisor(app, f, demos)
@@ -412,6 +416,9 @@ def poner_revisor(v, app, f, datos_contacto):
 
 
 MIN_CAPTURAS = 3
+NOTA_NO_LISTADA = ("UNLISTED DISTRIBUTION: this app is intended for unlisted distribution only (it is used by the staff "
+                   "and clients of one company). We are submitting the Unlisted App Distribution request for it. "
+                   "Release is set to manual: please do not treat it as a public app.")
 
 
 def preparar(app, datos_contacto):
