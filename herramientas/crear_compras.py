@@ -28,6 +28,7 @@ REPO = os.path.dirname(DIR)
 BUNDLE = "com.tukansoftware.tubroadcast"
 LOCALE = "es-MX"
 AVISOS_URL = "https://panel.tukanec.com/tubroadcast_api.php?a=apple_notificacion"
+AVISOS_POR_APP = {"com.tukanec.envivo": "https://juego.tukanec.com/api/apple/notificacion"}
 STOREKIT = os.path.join(REPO, "nativas", "tubroadcast", "TuBroadcast.storekit")
 # Precios (decisión de Dimitry, 23 nov 2026): los mismos de Google Play para 1 celular; paquete = precio × celulares × 0,85;
 # anual = 12 × el mensual (sin meses de regalo). Apple usa el punto de precio más cercano.
@@ -298,6 +299,13 @@ def crear_desde_lista(bundle, ruta_lista, carpeta_capturas=None):
     ta, _ = todos(pedir, ok, "/v2/appAvailabilities/%s/territoryAvailabilities?include=territory&limit=200" % r["data"]["id"])
     paises = sorted({t["relationships"]["territory"]["data"]["id"] for t in ta if t["attributes"].get("available")})
     print("App %s: %s · %d países · %d compras en la lista" % (bundle, aid, len(paises), len(lista)))
+    # Avisos del servidor de Apple (V2): reembolsos y revocaciones van al servidor de esa app
+    avisos = AVISOS_POR_APP.get(bundle)
+    if avisos:
+        ok(*pedir("PATCH", "/v1/apps/" + aid, {"data": {"type": "apps", "id": aid, "attributes": {
+            "subscriptionStatusUrl": avisos, "subscriptionStatusUrlVersion": "V2",
+            "subscriptionStatusUrlForSandbox": avisos, "subscriptionStatusUrlVersionForSandbox": "V2"}}}), "poner avisos V2")
+        print("Avisos V2 →", avisos)
     iaps = {i["attributes"]["productId"]: i for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]}
     for c in lista:
         nombre = nombre_corto(c["nombre"])
