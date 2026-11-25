@@ -66,11 +66,11 @@
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
   },
   "tuvocalia": {
-    "estado": "en_revision",
+    "estado": "aprobada",
     "fecha": "2026-11-23 23:21 UTC",
     "version_id": "846647ef-d716-48f0-b71c-0b86423ddaa4",
     "envio_id": "a6e8d040-b723-41e6-b11b-0b92a375ac9f",
-    "apple": "IN_REVIEW"
+    "apple": "READY_FOR_DISTRIBUTION"
   },
   "tuacademia": {
     "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
