@@ -24,7 +24,6 @@
     "jdlogistica"
   ],
   "por_tanda": 3,
-  "pausada": true,
-  "subida_desde": "2026-11-14T02:30:00",
-  "motivo": "Apple rechazo: envivo"
+  "pausada": false,
+  "subida_desde": "2026-11-14T02:30:00"
 }
