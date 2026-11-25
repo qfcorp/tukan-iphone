@@ -83,6 +83,8 @@ jobs:
           cd construir/tubroadcast
           set +e
           # StoreKitTest necesita la app firmada (firma local «-», sin certificados): sin firma da SKInternalErrorDomain 3.
+          mkdir -p "$GITHUB_WORKSPACE/pruebas/tubroadcast/capturas"
+          export TEST_RUNNER_CAPTURAS_DIR="$GITHUB_WORKSPACE/pruebas/tubroadcast/capturas"
           xcodebuild test -project TuBroadcast.xcodeproj -scheme TuBroadcast \
             -configuration Debug -destination "platform=iOS Simulator,id=$UDID" \
             -derivedDataPath compilado \
@@ -91,7 +93,7 @@ jobs:
             CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
             -test-timeouts-enabled YES -default-test-execution-time-allowance 60 -maximum-test-execution-time-allowance 120 \
-            2>&1 | tee pruebas.log | grep --line-buffered -E "Test Case .*(passed|failed|skipped)|SKTestSession|error:|Executed [0-9]+ test"
+            2>&1 | tee pruebas.log | grep --line-buffered -E "Test Case .*(passed|failed|skipped)|SKTestSession|CAPTURA_PLANES|error:|Executed [0-9]+ test"
           RES=${PIPESTATUS[0]}
           set -e
           grep -E "Test Case .*(passed|failed)|error:|Executed [0-9]+ test" pruebas.log | sed 's/^.*Test Case/Test Case/' > ../../pruebas/tubroadcast/pruebas.txt || true

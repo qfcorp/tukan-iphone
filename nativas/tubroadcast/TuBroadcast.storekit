@@ -23,7 +23,7 @@
       "type": "Consumable"
     },
     {
-      "displayPrice": "9.99",
+      "displayPrice": "10.00",
       "familyShareable": false,
       "internalID": "6760000018",
       "localizations": [
@@ -43,7 +43,7 @@
       "type": "Consumable"
     },
     {
-      "displayPrice": "14.99",
+      "displayPrice": "16.95",
       "familyShareable": false,
       "internalID": "6760000019",
       "localizations": [
@@ -63,7 +63,7 @@
       "type": "Consumable"
     },
     {
-      "displayPrice": "27.99",
+      "displayPrice": "33.90",
       "familyShareable": false,
       "internalID": "6760000020",
       "localizations": [
@@ -133,7 +133,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "59.99",
+          "displayPrice": "71.90",
           "familyShareable": false,
           "groupNumber": 8,
           "internalID": "6760000002",
@@ -160,7 +160,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "15.99",
+          "displayPrice": "15.49",
           "familyShareable": false,
           "groupNumber": 7,
           "internalID": "6760000003",
@@ -187,7 +187,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "159.99",
+          "displayPrice": "182.99",
           "familyShareable": false,
           "groupNumber": 7,
           "internalID": "6760000004",
@@ -214,7 +214,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "24.99",
+          "displayPrice": "25.49",
           "familyShareable": false,
           "groupNumber": 6,
           "internalID": "6760000005",
@@ -241,7 +241,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "249.99",
+          "displayPrice": "304.99",
           "familyShareable": false,
           "groupNumber": 6,
           "internalID": "6760000006",
@@ -268,7 +268,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "44.99",
+          "displayPrice": "50.90",
           "familyShareable": false,
           "groupNumber": 5,
           "internalID": "6760000007",
@@ -295,7 +295,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "449.99",
+          "displayPrice": "609.99",
           "familyShareable": false,
           "groupNumber": 5,
           "internalID": "6760000008",
@@ -349,7 +349,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "109.99",
+          "displayPrice": "131.99",
           "familyShareable": false,
           "groupNumber": 4,
           "internalID": "6760000010",
@@ -376,7 +376,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "29.99",
+          "displayPrice": "28.00",
           "familyShareable": false,
           "groupNumber": 3,
           "internalID": "6760000011",
@@ -403,7 +403,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "299.99",
+          "displayPrice": "334.99",
           "familyShareable": false,
           "groupNumber": 3,
           "internalID": "6760000012",
@@ -430,7 +430,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "47.99",
+          "displayPrice": "46.90",
           "familyShareable": false,
           "groupNumber": 2,
           "internalID": "6760000013",
@@ -457,7 +457,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "479.99",
+          "displayPrice": "559.99",
           "familyShareable": false,
           "groupNumber": 2,
           "internalID": "6760000014",
@@ -484,7 +484,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "89.99",
+          "displayPrice": "93.00",
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "6760000015",
@@ -511,7 +511,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "899.99",
+          "displayPrice": "1000.00",
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "6760000016",

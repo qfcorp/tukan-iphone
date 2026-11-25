@@ -12,9 +12,13 @@ enum EnlacesLegales {
 struct PantallaPlanes: View {
     @EnvironmentObject var tienda: Tienda
     @EnvironmentObject var gestor: GestorLicencia
-    @State private var celulares = 1
+    @State private var celulares: Int
     @State private var aviso: String?
     @State private var comprado: RespuestaActivacion?
+
+    init(celularesIniciales: Int = 1) {
+        _celulares = State(initialValue: celularesIniciales)
+    }
 
     var body: some View {
         List {
