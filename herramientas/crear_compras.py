@@ -12,6 +12,8 @@ Se puede correr varias veces: lo que ya existe no se duplica.
 
 Uso:  python3 herramientas/crear_compras.py [probar]
       probar = solo muestra lo que haría (sin llamar a Apple).
+      python3 herramientas/crear_compras.py capturas <carpeta>
+      sube planes_01.png / _03 / _05 / _10 como captura de revisión de cada compra.
 """
 import json
 import os
@@ -223,6 +225,57 @@ def correr():
     print("Falta para enviarlas a revisión: una captura de la pantalla de planes por compra (se suben junto con la versión).")
 
 
+def subir_capturas(carpeta):
+    """Sube la captura de revisión de cada compra: planes_01.png para las de 1 celular, planes_03.png para 3, etc.
+    Si la compra ya tiene una captura igual (mismo MD5) no la vuelve a subir; si es distinta, la reemplaza."""
+    import hashlib
+    from asc import error_corto, pedir, subir_archivo
+    from publicar_app_store import app_id
+
+    def ok(st, r, que):
+        if st not in (200, 201, 204):
+            raise RuntimeError("%s (%s): %s" % (que, st, error_corto(r)))
+        return r
+
+    aid = app_id(BUNDLE)
+    grupos, _ = todos(pedir, ok, "/v1/apps/%s/subscriptionGroups?limit=50" % aid)
+    gid = next(g["id"] for g in grupos if g["attributes"]["referenceName"] == "TuBroadcast")
+    compras = [("subscriptions", s["id"], s["attributes"]["productId"])
+               for s in todos(pedir, ok, "/v1/subscriptionGroups/%s/subscriptions?limit=50" % gid)[0]]
+    compras += [("inAppPurchases", i["id"], i["attributes"]["productId"])
+                for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]
+                if i["attributes"]["productId"].startswith("tubroadcast.")]
+    hechas = 0
+    for tipo, cid, pid in sorted(compras, key=lambda c: c[2]):
+        n = int(pid.split(".")[2])
+        ruta = os.path.join(carpeta, "planes_%02d.png" % n)
+        contenido = open(ruta, "rb").read()
+        md5 = hashlib.md5(contenido).hexdigest()
+        if tipo == "subscriptions":
+            rel_get = "/v1/subscriptions/%s/appStoreReviewScreenshot" % cid
+            recurso, relacion, tipo_rel = "subscriptionAppStoreReviewScreenshots", "subscription", "subscriptions"
+        else:
+            rel_get = "/v2/inAppPurchases/%s/appStoreReviewScreenshot" % cid
+            recurso, relacion, tipo_rel = "inAppPurchaseAppStoreReviewScreenshots", "inAppPurchaseV2", "inAppPurchases"
+        st, r = pedir("GET", rel_get)
+        actual = (r.get("data") or None) if st == 200 else None
+        if actual and actual["attributes"].get("sourceFileChecksum") == md5:
+            print("  %-28s ya tenía esta captura" % pid)
+            continue
+        if actual:
+            pedir("DELETE", "/v1/%s/%s" % (recurso, actual["id"]))
+        r = ok(*pedir("POST", "/v1/" + recurso, {"data": {"type": recurso,
+              "attributes": {"fileName": os.path.basename(ruta), "fileSize": len(contenido)},
+              "relationships": {relacion: {"data": {"type": tipo_rel, "id": cid}}}}}), "reservar captura " + pid)
+        sid = r["data"]["id"]
+        subir_archivo(r["data"]["attributes"]["uploadOperations"], contenido)
+        ok(*pedir("PATCH", "/v1/%s/%s" % (recurso, sid), {"data": {"type": recurso, "id": sid,
+              "attributes": {"uploaded": True, "sourceFileChecksum": md5}}}), "confirmar captura " + pid)
+        hechas += 1
+        print("  %-28s captura subida (%s)" % (pid, os.path.basename(ruta)))
+    print("LISTO: %d capturas de revisión subidas." % hechas)
+
+
 def probar():
     subs, cons = productos()
     assert len(subs) == 16 and len(cons) == 4, (len(subs), len(cons))
@@ -244,4 +297,9 @@ def probar():
 
 
 if __name__ == "__main__":
-    probar() if (sys.argv[1:] == ["probar"]) else correr()
+    if sys.argv[1:] == ["probar"]:
+        probar()
+    elif sys.argv[1:2] == ["capturas"]:
+        subir_capturas(sys.argv[2])
+    else:
+        correr()

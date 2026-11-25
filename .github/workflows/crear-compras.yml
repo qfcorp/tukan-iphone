@@ -5,6 +5,11 @@ name: Crear compras de TuBroadcast en App Store Connect
 # Se puede correr varias veces: lo que ya existe no se duplica.
 on:
   workflow_dispatch:
+    inputs:
+      modo:
+        description: "crear (planes y precios) o capturas (captura de revisión de cada compra)"
+        required: true
+        default: "crear"
 
 concurrency:
   group: crear-compras
@@ -25,4 +30,8 @@ jobs:
       - name: Revisar la lista (sin Apple)
         run: python3 herramientas/crear_compras.py probar
       - name: Crear en App Store Connect
+        if: github.event.inputs.modo != 'capturas'
         run: python3 herramientas/crear_compras.py
+      - name: Subir las capturas de revisión (publicacion/capturas/tubroadcast/revision)
+        if: github.event.inputs.modo == 'capturas'
+        run: python3 herramientas/crear_compras.py capturas publicacion/capturas/tubroadcast/revision
