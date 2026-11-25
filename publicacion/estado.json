@@ -11,7 +11,8 @@
     "estado": "enviada",
     "fecha": "2026-11-25 17:26 UTC",
     "version_id": "46cc9c8c-9250-436b-9670-42d339669673",
-    "envio_id": "b0078533-14d9-4207-b110-54018ae34b83"
+    "envio_id": "b0078533-14d9-4207-b110-54018ae34b83",
+    "apple": "WAITING_FOR_REVIEW"
   },
   "qfdeportes": {
     "estado": "aprobada",
@@ -23,13 +24,13 @@
     "reenviada": "2026-11-15 16:50 UTC (con video y capturas del iPhone)"
   },
   "tudron": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "falta el video de la app grabado en el iPhone (\"video_revisor\" en la ficha)"
   },
   "tuflota": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuflota)"
   },
   "tufactura": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tufactura)"
   },
   "tuwhatsapp": {
     "estado": "aprobada",
@@ -39,31 +40,31 @@
     "apple": "READY_FOR_DISTRIBUTION"
   },
   "tusalon": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tusalon)"
   },
   "tuspa": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuspa)"
   },
   "tugroomer": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tugroomer)"
   },
   "tuguarderia": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuguarderia)"
   },
   "tulavadora": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tulavadora)"
   },
   "tumecanica": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tumecanica)"
   },
   "tuevento": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuevento)"
   },
   "tuplanner": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuplanner)"
   },
   "tuhospedaje": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/tuhospedaje)"
   },
   "tuvocalia": {
     "estado": "aprobada",
@@ -73,18 +74,18 @@
     "apple": "READY_FOR_DISTRIBUTION"
   },
   "tuacademia": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "en espera: instalar en el servidor el arreglo que esconde los planes de Tukan en iPhone"
   },
   "qferp": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/qferp)"
   },
   "qfflota": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/qfflota)"
   },
   "jdentregas": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/jdentregas)"
   },
   "jdlogistica": {
-    "pendiente": "falta la cuenta de prueba para el revisor (DEMOS_REVISOR)"
+    "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/jdlogistica)"
   }
 }
