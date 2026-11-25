@@ -74,7 +74,10 @@
     "apple": "READY_FOR_DISTRIBUTION"
   },
   "tuacademia": {
-    "pendiente": "en espera: instalar en el servidor el arreglo que esconde los planes de Tukan en iPhone"
+    "estado": "enviada",
+    "fecha": "2026-11-25 19:25 UTC",
+    "version_id": "222d3f6b-6efc-4b9f-a835-487987a7fb1d",
+    "envio_id": "4dbab1fb-f6cf-4a0b-a41b-90696d65f104"
   },
   "qferp": {
     "pendiente": "faltan las fotos de la app por dentro (minimo 3 en publicacion/capturas/qferp)"
