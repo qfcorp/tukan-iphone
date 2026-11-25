@@ -238,7 +238,10 @@ def _fecha(texto):
     return d if d.tzinfo else d.replace(tzinfo=datetime.timezone.utc)
 
 
-def version_editable(aid):
+PUBLICADAS = {"READY_FOR_DISTRIBUTION", "READY_FOR_SALE", "REMOVED_FROM_SALE", "DEVELOPER_REMOVED_FROM_SALE"}
+
+
+def version_editable(aid, version_nueva=None):
     st, r = pedir("GET", "/v1/apps/%s/appStoreVersions?filter[platform]=IOS&limit=10" % aid)
     ok(st, r, "leer versiones")
     for v in r["data"]:
@@ -247,7 +250,44 @@ def version_editable(aid):
                                                       "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}:
             return v
     estados = [v["attributes"].get("appStoreState") for v in r["data"]]
+    # (25 nov 2026) Versión nueva: si todas las versiones ya están publicadas y la última compilación trae
+    # otro número (p. ej. 1.0.1), se crea la versión en App Store Connect, como «+ Versión» en la web.
+    ya = {v["attributes"].get("versionString") for v in r["data"]}
+    if version_nueva and version_nueva not in ya and estados and all(e in PUBLICADAS for e in estados):
+        r = ok(*pedir("POST", "/v1/appStoreVersions", {"data": {"type": "appStoreVersions",
+            "attributes": {"platform": "IOS", "versionString": version_nueva},
+            "relationships": {"app": {"data": {"type": "apps", "id": aid}}}}}), "crear la version " + version_nueva)
+        return r["data"]
     raise NoLista("no hay version para editar (estados: %s)" % estados)
+
+
+def enviar_compras(aid):
+    """(25 nov 2026) Deja las compras dentro de la app (suscripciones y consumibles) listas para ir con la próxima
+    versión: Apple revisa las primeras compras junto con una versión de la app. Las ya aprobadas o enviadas se saltan."""
+    hechas = []
+    st, r = pedir("GET", "/v1/apps/%s/subscriptionGroups?include=subscriptions&limit=20" % aid)
+    ok(st, r, "leer suscripciones")
+    for s in [x for x in r.get("included", []) if x["type"] == "subscriptions"]:
+        if s["attributes"].get("state") not in ("READY_TO_SUBMIT", "DEVELOPER_ACTION_NEEDED", "REJECTED"):
+            continue
+        st2, r2 = pedir("POST", "/v1/subscriptionSubmissions", {"data": {"type": "subscriptionSubmissions",
+            "relationships": {"subscription": {"data": {"type": "subscriptions", "id": s["id"]}}}}})
+        if st2 in (200, 201):
+            hechas.append(s["attributes"]["productId"])
+        else:
+            print("   aviso compra %s (%s): %s" % (s["attributes"]["productId"], st2, error_corto(r2)))
+    st, r = pedir("GET", "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)
+    ok(st, r, "leer compras")
+    for i in r.get("data", []):
+        if i["attributes"].get("state") not in ("READY_TO_SUBMIT", "DEVELOPER_ACTION_NEEDED", "REJECTED"):
+            continue
+        st2, r2 = pedir("POST", "/v1/inAppPurchaseSubmissions", {"data": {"type": "inAppPurchaseSubmissions",
+            "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": i["id"]}}}}})
+        if st2 in (200, 201):
+            hechas.append(i["attributes"]["productId"])
+        else:
+            print("   aviso compra %s (%s): %s" % (i["attributes"]["productId"], st2, error_corto(r2)))
+    return "%d compras van con la version" % len(hechas)
 
 
 def poner_version(v, version, f):
@@ -362,7 +402,7 @@ def preparar(app, datos_contacto):
     f = ficha_de(app)
     aid = app_id(f["bundle_id"])
     build_id, version, compilacion = ultima_compilacion(aid)
-    v = version_editable(aid)
+    v = version_editable(aid, version if f.get("crear_version") else None)
     pasos = []
     ok(*pedir("PATCH", "/v1/apps/" + aid, {"data": {"type": "apps", "id": aid, "attributes": {
         "contentRightsDeclaration": "USES_THIRD_PARTY_CONTENT" if f.get("contenido_terceros")
@@ -487,6 +527,8 @@ def tanda(solo=None):
         try:
             aid, vid, pasos = preparar(app, datos_contacto)
             print("   ficha lista: " + "; ".join(pasos))
+            if ficha_de(app).get("compras_con_version"):
+                print("   " + enviar_compras(aid))
             envio = enviar(aid, vid)
             estado[app] = {"estado": "enviada", "fecha": ahora(), "version_id": vid, "envio_id": envio}
             enviadas += 1
