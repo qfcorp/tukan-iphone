@@ -7,9 +7,13 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "crear (planes de TuBroadcast), capturas (revisión de TuBroadcast) o envivo (compras de EN VIVO Tycoon)"
+        description: "crear (planes de TuBroadcast), capturas (revisión de TuBroadcast), diagnostico (solo lee el estado de las compras de TuBroadcast) o envivo (compras de EN VIVO Tycoon)"
         required: true
         default: "crear"
+      producto:
+        description: "solo con modo crear: productId de UNA suscripción para probar (vacío = todas y los pases)"
+        required: false
+        default: ""
 
 concurrency:
   group: crear-compras
@@ -31,10 +35,16 @@ jobs:
         run: python3 herramientas/crear_compras.py probar
       - name: Crear en App Store Connect
         if: github.event.inputs.modo == 'crear'
-        run: python3 herramientas/crear_compras.py
+        env:
+          PRODUCTO: ${{ github.event.inputs.producto }}
+        run: |
+          if [ -n "$PRODUCTO" ]; then python3 herramientas/crear_compras.py solo "$PRODUCTO"; else python3 herramientas/crear_compras.py; fi
       - name: Compras de EN VIVO Tycoon (publicacion/compras/envivo.json)
         if: github.event.inputs.modo == 'envivo'
         run: python3 herramientas/crear_compras.py lista com.tukanec.envivo publicacion/compras/envivo.json publicacion/capturas/envivo/revision
       - name: Subir las capturas de revisión (publicacion/capturas/tubroadcast/revision)
         if: github.event.inputs.modo == 'capturas'
         run: python3 herramientas/crear_compras.py capturas publicacion/capturas/tubroadcast/revision
+      - name: Diagnóstico de las compras de TuBroadcast (solo lee)
+        if: github.event.inputs.modo == 'diagnostico' || github.event.inputs.modo == 'crear'
+        run: python3 herramientas/crear_compras.py diagnostico
