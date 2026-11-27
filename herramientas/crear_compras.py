@@ -557,37 +557,33 @@ def diagnostico():
 
 
 def experimento():
-    """TEMPORAL: volver a subir la captura de basico.1.mes y ver si cambia el estado."""
-    import hashlib, time
-    from asc import error_corto, pedir, subir_archivo
-    sid = "6838547461"
-    def estado():
-        st, r = pedir("GET", "/v1/subscriptions/" + sid)
-        return r["data"]["attributes"]["state"]
-    print("antes:", estado())
-    ruta = os.path.join(REPO, "publicacion/capturas/tubroadcast/revision/planes_01.png")
-    contenido = open(ruta, "rb").read()
-    md5 = hashlib.md5(contenido).hexdigest()
-    st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
-    actual = r.get("data")
-    if actual:
-        st, r = pedir("DELETE", "/v1/subscriptionAppStoreReviewScreenshots/" + actual["id"])
-        print("borrar:", st)
-        time.sleep(3)
-        print("sin captura:", estado())
-    st, r = pedir("POST", "/v1/subscriptionAppStoreReviewScreenshots", {"data": {"type": "subscriptionAppStoreReviewScreenshots",
-          "attributes": {"fileName": "planes_01.png", "fileSize": len(contenido)},
-          "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}}}}})
-    print("reservar:", st, "" if st == 201 else error_corto(r))
-    nid = r["data"]["id"]
-    subir_archivo(r["data"]["attributes"]["uploadOperations"], contenido)
-    st, r = pedir("PATCH", "/v1/subscriptionAppStoreReviewScreenshots/" + nid, {"data": {"type": "subscriptionAppStoreReviewScreenshots",
-          "id": nid, "attributes": {"uploaded": True, "sourceFileChecksum": md5}}})
-    print("confirmar:", st, "" if st == 200 else error_corto(r))
-    for i in range(8):
-        time.sleep(10)
-        st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
-        print("  %ds: estado=%s captura=%s" % ((i + 1) * 10, estado(), ((r.get("data") or {}).get("attributes") or {}).get("assetDeliveryState")))
+    """TEMPORAL (solo lee): versión del grupo, tiers, coherencia país/punto de precio."""
+    import base64
+    from asc import error_corto, pedir
+    ok = lambda st, r, q: r
+    def dec(x):
+        try:
+            return json.loads(base64.urlsafe_b64decode(x + "=" * (-len(x) % 4)))
+        except Exception:
+            return {}
+    st, r = pedir("GET", "/v1/subscriptionGroups/22611548/versions")
+    for v in r.get("data") or []:
+        _mostrar(pedir, "loc de la versión del grupo", "/v1/subscriptionGroupVersions/%s/localizations" % v["id"])
+    _mostrar(pedir, "loc v2 del grupo", "/v2/subscriptionGroupLocalizations/ff9671b0-3279-45de-8147-e4fca26cb54f")
+    for sid in ("6838547461", "6838552393"):
+        _mostrar(pedir, "tiers " + sid, "/v1/subscriptionPriceTiers?filter[subscription]=%s&filter[territory]=USA" % sid)
+        _mostrar(pedir, "loc v2 " + sid, "/v1/subscriptions/%s/subscriptionLocalizations?fields[subscriptionLocalizations]=name,locale,description,state" % sid)
+        precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?include=territory,subscriptionPricePoint&limit=200" % sid)
+        malos = 0
+        for p in precios:
+            pp = p["relationships"]["subscriptionPricePoint"]["data"]["id"]
+            d = dec(pp)
+            if d.get("t") != pais_de(p) or d.get("s") != sid:
+                malos += 1
+                print("   distinto:", pais_de(p), d)
+        print("  %s: %d precios, %d con punto de otro país/sub; ejemplo id precio %s" % (sid, len(precios), malos, dec(precios[0]["id"])))
+    st, r = pedir("GET", "/v1/subscriptions/6838547461?include=prices,planAvailabilities,versions,subscriptionAvailability&limit[prices]=3")
+    print("include:", st, _corto(r.get("data", {}).get("relationships"), 2500) if st == 200 else error_corto(r))
 
 
 def probar():
