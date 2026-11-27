@@ -1,12 +1,12 @@
 {
   "tubroadcast": {
     "estado": "enviada",
-    "fecha": "2026-11-27 19:52 UTC",
+    "fecha": "2026-11-27 21:16 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
     "envio_id": "d408656a-ba1e-401f-bd1c-1bf7557ad435",
-    "apple": "READY_FOR_REVIEW",
-    "error": "compras que no se pudieron enviar con la version: tubroadcast.pase24.1, tubroadcast.pase24.10, tubroadcast.pase24.3, tubroadcast.pase24.5 (2026-11-27 19:55 UTC)",
-    "pendiente": "no hay version para editar (estados: ['READY_FOR_REVIEW'])"
+    "apple": "WAITING_FOR_REVIEW",
+    "version": "1.0.1",
+    "nota": "27 nov: 1.0.1 (16) + 16 suscripciones + 4 pases enviados desde la web"
   },
   "envivo": {
     "estado": "enviada",
