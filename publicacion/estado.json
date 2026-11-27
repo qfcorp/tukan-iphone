@@ -1,11 +1,9 @@
 {
   "tubroadcast": {
-    "estado": "rechazada",
-    "fecha": "2026-11-23 23:23 UTC",
+    "estado": "enviada",
+    "fecha": "2026-11-27 19:52 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
-    "envio_id": "ba4fa365-66b4-4bd7-9a3e-b35572bf9eda",
-    "apple": "REJECTED",
-    "version": "1.0.0"
+    "envio_id": "d408656a-ba1e-401f-bd1c-1bf7557ad435"
   },
   "envivo": {
     "estado": "enviada",
