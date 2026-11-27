@@ -557,36 +557,37 @@ def diagnostico():
 
 
 def experimento():
-    """TEMPORAL."""
-    import time
-    from asc import error_corto, pedir
-    def estado(sid):
+    """TEMPORAL: volver a subir la captura de basico.1.mes y ver si cambia el estado."""
+    import hashlib, time
+    from asc import error_corto, pedir, subir_archivo
+    sid = "6838547461"
+    def estado():
         st, r = pedir("GET", "/v1/subscriptions/" + sid)
         return r["data"]["attributes"]["state"]
-    for sid in ("6838547461", "6838552393"):
-        print("== sub", sid, estado(sid))
-        st, r = pedir("GET", "/v1/subscriptions/%s/subscriptionLocalizations" % sid)
-        l = r["data"][0]
-        st, r = pedir("PATCH", "/v1/subscriptionLocalizations/" + l["id"], {"data": {"type": "subscriptionLocalizations", "id": l["id"],
-                      "attributes": {"name": l["attributes"]["name"], "description": l["attributes"]["description"]}}})
-        print("PATCH loc v1:", st, "" if st == 200 else error_corto(r))
-        time.sleep(5)
-        print("  estado:", estado(sid))
-        st, r = pedir("GET", "/v1/subscriptions/" + sid)
-        nota = r["data"]["attributes"]["reviewNote"]
-        st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid, "attributes": {"reviewNote": nota}}})
-        print("PATCH nota:", st, "" if st == 200 else error_corto(r))
-        time.sleep(5)
-        print("  estado:", estado(sid))
-        for plan in ("UPFRONT", "MONTHLY"):
-            st, r = pedir("GET", "/v1/subscriptions/%s/pricePoints?filter[territory]=USA&filter[planType]=%s&limit=3" % (sid, plan))
-            print("  puntos %s:" % plan, st, [(p["id"], p["attributes"]) for p in (r.get("data") or [])][:3] if st == 200 else error_corto(r))
-        st, r = pedir("GET", "/v1/subscriptions/%s/prices?filter[territory]=USA&include=subscriptionPricePoint" % sid)
-        ppid = r["data"][0]["relationships"]["subscriptionPricePoint"]["data"]["id"]
-        for plan in ("UPFRONT", "MONTHLY"):
-            st, r = pedir("GET", "/v1/subscriptionPricePoints/%s/adjustedEqualizations?filter[upfrontPricePointId]=%s&filter[planType]=%s&filter[territory]=USA,ECU&include=territory" % (ppid, ppid, plan))
-            print("  adjustedEq %s:" % plan, st, [(p["id"], p["attributes"]) for p in (r.get("data") or [])][:3] if st == 200 else error_corto(r))
-    _mostrar(pedir, "imágenes del pase", "/v2/inAppPurchases/6838555586/images")
+    print("antes:", estado())
+    ruta = os.path.join(REPO, "publicacion/capturas/tubroadcast/revision/planes_01.png")
+    contenido = open(ruta, "rb").read()
+    md5 = hashlib.md5(contenido).hexdigest()
+    st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
+    actual = r.get("data")
+    if actual:
+        st, r = pedir("DELETE", "/v1/subscriptionAppStoreReviewScreenshots/" + actual["id"])
+        print("borrar:", st)
+        time.sleep(3)
+        print("sin captura:", estado())
+    st, r = pedir("POST", "/v1/subscriptionAppStoreReviewScreenshots", {"data": {"type": "subscriptionAppStoreReviewScreenshots",
+          "attributes": {"fileName": "planes_01.png", "fileSize": len(contenido)},
+          "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}}}}})
+    print("reservar:", st, "" if st == 201 else error_corto(r))
+    nid = r["data"]["id"]
+    subir_archivo(r["data"]["attributes"]["uploadOperations"], contenido)
+    st, r = pedir("PATCH", "/v1/subscriptionAppStoreReviewScreenshots/" + nid, {"data": {"type": "subscriptionAppStoreReviewScreenshots",
+          "id": nid, "attributes": {"uploaded": True, "sourceFileChecksum": md5}}})
+    print("confirmar:", st, "" if st == 200 else error_corto(r))
+    for i in range(8):
+        time.sleep(10)
+        st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
+        print("  %ds: estado=%s captura=%s" % ((i + 1) * 10, estado(), ((r.get("data") or {}).get("attributes") or {}).get("assetDeliveryState")))
 
 
 def probar():
