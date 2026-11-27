@@ -488,6 +488,10 @@ def diagnostico():
                      "/v1/subscriptions/%s/prices?filter[planType]=%s&filter[territory]=USA&include=subscriptionPricePoint,territory" % (sid, plan))
         _mostrar(pedir, "precio introductorio", "/v1/subscriptions/%s/introductoryOffers?limit=5" % sid)
         _mostrar(pedir, "versiones", "/v1/subscriptions/%s/versions" % sid, 3000)
+        st, r = pedir("GET", "/v1/subscriptions/%s/versions" % sid)
+        for v in (r.get("data") or [])[:1] if st == 200 else []:
+            _mostrar(pedir, "  localizaciones de la versión %s" % v["attributes"].get("version"),
+                     "/v1/subscriptionVersions/%s/localizations" % v["id"])
         _mostrar(pedir, "imágenes", "/v1/subscriptions/%s/images" % sid)
         _mostrar(pedir, "compra promocionada", "/v1/subscriptions/%s/promotedPurchase" % sid)
 
@@ -498,6 +502,10 @@ def diagnostico():
         print("  attrs:", _corto(i["attributes"], 3000))
         print("  relaciones:", sorted((i.get("relationships") or {}).keys()))
         _mostrar(pedir, "versiones", "/v2/inAppPurchases/%s/versions" % iid, 3000)
+        st, r = pedir("GET", "/v2/inAppPurchases/%s/versions" % iid)
+        for v in (r.get("data") or [])[:1] if st == 200 else []:
+            _mostrar(pedir, "  localizaciones de la versión %s" % v["attributes"].get("version"),
+                     "/v1/inAppPurchaseVersions/%s/localizations" % v["id"])
         _mostrar(pedir, "inAppPurchaseAvailability", "/v2/inAppPurchases/%s/inAppPurchaseAvailability" % iid)
         _mostrar(pedir, "localizaciones", "/v2/inAppPurchases/%s/inAppPurchaseLocalizations" % iid)
         _mostrar(pedir, "captura de revisión", "/v2/inAppPurchases/%s/appStoreReviewScreenshot" % iid)
@@ -505,6 +513,30 @@ def diagnostico():
         if st == 200 and r.get("data"):
             _mostrar(pedir, "precios manuales", "/v1/inAppPurchasePriceSchedules/%s/manualPrices?include=territory&limit=5" % r["data"]["id"])
     print("\nFIN del diagnóstico (no se cambió nada).")
+
+
+def experimento():
+    """TEMPORAL: prueba qué hace falta en basico.1.mes."""
+    import time
+    from asc import error_corto, pedir
+    sid = "6838547461"
+    def estado():
+        st, r = pedir("GET", "/v1/subscriptions/" + sid)
+        return r["data"]["attributes"] if st == 200 else (st, error_corto(r))
+    print("antes:", _corto(estado()))
+    st, r = pedir("GET", "/v1/subscriptions/%s/prices?filter[territory]=USA" % sid)
+    pid = r["data"][0]["id"]
+    _mostrar(pedir, "tiers del precio USA", "/v1/subscriptionPrices/%s/additionalPriceTiers" % pid)
+    st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid,
+                  "attributes": {"multiSeatStatus": "DISABLED"}}})
+    print("PATCH multiSeat DISABLED:", st, "" if st == 200 else error_corto(r))
+    time.sleep(10)
+    print("después 1:", _corto(estado()))
+    st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid,
+                  "attributes": {"marketSettings": ["APP_STORE"]}}})
+    print("PATCH marketSettings APP_STORE:", st, "" if st == 200 else error_corto(r))
+    time.sleep(10)
+    print("después 2:", _corto(estado()))
 
 
 def probar():
@@ -556,6 +588,8 @@ def probar_lista(ruta):
 if __name__ == "__main__":
     if sys.argv[1:] == ["probar"]:
         probar()
+    elif sys.argv[1:] == ["experimento"]:
+        experimento()
     elif sys.argv[1:] == ["diagnostico"]:
         diagnostico()
     elif sys.argv[1:2] == ["capturas"]:
