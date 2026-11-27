@@ -44,22 +44,3 @@ jobs:
       - name: TEMPORAL experimento
         if: github.event.inputs.modo == 'experimento'
         run: python3 herramientas/crear_compras.py experimento
-      - name: TEMPORAL especificacion OpenAPI
-        if: github.event.inputs.modo == 'experimento'
-        run: |
-          curl -sSL -o /tmp/spec.zip https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip
-          cd /tmp && unzip -o -q spec.zip
-          python3 - <<'PY'
-          import json
-          d = json.load(open('/tmp/openapi.oas.json'))
-          for path in sorted(d['paths']):
-              if path.startswith('/v2/') or ('ubscription' in path and '{id}' not in path):
-                  print('PATH', path, sorted(d['paths'][path].keys()))
-          op = d['paths']['/v1/subscriptions/{id}']['get']
-          for p in op.get('parameters', []):
-              if 'name' in p: print('PARAM', p['name'], json.dumps(p.get('schema'))[:700])
-          txt = json.dumps(d)
-          import re
-          for m in re.finditer(r'.{300}(MISSING_METADATA|planType).{300}', txt):
-              if 'description' in m.group(0): print('CTX', m.group(0)); 
-          PY

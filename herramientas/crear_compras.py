@@ -558,7 +558,35 @@ def diagnostico():
 
 def experimento():
     """TEMPORAL."""
-    diagnostico()
+    import time
+    from asc import error_corto, pedir
+    def estado(sid):
+        st, r = pedir("GET", "/v1/subscriptions/" + sid)
+        return r["data"]["attributes"]["state"]
+    for sid in ("6838547461", "6838552393"):
+        print("== sub", sid, estado(sid))
+        st, r = pedir("GET", "/v1/subscriptions/%s/subscriptionLocalizations" % sid)
+        l = r["data"][0]
+        st, r = pedir("PATCH", "/v1/subscriptionLocalizations/" + l["id"], {"data": {"type": "subscriptionLocalizations", "id": l["id"],
+                      "attributes": {"name": l["attributes"]["name"], "description": l["attributes"]["description"]}}})
+        print("PATCH loc v1:", st, "" if st == 200 else error_corto(r))
+        time.sleep(5)
+        print("  estado:", estado(sid))
+        st, r = pedir("GET", "/v1/subscriptions/" + sid)
+        nota = r["data"]["attributes"]["reviewNote"]
+        st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid, "attributes": {"reviewNote": nota}}})
+        print("PATCH nota:", st, "" if st == 200 else error_corto(r))
+        time.sleep(5)
+        print("  estado:", estado(sid))
+        for plan in ("UPFRONT", "MONTHLY"):
+            st, r = pedir("GET", "/v1/subscriptions/%s/pricePoints?filter[territory]=USA&filter[planType]=%s&limit=3" % (sid, plan))
+            print("  puntos %s:" % plan, st, [(p["id"], p["attributes"]) for p in (r.get("data") or [])][:3] if st == 200 else error_corto(r))
+        st, r = pedir("GET", "/v1/subscriptions/%s/prices?filter[territory]=USA&include=subscriptionPricePoint" % sid)
+        ppid = r["data"][0]["relationships"]["subscriptionPricePoint"]["data"]["id"]
+        for plan in ("UPFRONT", "MONTHLY"):
+            st, r = pedir("GET", "/v1/subscriptionPricePoints/%s/adjustedEqualizations?filter[upfrontPricePointId]=%s&filter[planType]=%s&filter[territory]=USA,ECU&include=territory" % (ppid, ppid, plan))
+            print("  adjustedEq %s:" % plan, st, [(p["id"], p["attributes"]) for p in (r.get("data") or [])][:3] if st == 200 else error_corto(r))
+    _mostrar(pedir, "imágenes del pase", "/v2/inAppPurchases/6838555586/images")
 
 
 def probar():
