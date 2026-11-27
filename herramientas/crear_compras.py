@@ -7,6 +7,9 @@ Los productos, nombres y niveles salen de nativas/tubroadcast/TuBroadcast.storek
 los precios, de la regla de Dimitry (ver BASE y precio_objetivo).
 Precio: el punto de precio de Apple en EE. UU. más cercano; los demás países con la equivalencia de Apple.
 Países: los mismos de la app (sin la UE ni China continental).
+Modelo de precios de suscripciones de Apple (2026): cada suscripción tiene «tipos de plan»; aquí solo se usa
+UPFRONT (pago completo por adelantado: plan en los países de la app + precio UPFRONT en cada uno). La opción
+MONTHLY (pago mensual con compromiso de 12 meses) no se configura.
 También pone la dirección de avisos del servidor (App Store Server Notifications V2) del Panel Tukán Central.
 Se puede correr varias veces: lo que ya existe no se duplica.
 
@@ -16,6 +19,8 @@ Uso:  python3 herramientas/crear_compras.py [probar]
       sube planes_01.png / _03 / _05 / _10 como captura de revisión de cada compra.
       python3 herramientas/crear_compras.py lista <bundle> <lista.json> [carpeta_capturas]
       compras simples de una app web (p. ej. publicacion/compras/envivo.json); «probar» también revisa esas listas.
+      python3 herramientas/crear_compras.py diagnostico
+      solo lee: estado de las 20 compras, plan UPFRONT vs precios vs países de la app, textos, capturas, grupo.
 """
 import json
 import os
@@ -33,6 +38,31 @@ STOREKIT = os.path.join(REPO, "nativas", "tubroadcast", "TuBroadcast.storekit")
 # Precios (decisión de Dimitry, 23 nov 2026): los mismos de Google Play para 1 celular; paquete = precio × celulares × 0,85;
 # anual = 12 × el mensual (sin meses de regalo). Apple usa el punto de precio más cercano.
 BASE = {"basico": 5.99, "completo": 10.99, "pase24": 3.99}
+
+
+PLAN = "UPFRONT"   # tipo de plan de suscripción (modelo de precios de Apple de 2026)
+
+
+def cuerpo_plan(sid, paises, plan_id=None):
+    """POST (o PATCH si plan_id) de /v1/subscriptionPlanAvailabilities: plan UPFRONT en esos países."""
+    territorios = {"data": [{"type": "territories", "id": p} for p in paises]}
+    if plan_id:
+        return {"data": {"type": "subscriptionPlanAvailabilities", "id": plan_id,
+                         "attributes": {"availableInNewTerritories": False},
+                         "relationships": {"availableTerritories": territorios}}}
+    return {"data": {"type": "subscriptionPlanAvailabilities",
+                     "attributes": {"planType": PLAN, "availableInNewTerritories": False},
+                     "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
+                                       "availableTerritories": territorios}}}
+
+
+def cuerpo_precio(sid, pais, punto):
+    """POST /v1/subscriptionPrices: precio UPFRONT desde ya en un país."""
+    return {"data": {"type": "subscriptionPrices",
+                     "attributes": {"startDate": None, "preserveCurrentPrice": False, "planType": PLAN},
+                     "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
+                                       "territory": {"data": {"type": "territories", "id": pais}},
+                                       "subscriptionPricePoint": {"data": {"type": "subscriptionPricePoints", "id": punto}}}}}
 
 
 def precio_objetivo(producto_id):
@@ -151,37 +181,51 @@ def correr():
             ok(*pedir("POST", "/v1/subscriptionLocalizations", {"data": {"type": "subscriptionLocalizations",
                 "attributes": {"locale": LOCALE, "name": s["nombre"], "description": s["descripcion"]},
                 "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}}}}}), "texto " + s["id"])
-        st, r = pedir("GET", "/v1/subscriptions/%s/subscriptionAvailability" % sid)
-        if st != 200 or not r.get("data"):
-            ok(*pedir("POST", "/v1/subscriptionAvailabilities", {"data": {"type": "subscriptionAvailabilities",
-                "attributes": {"availableInNewTerritories": False},
-                "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
-                                  "availableTerritories": {"data": [{"type": "territories", "id": p} for p in paises]}}}}),
-               "países " + s["id"])
-        precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?limit=200" % sid)
-        if len(precios) >= len(paises):
-            print("  %-28s ya tenía precios (%d)" % (s["id"], len(precios)))
+        # Modelo de precios 2026: plan UPFRONT (pago completo por adelantado) en los países de la app.
+        # La opción MONTHLY (pago mensual con compromiso de 12 meses) NO se configura (decisión de Dimitry).
+        pas, _ = todos(pedir, ok, "/v1/subscriptions/%s/planAvailabilities" % sid)
+        upfront = next((pa for pa in pas if (pa.get("attributes") or {}).get("planType") == PLAN), None)
+        if not upfront:
+            ok(*pedir("POST", "/v1/subscriptionPlanAvailabilities", cuerpo_plan(sid, paises)), "plan UPFRONT " + s["id"])
+            print("  %-28s plan UPFRONT creado en %d países" % (s["id"], len(paises)))
+        else:
+            ter, _ = todos(pedir, ok, "/v1/subscriptionPlanAvailabilities/%s/availableTerritories?limit=200" % upfront["id"])
+            if {t["id"] for t in ter} != set(paises):
+                ok(*pedir("PATCH", "/v1/subscriptionPlanAvailabilities/" + upfront["id"],
+                          cuerpo_plan(sid, paises, upfront["id"])), "países del plan " + s["id"])
+                print("  %-28s plan UPFRONT: países igualados a los de la app (%d)" % (s["id"], len(paises)))
+        precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?filter[planType]=%s&include=territory,subscriptionPricePoint&limit=200"
+                           % (sid, PLAN))
+        faltan = sorted(set(paises) - {pais_de(p) for p in precios})
+        if not faltan:
+            print("  %-28s ya tenía precio UPFRONT en sus %d países" % (s["id"], len(paises)))
             continue
-        puntos, _ = todos(pedir, ok, "/v1/subscriptions/%s/pricePoints?filter[territory]=USA&limit=200" % sid)
-        pp = mas_cercano([(p["id"], p["attributes"]["customerPrice"]) for p in puntos], s["precio"])
+        # Punto de EE. UU.: el que ya está en vigor (un precio en vigor no se cambia aquí) o el más cercano al objetivo
+        usa = next((p for p in precios if pais_de(p) == "USA"), None)
+        if usa:
+            pp = (usa["relationships"]["subscriptionPricePoint"]["data"]["id"], "(el que ya tenía)")
+        else:
+            puntos, _ = todos(pedir, ok, "/v1/subscriptions/%s/pricePoints?filter[territory]=USA&filter[planType]=%s&limit=200" % (sid, PLAN))
+            pp = mas_cercano([(p["id"], p["attributes"]["customerPrice"]) for p in puntos], s["precio"])
         eq, _ = todos(pedir, ok, "/v1/subscriptionPricePoints/%s/equalizations?include=territory&limit=200" % pp[0])
         por_pais = {"USA": pp[0]}
         for e in eq:
             t = ((e.get("relationships") or {}).get("territory") or {}).get("data") or {}
-            if t.get("id") in paises:
+            if t.get("id"):
                 por_pais[t["id"]] = e["id"]
-        hechos = 0
-        for pais, ppid in por_pais.items():
-            st, r = pedir("POST", "/v1/subscriptionPrices", {"data": {"type": "subscriptionPrices",
-                "attributes": {"startDate": None, "preserveCurrentPrice": False},
-                "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
-                                  "territory": {"data": {"type": "territories", "id": pais}},
-                                  "subscriptionPricePoint": {"data": {"type": "subscriptionPricePoints", "id": ppid}}}}})
+        hechos, fallos = 0, []
+        for pais in faltan:
+            if pais not in por_pais:
+                fallos.append("%s sin equivalencia" % pais)
+                continue
+            st, r = pedir("POST", "/v1/subscriptionPrices", cuerpo_precio(sid, pais, por_pais[pais]))
             if st in (200, 201):
                 hechos += 1
-            elif st != 409:
-                print("   aviso precio %s %s (%s): %s" % (s["id"], pais, st, error_corto(r)))
-        print("  %-28s US$%s · %d países con precio" % (s["id"], pp[1], hechos))
+            else:
+                fallos.append("%s (%s): %s" % (pais, st, error_corto(r)[:200]))
+        print("  %-28s US$%s · %d países nuevos con precio UPFRONT de %d que faltaban" % (s["id"], pp[1], hechos, len(faltan)))
+        for f in fallos[:10]:
+            print("     aviso precio", f)
 
     # Consumibles: Pase de 24 horas
     iaps = {i["attributes"]["productId"]: i for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]}
@@ -224,8 +268,7 @@ def correr():
            "precio " + c["id"])
         print("  %-28s US$%s (los demás países, por equivalencia de Apple)" % (c["id"], pp[1]))
 
-    print("\nLISTO: 16 suscripciones y 4 pases en App Store Connect.")
-    print("Falta para enviarlas a revisión: una captura de la pantalla de planes por compra (se suben junto con la versión).")
+    print("\nLISTO: 16 suscripciones y 4 pases en App Store Connect (estado real: ver el diagnóstico).")
 
 
 def subir_capturas(carpeta):
@@ -556,36 +599,6 @@ def diagnostico():
     print("\nFIN del diagnóstico (no se cambió nada).")
 
 
-def experimento():
-    """TEMPORAL (solo lee): versión del grupo, tiers, coherencia país/punto de precio."""
-    import base64
-    from asc import error_corto, pedir
-    ok = lambda st, r, q: r
-    def dec(x):
-        try:
-            return json.loads(base64.urlsafe_b64decode(x + "=" * (-len(x) % 4)))
-        except Exception:
-            return {}
-    st, r = pedir("GET", "/v1/subscriptionGroups/22611548/versions")
-    for v in r.get("data") or []:
-        _mostrar(pedir, "loc de la versión del grupo", "/v1/subscriptionGroupVersions/%s/localizations" % v["id"])
-    _mostrar(pedir, "loc v2 del grupo", "/v2/subscriptionGroupLocalizations/ff9671b0-3279-45de-8147-e4fca26cb54f")
-    for sid in ("6838547461", "6838552393"):
-        _mostrar(pedir, "tiers " + sid, "/v1/subscriptionPriceTiers?filter[subscription]=%s&filter[territory]=USA" % sid)
-        _mostrar(pedir, "loc v2 " + sid, "/v1/subscriptions/%s/subscriptionLocalizations?fields[subscriptionLocalizations]=name,locale,description,state" % sid)
-        precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?include=territory,subscriptionPricePoint&limit=200" % sid)
-        malos = 0
-        for p in precios:
-            pp = p["relationships"]["subscriptionPricePoint"]["data"]["id"]
-            d = dec(pp)
-            if d.get("t") != pais_de(p) or d.get("s") != sid:
-                malos += 1
-                print("   distinto:", pais_de(p), d)
-        print("  %s: %d precios, %d con punto de otro país/sub; ejemplo id precio %s" % (sid, len(precios), malos, dec(precios[0]["id"])))
-    st, r = pedir("GET", "/v1/subscriptions/6838547461?include=prices,planAvailabilities,versions,subscriptionAvailability&limit[prices]=3")
-    print("include:", st, _corto(r.get("data", {}).get("relationships"), 2500) if st == 200 else error_corto(r))
-
-
 def probar():
     subs, cons = productos()
     assert len(subs) == 16 and len(cons) == 4, (len(subs), len(cons))
@@ -601,6 +614,22 @@ def probar():
     assert precio_objetivo("tubroadcast.pase24.10") == 33.91          # 3,99 × 10 × 0,85
     assert nombre_corto("Completo mensual (10 celulares)") == "Completo mensual (10 cel.)"
     assert nombre_corto("Pase de 24 horas (10 celulares)") == "Pase de 24 horas (10 cel.)"
+    # Modelo de precios 2026 (sin red)
+    c = cuerpo_plan("1", ["USA", "ECU"])
+    assert c["data"]["attributes"] == {"planType": "UPFRONT", "availableInNewTerritories": False}, c
+    assert [t["id"] for t in c["data"]["relationships"]["availableTerritories"]["data"]] == ["USA", "ECU"]
+    assert c["data"]["relationships"]["subscription"]["data"]["id"] == "1"
+    c = cuerpo_plan("1", ["USA"], "pa1")
+    assert c["data"]["id"] == "pa1" and "planType" not in c["data"]["attributes"] and "subscription" not in c["data"]["relationships"]
+    c = cuerpo_precio("1", "ECU", "pp9")
+    assert c["data"]["attributes"]["planType"] == "UPFRONT" and c["data"]["attributes"]["startDate"] is None
+    assert c["data"]["relationships"]["territory"]["data"]["id"] == "ECU"
+    assert c["data"]["relationships"]["subscriptionPricePoint"]["data"]["id"] == "pp9"
+    assert comparar_paises(["USA", "ECU"], ["ECU", "USA"], ["USA", "ECU"]) == []
+    assert comparar_paises(["USA", "ECU"], ["USA"], ["USA"])[0].startswith("plan≠app")
+    assert comparar_paises(["USA", "ECU"], ["USA", "ECU"], ["USA"])[0].startswith("precio≠plan")
+    assert pais_de({"relationships": {"territory": {"data": {"id": "ECU"}}}}) == "ECU" and pais_de({}) is None
+    assert resumen_precios([{"attributes": {"planType": "UPFRONT"}}, {"attributes": {}}], []) == {"UPFRONT": 1, "SIN_PLANTYPE": 1}
     for p in subs + cons:
         print("  %-28s %-26s US$%7.2f" % (p["id"], p["nombre"], p["precio"]))
     print("OK: 20 productos, nombres de hasta 30 letras y descripciones de hasta 45.")
@@ -635,8 +664,6 @@ def probar_lista(ruta):
 if __name__ == "__main__":
     if sys.argv[1:] == ["probar"]:
         probar()
-    elif sys.argv[1:] == ["experimento"]:
-        experimento()
     elif sys.argv[1:] == ["diagnostico"]:
         diagnostico()
     elif sys.argv[1:2] == ["capturas"]:

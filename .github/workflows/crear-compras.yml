@@ -41,6 +41,3 @@ jobs:
       - name: Diagnóstico de las compras de TuBroadcast (solo lee)
         if: github.event.inputs.modo == 'diagnostico' || github.event.inputs.modo == 'crear'
         run: python3 herramientas/crear_compras.py diagnostico
-      - name: TEMPORAL experimento
-        if: github.event.inputs.modo == 'experimento'
-        run: python3 herramientas/crear_compras.py experimento
