@@ -417,6 +417,40 @@ def pais_de(precio):
     return (((precio.get("relationships") or {}).get("territory") or {}).get("data") or {}).get("id")
 
 
+def comparar_paises(paises_app, paises_plan, paises_precio):
+    """Devuelve una lista de problemas comparando países de la app, del plan UPFRONT y con precio UPFRONT."""
+    app, plan, precio = set(paises_app), set(paises_plan), set(paises_precio)
+    problemas = []
+    if plan != app:
+        problemas.append("plan≠app (faltan %s, sobran %s)" % (sorted(app - plan)[:8], sorted(plan - app)[:8]))
+    if precio != plan:
+        problemas.append("precio≠plan (sin precio %s, precio sin plan %s)" % (sorted(plan - precio)[:8], sorted(precio - plan)[:8]))
+    return problemas
+
+
+def revisar_suscripcion(pedir, ok, sid, pid, paises):
+    """Una línea con todo lo que Apple pide para una suscripción (solo lee)."""
+    pas, _ = todos(pedir, ok, "/v1/subscriptions/%s/planAvailabilities" % sid)
+    planes = {}
+    for pa in pas:
+        ter, _ = todos(pedir, ok, "/v1/subscriptionPlanAvailabilities/%s/availableTerritories?limit=200" % pa["id"])
+        planes[(pa.get("attributes") or {}).get("planType")] = [t["id"] for t in ter]
+    precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?include=territory&limit=200" % sid)
+    por_plan = {}
+    futuros = 0
+    for p in precios:
+        a = p.get("attributes") or {}
+        por_plan.setdefault(a.get("planType") or "SIN_PLANTYPE", []).append(pais_de(p))
+        futuros += 1 if a.get("startDate") else 0
+    locs, _ = todos(pedir, ok, "/v1/subscriptions/%s/subscriptionLocalizations" % sid)
+    st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
+    cap = (((r.get("data") or {}).get("attributes") or {}).get("assetDeliveryState") or {}).get("state") if st == 200 else st
+    problemas = comparar_paises(paises, planes.get("UPFRONT", []), por_plan.get("UPFRONT", []))
+    return "%-28s planes=%s precios=%s futuros=%d textos=%s captura=%s %s" % (
+        pid, {k: len(v) for k, v in planes.items()}, {k: len(v) for k, v in por_plan.items()}, futuros,
+        [l["attributes"]["locale"] for l in locs], cap, "; ".join(problemas) or "OK")
+
+
 def diagnostico():
     """(27 nov 2026) Solo lee: estado de las 20 compras y detalle de basico.1.mes, completo.1.anio y un pase."""
     from asc import error_corto, pedir
@@ -437,6 +471,9 @@ def diagnostico():
     ta, _ = todos(pedir, ok, "/v2/appAvailabilities/%s/territoryAvailabilities?include=territory&limit=200" % r["data"]["id"])
     paises = sorted({t["relationships"]["territory"]["data"]["id"] for t in ta if t["attributes"].get("available")})
     print("  países de la app:", len(paises), "· USA" if "USA" in paises else "", "· ECU" if "ECU" in paises else "")
+    raros = [(t["relationships"]["territory"]["data"]["id"], t["attributes"].get("contentStatuses"))
+             for t in ta if t["attributes"].get("available") and t["attributes"].get("contentStatuses") != ["AVAILABLE"]]
+    print("  países disponibles con contentStatuses distinto de AVAILABLE:", raros[:20])
 
     grupos, _ = todos(pedir, ok, "/v1/apps/%s/subscriptionGroups?limit=50" % aid)
     grupo = next(g for g in grupos if g["attributes"]["referenceName"] == "TuBroadcast")
@@ -455,6 +492,10 @@ def diagnostico():
         estados[e] = estados.get(e, 0) + 1
         print("  %-28s %-8s %s" % (x["attributes"]["productId"], x["id"], e))
     print("  RESUMEN:", _corto(estados))
+
+    print("\n== Revisión completa de las suscripciones (plan UPFRONT, precios, textos, captura)")
+    for x in sorted(subs, key=lambda s: s["attributes"]["productId"]):
+        print("  " + revisar_suscripcion(pedir, ok, x["id"], x["attributes"]["productId"], paises))
 
     elegidas = [s for s in subs if s["attributes"]["productId"] in ("tubroadcast.basico.1.mes", "tubroadcast.completo.1.anio")]
     for s in elegidas:
@@ -516,48 +557,8 @@ def diagnostico():
 
 
 def experimento():
-    """TEMPORAL: prueba qué hace falta en basico.1.mes."""
-    import time
-    from asc import error_corto, pedir
-    ok = lambda st, r, q: r
-    apps, _ = todos(pedir, ok, "/v1/apps?limit=200&fields[apps]=bundleId,name")
-    for ap in apps:
-        gs, _ = todos(pedir, ok, "/v1/apps/%s/subscriptionGroups?limit=50" % ap["id"])
-        for g in gs:
-            ss, _ = todos(pedir, ok, "/v1/subscriptionGroups/%s/subscriptions?limit=50" % g["id"])
-            for x in ss:
-                a = x["attributes"]
-                print("APP %s grupo %s: %s %s %s %s %s" % (ap["attributes"]["bundleId"], g["attributes"]["referenceName"],
-                      a["productId"], x["id"], a["state"], a.get("multiSeatStatus"), a.get("marketSettings")))
-    sid = "6838547461"
-    def estado():
-        st, r = pedir("GET", "/v1/subscriptions/" + sid)
-        a = r["data"]["attributes"]
-        return a["state"], a["multiSeatStatus"], a["marketSettings"]
-    st, r = pedir("GET", "/v1/subscriptions/%s/versions" % sid)
-    v = r["data"][0]["id"]
-    _mostrar(pedir, "loc de la versión", "/v1/subscriptionVersions/%s/localizations" % v)
-    _mostrar(pedir, "imagen de la versión", "/v1/subscriptionVersions/%s/image" % v)
-    _mostrar(pedir, "versión con include", "/v1/subscriptionVersions/%s?include=localizations,image,images" % v, 2000)
-    print("antes:", estado())
-    st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid,
-                  "attributes": {"multiSeatStatus": "DISABLED", "marketSettings": ["APP_STORE"]}}})
-    print("PATCH sin multiSeat:", st, "" if st == 200 else error_corto(r))
-    st, r = pedir("GET", "/v1/subscriptions/%s/prices?filter[territory]=USA&include=subscriptionPricePoint" % sid)
-    actual = r["data"][0]["relationships"]["subscriptionPricePoint"]["data"]["id"]
-    st, r = pedir("POST", "/v1/subscriptionPrices", {"data": {"type": "subscriptionPrices",
-                "attributes": {"startDate": None, "preserveCurrentPrice": False, "planType": "UPFRONT"},
-                "relationships": {"subscription": {"data": {"type": "subscriptions", "id": sid}},
-                                  "territory": {"data": {"type": "territories", "id": "USA"}},
-                                  "subscriptionPricePoint": {"data": {"type": "subscriptionPricePoints", "id": actual}}}}})
-    print("POST precio USA:", st, "" if st in (200, 201) else error_corto(r))
-    time.sleep(15)
-    e = estado()
-    print("después:", e)
-    if e[0] == "MISSING_METADATA":
-        st, r = pedir("PATCH", "/v1/subscriptions/" + sid, {"data": {"type": "subscriptions", "id": sid,
-                      "attributes": {"multiSeatStatus": "ENABLED", "marketSettings": ["APP_STORE", "APPLE_BUSINESS", "APPLE_SCHOOL"]}}})
-        print("restaurado:", st, estado())
+    """TEMPORAL."""
+    diagnostico()
 
 
 def probar():
