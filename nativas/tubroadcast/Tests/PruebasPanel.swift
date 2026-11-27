@@ -1,4 +1,5 @@
-// Activar con código, liberar (OK y 429) y latido, contra un panel falso.
+// Liberar (OK, 429 y 401) y latido contra un panel falso. El plan llega SOLO por una compra de Apple
+// (apple_compra con la transacción de StoreKit): en iPhone no existe activar con código.
 import CryptoKit
 import XCTest
 @testable import TuBroadcast
@@ -9,87 +10,91 @@ final class PruebasPanel: XCTestCase {
         PanelFalso.reiniciar()
     }
 
-    /// Panel falso que activa el código TB-ABCD-EFGH con una licencia firmada para el celular que la pide.
-    func panelQueActiva(plan: String = "basico", modulos: [String] = ["rtmp", "abr", "grove"],
-                        llave: P256.Signing.PrivateKey = LlavePrueba.privada) {
+    /// Panel falso que acepta la compra de Apple con una licencia firmada para el celular que la manda.
+    /// Igual que el panel de verdad, el mensaje nombra el código del paquete (la app NO lo debe mostrar).
+    func panelQueAceptaCompra(plan: String = "basico", modulos: [String] = ["rtmp", "abr", "grove"],
+                              llave: P256.Signing.PrivateKey = LlavePrueba.privada) {
         PanelFalso.responder = { accion, json in
             switch accion {
-            case "activar":
-                guard json["codigo"] as? String == "TB-ABCD-EFGH" else {
-                    return (404, ["ok": false, "mensaje": "Ese código de activación no existe. Revísalo o pídelo a Tukán Software."])
-                }
+            case "apple_compra":
                 let l = LlavePrueba.licencia(dispositivo: json["dispositivo"] as! String, plan: plan, modulos: modulos, con: llave)
-                return (200, ["ok": true, "mensaje": "¡Listo! Plan Básico activado para Productora de prueba.",
-                              "licencia": LlavePrueba.json(l), "token": "token-de-prueba-0123456789abcdef"])
+                return (200, ["ok": true, "mensaje": "¡Listo! Plan Básico activado con el App Store. Para los otros celulares usa el código TB-ABCD-EFGH.",
+                              "licencia": LlavePrueba.json(l), "token": "token-de-prueba-0123456789abcdef",
+                              "codigo": "TB-ABCD-EFGH", "plan": plan, "celulares": 3, "expira": 1_798_000_000])
             default:
                 return (404, ["ok": false, "mensaje": "no existe"])
             }
         }
     }
 
-    func testActivarConCodigo() async {
-        panelQueActiva()
+    /// Celular con plan comprado con Apple (la transacción la verifica el panel; aquí el panel es falso).
+    func gestorConCompra(plan: String = "basico", modulos: [String] = ["rtmp", "abr", "grove"],
+                         reloj: Reloj = RelojSistema()) async throws -> GestorLicencia {
+        panelQueAceptaCompra(plan: plan, modulos: modulos)
+        let g = gestorDePrueba(reloj: reloj)
+        let r = try await g.registrarCompraApple(jws: "jws-de-prueba")
+        XCTAssertTrue(r.ok, r.mensaje)
+        XCTAssertTrue(g.estado.esValida)
+        return g
+    }
+
+    func testCompraDeAppleDaElPlan() async throws {
+        panelQueAceptaCompra()
         let g = gestorDePrueba()
         XCTAssertFalse(g.estado.esValida)
-        let (ok, mensaje) = await g.activar(codigo: "TB-ABCD-EFGH")
-        XCTAssertTrue(ok, mensaje)
-        XCTAssertEqual(mensaje, "¡Listo! Plan Básico activado para Productora de prueba.")
-        XCTAssertTrue(g.estado.esValida)
+        let r = try await g.registrarCompraApple(jws: "jws-de-prueba")
+        XCTAssertTrue(r.ok, r.mensaje)
+        XCTAssertEqual(r.mensaje, "¡Listo! Plan Básico activo en este iPhone.")
+        XCTAssertFalse(r.mensaje.contains("TB-"), "En iPhone no se muestra ningún código")
         XCTAssertEqual(g.estado.licencia?.plan, "basico")
         XCTAssertEqual(g.token, "token-de-prueba-0123456789abcdef")
-        // Mismo JSON que Android: {codigo, dispositivo, modelo, versionApp}
-        let p = PanelFalso.ultimo("activar")!
-        XCTAssertEqual(p.json["codigo"] as? String, "TB-ABCD-EFGH")
+        let p = PanelFalso.ultimo("apple_compra")!
         XCTAssertEqual(p.json["dispositivo"] as? String, g.dispositivo)
         XCTAssertNotNil(UUID(uuidString: g.dispositivo), "El id del celular es un UUID propio")
-        XCTAssertNotNil(p.json["modelo"] as? String)
+        XCTAssertEqual(p.json["transaccion"] as? String, "jws-de-prueba")
         XCTAssertTrue((p.json["versionApp"] as? String ?? "").hasPrefix("ios-"))
+        XCTAssertNil(PanelFalso.ultimo("activar"), "La app nunca usa «activar» (código)")
         // Básico: RTMP sin límites, SRT con los límites gratis
         XCTAssertEqual(g.limites(tipoConexion: "RTMP"), .sinLimites)
         XCTAssertEqual(g.limites(tipoConexion: "SRT"), .gratis)
     }
 
-    func testActivarConCodigoQueNoExiste() async {
-        panelQueActiva()
+    func testCompraRechazaLicenciaConFirmaFalsa() async throws {
+        panelQueAceptaCompra(llave: P256.Signing.PrivateKey())
         let g = gestorDePrueba()
-        let (ok, mensaje) = await g.activar(codigo: "TB-ZZZZ-ZZZZ")
-        XCTAssertFalse(ok)
-        XCTAssertEqual(mensaje, "Ese código de activación no existe. Revísalo o pídelo a Tukán Software.")
+        let r = try await g.registrarCompraApple(jws: "jws-de-prueba")
+        XCTAssertFalse(r.ok)
         XCTAssertFalse(g.estado.esValida)
         XCTAssertFalse(g.tieneToken)
     }
 
-    func testActivarRechazaLicenciaConFirmaFalsa() async {
-        panelQueActiva(llave: P256.Signing.PrivateKey())
+    func testCompraRechazadaPorElPanelNoMuestraCodigos() async throws {
+        PanelFalso.responder = { _, _ in
+            (403, ["ok": false, "mensaje": "Tu paquete ya usa sus 3 celulares. En uno de ellos toca «Liberar este celular» o escribe a Tukán Software."])
+        }
         let g = gestorDePrueba()
-        let (ok, _) = await g.activar(codigo: "TB-ABCD-EFGH")
-        XCTAssertFalse(ok)
+        let r = try await g.registrarCompraApple(jws: "jws-de-prueba")
+        XCTAssertFalse(r.ok)
+        XCTAssertEqual(r.mensaje, "Tu paquete ya usa sus 3 celulares. En uno de ellos toca «Liberar este celular» o escribe a Tukán Software.")
         XCTAssertFalse(g.estado.esValida)
-        XCTAssertFalse(g.tieneToken)
+        PanelFalso.responder = { _, _ in (400, ["ok": false, "mensaje": "El celular no mandó su código."]) }
+        let r2 = try await g.registrarCompraApple(jws: "jws-de-prueba")
+        XCTAssertFalse(r2.mensaje.lowercased().contains("código"))
     }
 
-    func testActivarSinInternet() async {
-        PanelFalso.responder = { _, _ in nil }
-        let g = gestorDePrueba()
-        let (ok, mensaje) = await g.activar(codigo: "TB-ABCD-EFGH")
-        XCTAssertFalse(ok)
-        XCTAssertTrue(mensaje.contains("internet"))
-    }
-
-    func testLiberarEsteCelular() async {
-        panelQueActiva()
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
-        XCTAssertTrue(g.estado.esValida)
+    func testLiberarEsteCelular() async throws {
+        let g = try await gestorConCompra()
         PanelFalso.responder = { accion, _ in
-            accion == "liberar" ? (200, ["ok": true, "mensaje": "Listo. Este celular quedó libre.", "cambios_restantes": 2,
-                                         "codigo": "TB-ABCD-EFGH"])
+            accion == "liberar" ? (200, ["ok": true, "mensaje": "Listo. Este celular quedó libre: ya puedes activar el código TB-ABCD-EFGH en otro celular.",
+                                         "cambios_restantes": 2, "codigo": "TB-ABCD-EFGH"])
                                 : (404, ["ok": false])
         }
         let (ok, mensaje) = await g.liberar()
         XCTAssertTrue(ok)
-        XCTAssertTrue(mensaje.contains("Listo. Este celular quedó libre."))
+        XCTAssertTrue(mensaje.contains("Listo. Este celular quedó libre"))
+        XCTAssertTrue(mensaje.contains("Restaurar compras"))
         XCTAssertTrue(mensaje.contains("2"))
+        XCTAssertFalse(mensaje.contains("TB-"), "En iPhone no se muestra el código del paquete")
         let p = PanelFalso.ultimo("liberar")!
         XCTAssertEqual(p.json["dispositivo"] as? String, g.dispositivo)
         XCTAssertEqual(p.json["token"] as? String, "token-de-prueba-0123456789abcdef")
@@ -99,10 +104,8 @@ final class PruebasPanel: XCTestCase {
         XCTAssertEqual(g.limites(tipoConexion: "RTMP"), .gratis)
     }
 
-    func testLiberarConDemasiadosCambios429() async {
-        panelQueActiva()
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+    func testLiberarConDemasiadosCambios429() async throws {
+        let g = try await gestorConCompra()
         PanelFalso.responder = { _, _ in
             (429, ["ok": false, "mensaje": "Ya usaste los cambios de celular de este mes. Podrás liberar otra vez el 1 de diciembre.",
                    "cambios_restantes": 0])
@@ -115,10 +118,8 @@ final class PruebasPanel: XCTestCase {
         XCTAssertTrue(g.tieneToken)
     }
 
-    func testLiberarConTokenQueYaNoSirve401() async {
-        panelQueActiva()
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+    func testLiberarConTokenQueYaNoSirve401() async throws {
+        let g = try await gestorConCompra()
         PanelFalso.responder = { _, _ in (401, ["ok": false, "mensaje": "Este celular ya no está activado."]) }
         let (ok, mensaje) = await g.liberar()
         XCTAssertTrue(ok, "Si el panel ya no lo reconoce, el celular igual queda libre")
@@ -127,10 +128,8 @@ final class PruebasPanel: XCTestCase {
         XCTAssertFalse(g.tieneToken)
     }
 
-    func testLatidoRenuevaLicencia() async {
-        panelQueActiva(plan: "basico", modulos: ["rtmp"])
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+    func testLatidoRenuevaLicencia() async throws {
+        let g = try await gestorConCompra(plan: "basico", modulos: ["rtmp"])
         PanelFalso.responder = { accion, json in
             guard accion == "latido" else { return (404, ["ok": false]) }
             let l = LlavePrueba.licencia(dispositivo: json["dispositivo"] as! String, plan: "completo", modulos: ["rtmp", "srt"])
@@ -145,32 +144,25 @@ final class PruebasPanel: XCTestCase {
         XCTAssertEqual(g.limites(tipoConexion: "SRT"), .sinLimites)
     }
 
-    func testLatido401VuelveAGratis() async {
-        panelQueActiva()
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+    func testLatido401VuelveAGratis() async throws {
+        let g = try await gestorConCompra()
         PanelFalso.responder = { _, _ in (401, ["ok": false, "mensaje": "Este celular ya no está activado. Vuelve a activar la licencia."]) }
         await g.latido()
         XCTAssertFalse(g.estado.esValida)
         XCTAssertFalse(g.tieneToken)
-        XCTAssertEqual(g.mensaje, "Este celular ya no está activado. Vuelve a activar la licencia.")
+        XCTAssertEqual(g.mensaje, "Este celular ya no está activado. Volvió a la versión gratis.")
     }
 
-    func testLatidoSinInternetMantieneLaLicencia() async {
-        panelQueActiva()
-        let g = gestorDePrueba()
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
+    func testLatidoSinInternetMantieneLaLicencia() async throws {
+        let g = try await gestorConCompra()
         PanelFalso.responder = { _, _ in nil }
         await g.latido()
         XCTAssertTrue(g.estado.esValida)
     }
 
-    func testSinInternetMasDe72HorasVuelveAGratis() async {
-        panelQueActiva()
+    func testSinInternetMasDe72HorasVuelveAGratis() async throws {
         let reloj = RelojFalso(Date())
-        let g = gestorDePrueba(reloj: reloj)
-        _ = await g.activar(codigo: "TB-ABCD-EFGH")
-        XCTAssertTrue(g.estado.esValida)
+        let g = try await gestorConCompra(reloj: reloj)
         PanelFalso.responder = { _, _ in nil }
         reloj.avanzar(72 * 3600 + 60)
         await g.latido()

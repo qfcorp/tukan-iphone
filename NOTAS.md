@@ -77,16 +77,21 @@ Decisiones de Dimitry (23 nov 2026), hechas en `nativas/tubroadcast`:
   - La compra lleva `appAccountToken` = UUID guardado en el llavero. Luego la app manda al panel
     `POST https://panel.tukanec.com/tubroadcast_api.php?a=apple_compra` con
     `{dispositivo, modelo, version, versionApp, transaccion: <jwsRepresentation>, app_cuenta: <UUID en minúsculas>}`.
-    Respuesta = la de `activar` + `{codigo, plan, celulares, expira}`. Si `celulares > 1` se muestra el código del paquete
-    («Comparte este código con los otros celulares del paquete») con botones Copiar y Compartir.
+    Respuesta `{ok, mensaje, licencia, token}` (el panel también manda `{codigo, plan, celulares, expira}`: en iPhone **se ignoran**,
+    no se muestra ningún código). Paquetes de varios celulares: en cada iPhone se abre la app con la **misma cuenta de Apple** y se
+    toca «Restaurar compras». Los mensajes del panel pasan por `GestorLicencia.textoParaIPhone` (quita frases que nombran códigos).
   - La transacción solo se termina (`finish`) cuando el panel la acepta; sin internet queda pendiente y se reintenta al abrir la
     app (`Transaction.unfinished`) o con «Restaurar compras» (`AppStore.sync`). Se escucha `Transaction.updates` (renovaciones).
   - «Gestionar suscripción» abre `AppStore.showManageSubscriptions`.
-- **Activar con código** `TB-XXXX-XXXX` (pagaron por fuera o los otros celulares del paquete): `POST a=activar`, mismo JSON que
-  Android `{codigo, dispositivo, modelo, versionApp}`. Regla de Apple 3.1.1 / 3.1.3(b): la app **no** tiene enlaces ni textos
-  para comprar fuera (ni web, ni precios externos, ni Plux): solo el campo del código.
+- **SIN activar con código (27 nov 2026)**: Apple rechazó la 1.0.0 (build 12) por la regla **3.1.1** («the app uses activation
+  code to unlock plans»). En iPhone los planes se desbloquean **SOLO con In-App Purchase**: se quitaron la pantalla «Activar con
+  código», el campo `TB-XXXX-XXXX`, el bloque para copiar/compartir el código del paquete, `GestorLicencia.activar(codigo:)` y
+  `PedidoActivar`. La app no llama nunca `a=activar`. Un token o licencia guardados por una versión anterior que **no** vinieron
+  de una compra de Apple (marca `origen=apple` en el llavero) se **borran al abrir** y la app queda gratis. Sin enlaces ni textos
+  para comprar fuera (ni web, ni Google Play, ni precios externos, ni Plux).
 - **Liberar este celular** (Ajustes > Licencia): `POST a=liberar {dispositivo, token}` → `{ok, mensaje, cambios_restantes}`;
-  con 429 se muestra el mensaje del servidor. Al liberar, la app vuelve a la versión gratis.
+  con 429 se muestra el mensaje del servidor. Al liberar, la app vuelve a la versión gratis y dice que en el otro iPhone se use
+  «Restaurar compras» (el texto del panel nombra el código y no se muestra).
 - **Licencia** (`Sources/Licencia.swift`, `Sources/GestorLicencia.swift`): firma ECDSA P-256 verificada con CryptoKit y la
   **misma llave pública que Android**; latido cada 30 s con licencia (`a=latido`, 401 = vuelve a gratis); sin internet vale
   hasta 72 h. Id del celular = UUID propio en el llavero (no IDFA).
@@ -96,8 +101,9 @@ Decisiones de Dimitry (23 nov 2026), hechas en `nativas/tubroadcast`:
 
 **Pruebas** (`nativas/tubroadcast/Tests`, target `TuBroadcastTests`, corren en `compilar-nativas.yml`, paso «Pruebas automaticas»):
 StoreKitTest con `TuBroadcast.storekit` (20 productos, precios de ejemplo; también está en el esquema para el simulador),
-compra → `apple_compra` (panel falso con `URLProtocol`), pase 24 h, compra sin internet que se reintenta, activar con código
-(bien, código malo, firma falsa, sin internet), liberar (OK y 429), latido (renueva, 401, sin internet, más de 72 h), licencia
+compra → `apple_compra` (panel falso con `URLProtocol`), pase 24 h, compra sin internet que se reintenta, compra con firma falsa
+o rechazada sin mostrar códigos, `PruebasSoloCompraApple` (no existe pantalla/acción para escribir código, token viejo guardado
+no da plan, sin compra de StoreKit no hay plan, textos del panel sin códigos, ficha sin códigos), liberar (OK, 429 y 401), latido (renueva, 401, sin internet, más de 72 h), licencia
 firmada válida / alterada / otra llave / vencida / otro celular, firma hecha con openssl (como el panel PHP) y límites gratis
 (720p, marca de agua, 5 minutos con reloj falso, también en el `Motor`).
 Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras ni cámara.
@@ -162,6 +168,10 @@ Cuando la app corre como anfitriona de las pruebas no arranca latidos, compras n
 - Apple Developer: **$99 al año** (lo paga Dimitry).
 
 ## Historial
+
+- 27 nov 2026: **TuBroadcast 1.0.1** tras el rechazo de Apple (3.1.1 y 2.1(b)) de la 1.0.0 build 12: se quitó por completo la
+  activación con código en iPhone (solo In-App Purchase), se ignoran/borran tokens viejos y la ficha (`notas_revisor`) ya no habla
+  del código ni de la regla 3.1.3(b). Las compras se envían con la versión nueva (lo hace Dimitry).
 
 - 25 nov 2026: **EN VIVO Tycoon 1.0.1**: lista de 28 compras de Apple (`publicacion/compras/envivo.json`), captura de revisión,
   ficha con versión nueva + compras y notas del revisor con cómo probar las compras.

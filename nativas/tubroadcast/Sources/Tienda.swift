@@ -1,4 +1,6 @@
 // Compras dentro de la app con Apple (StoreKit 2). Los precios los pone Apple (Product.displayPrice): NUNCA a mano.
+// En iPhone esta es la ÚNICA forma de desbloquear un plan (regla 3.1.1): no hay códigos de activación.
+// Paquetes de varios celulares: en cada iPhone se abre la app con la misma cuenta de Apple y se toca «Restaurar compras».
 // IDs: tubroadcast.basico.N.mes|anio, tubroadcast.completo.N.mes|anio (suscripciones, grupo «TuBroadcast»)
 //      tubroadcast.pase24.N (consumible), N = 1, 3, 5 o 10 celulares.
 import StoreKit
@@ -77,7 +79,7 @@ struct InfoProducto: Equatable {
 }
 
 enum ResultadoCompra {
-    case listo(RespuestaActivacion)
+    case listo(RespuestaCompra)
     case cancelada
     case pendiente
     case error(String)
@@ -89,8 +91,8 @@ final class Tienda: ObservableObject {
     @Published private(set) var cargando = false
     @Published private(set) var trabajando = false
     @Published var aviso: String?
-    /// Última compra registrada en el panel (para mostrar el código del paquete).
-    @Published private(set) var ultimaCompra: RespuestaActivacion?
+    /// Última compra registrada en el panel.
+    @Published private(set) var ultimaCompra: RespuestaCompra?
 
     private let gestor: GestorLicencia
     private var escucha: Task<Void, Never>?
@@ -104,9 +106,7 @@ final class Tienda: ObservableObject {
             .sorted { (InfoProducto.de($0.id)?.orden ?? 9) < (InfoProducto.de($1.id)?.orden ?? 9) }
     }
 
-    /// true cuando Apple ya tiene los planes a la venta. Mientras no los haya (contrato de apps pagadas
-    /// pendiente), la app no muestra compras ni «Activar con código» (regla 3.1.3(b) de Apple:
-    /// lo comprado por fuera solo se puede activar si también se vende dentro de la app).
+    /// true cuando Apple ya tiene los planes a la venta. Mientras no los haya, la app no muestra planes ni compras.
     var hayPlanes: Bool { !productos.isEmpty }
 
     func cargarProductos(avisar: Bool = true) async {

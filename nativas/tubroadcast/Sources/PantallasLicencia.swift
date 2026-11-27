@@ -1,6 +1,7 @@
-// Pantallas de licencia: Planes (compra con Apple), Activar con código y la sección Licencia de Ajustes.
-// Regla de Apple 3.1.1 / 3.1.3(b): aquí NO hay enlaces ni textos que manden a comprar fuera de la app
-// (ni web, ni precios externos, ni otros medios de pago). Solo la compra de Apple y el campo para el código.
+// Pantallas de licencia: Planes (compra con Apple) y la sección Licencia de Ajustes.
+// Regla de Apple 3.1.1 (revisión del 27 nov 2026): en iPhone los planes se desbloquean SOLO con In-App Purchase.
+// Aquí NO hay campo para escribir códigos ni tokens, ni enlaces o textos que manden a comprar fuera de la app
+// (ni web, ni precios externos, ni otros medios de pago). Solo la compra de Apple, Restaurar compras y Gestionar suscripción.
 import StoreKit
 import SwiftUI
 
@@ -14,7 +15,6 @@ struct PantallaPlanes: View {
     @EnvironmentObject var gestor: GestorLicencia
     @State private var celulares: Int
     @State private var aviso: String?
-    @State private var comprado: RespuestaActivacion?
 
     init(celularesIniciales: Int = 1) {
         _celulares = State(initialValue: celularesIniciales)
@@ -33,6 +33,10 @@ struct PantallaPlanes: View {
                 .pickerStyle(.segmented)
             } header: {
                 Text("¿Para cuántos celulares?")
+            } footer: {
+                if celulares > 1 {
+                    Text("Para usar el plan en los otros iPhone, abre TuBroadcast en cada uno con la misma cuenta de Apple y toca «Restaurar compras».")
+                }
             }
 
             Section {
@@ -53,7 +57,6 @@ struct PantallaPlanes: View {
                 Button("Restaurar compras") {
                     Task { aviso = await tienda.restaurar() }
                 }
-                NavigationLink("Activar con código") { PantallaActivarCodigo() }
                 Button("Gestionar suscripción") { Task { await tienda.gestionarSuscripcion() } }
             }
 
@@ -70,9 +73,6 @@ struct PantallaPlanes: View {
         .task { if tienda.productos.isEmpty { await tienda.cargarProductos() } }
         .alert(aviso ?? "", isPresented: Binding(get: { aviso != nil }, set: { if !$0 { aviso = nil } })) {
             Button("Aceptar", role: .cancel) {}
-        }
-        .sheet(item: Binding(get: { comprado.map { CompraHecha(respuesta: $0) } }, set: { if $0 == nil { comprado = nil } })) { c in
-            PantallaCompraHecha(respuesta: c.respuesta)
         }
     }
 
@@ -93,7 +93,7 @@ struct PantallaPlanes: View {
             Button {
                 Task {
                     switch await tienda.comprar(p) {
-                    case .listo(let r): comprado = r
+                    case .listo(let r): aviso = r.mensaje
                     case .cancelada: break
                     case .pendiente: aviso = "La compra está pendiente de aprobación. Cuando se apruebe, el plan se activa solo."
                     case .error(let m): aviso = m
@@ -107,103 +107,6 @@ struct PantallaPlanes: View {
             .accessibilityLabel("\(info.titulo), \(info.textoCelulares), \(p.displayPrice) \(info.textoPeriodo)")
         }
         .padding(.vertical, 4)
-    }
-}
-
-private struct CompraHecha: Identifiable {
-    let respuesta: RespuestaActivacion
-    var id: String { respuesta.token + (respuesta.codigo ?? "") }
-}
-
-/// Después de comprar: confirma y muestra el código del paquete para los otros celulares.
-struct PantallaCompraHecha: View {
-    let respuesta: RespuestaActivacion
-    @Environment(\.dismiss) private var cerrar
-
-    var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    Label(respuesta.mensaje.isEmpty ? "¡Listo! Tu plan está activo en este celular." : respuesta.mensaje,
-                          systemImage: "checkmark.seal.fill")
-                        .foregroundColor(.green)
-                }
-                if let codigo = respuesta.codigo, !codigo.isEmpty, (respuesta.celulares ?? 1) > 1 {
-                    BloqueCodigo(codigo: codigo, celulares: respuesta.celulares ?? 1)
-                }
-            }
-            .navigationTitle("Compra hecha")
-            .toolbar { Button("Listo") { cerrar() } }
-        }
-    }
-}
-
-/// Código del paquete con botones para copiar y compartir.
-struct BloqueCodigo: View {
-    let codigo: String
-    let celulares: Int
-    @State private var copiado = false
-
-    var body: some View {
-        Section {
-            Text(codigo).font(.system(.title2, design: .monospaced).bold()).textSelection(.enabled)
-            Text("Comparte este código con los otros celulares del paquete (\(celulares) en total). En cada uno: Ajustes > Licencia > Activar con código.")
-                .font(.footnote)
-            HStack {
-                Button(copiado ? "Copiado" : "Copiar") {
-                    UIPasteboard.general.string = codigo
-                    copiado = true
-                }
-                .buttonStyle(.bordered)
-                Spacer()
-                ShareLink(item: codigo, message: Text("Código de TuBroadcast para activar este celular: \(codigo)")) {
-                    Label("Compartir", systemImage: "square.and.arrow.up")
-                }
-                .buttonStyle(.bordered)
-            }
-        } header: {
-            Text("Código del paquete")
-        }
-    }
-}
-
-struct PantallaActivarCodigo: View {
-    @EnvironmentObject var gestor: GestorLicencia
-    @Environment(\.dismiss) private var cerrar
-    @State private var codigo = ""
-    @State private var trabajando = false
-    @State private var resultado: String?
-    @State private var activado = false
-
-    var body: some View {
-        Form {
-            Section {
-                TextField("TB-XXXX-XXXX", text: $codigo)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .font(.system(.title3, design: .monospaced))
-                Button {
-                    trabajando = true
-                    Task {
-                        let (ok, mensaje) = await gestor.activar(codigo: codigo)
-                        activado = ok
-                        resultado = mensaje
-                        trabajando = false
-                    }
-                } label: {
-                    HStack { Text("Activar"); if trabajando { Spacer(); ProgressView() } }
-                }
-                .disabled(trabajando || codigo.trimmingCharacters(in: .whitespaces).isEmpty)
-            } header: {
-                Text("Código de activación")
-            } footer: {
-                Text("Si te dieron un código TB-XXXX-XXXX (por ejemplo, para los otros celulares de un paquete), escríbelo aquí.")
-            }
-        }
-        .navigationTitle("Activar con código")
-        .alert(resultado ?? "", isPresented: Binding(get: { resultado != nil }, set: { if !$0 { resultado = nil } })) {
-            Button("Aceptar", role: .cancel) { if activado { cerrar() } }
-        }
     }
 }
 
@@ -233,7 +136,6 @@ struct SeccionLicencia: View {
             }
             if tienda.hayPlanes || gestor.tieneToken {
                 NavigationLink("Ver planes") { PantallaPlanes() }
-                NavigationLink("Activar con código") { PantallaActivarCodigo() }
                 Button("Restaurar compras") { Task { aviso = await tienda.restaurar() } }
                 Button("Gestionar suscripción") { Task { await tienda.gestionarSuscripcion() } }
             }
@@ -245,11 +147,8 @@ struct SeccionLicencia: View {
             Text("Licencia")
         } footer: {
             if tienda.hayPlanes || gestor.tieneToken {
-                Text("«Liberar este celular» deja libre su lugar en el plan para activar otro celular. No cancela tu suscripción de Apple: para cancelarla usa «Gestionar suscripción».")
+                Text("Los planes se compran dentro de la app con tu cuenta de Apple. «Liberar este celular» deja libre su lugar en el plan para usarlo en otro iPhone con la misma cuenta de Apple («Restaurar compras»). No cancela tu suscripción de Apple: para cancelarla usa «Gestionar suscripción».")
             }
-        }
-        if let p = gestor.paquete, p.celulares > 1 {
-            BloqueCodigo(codigo: p.codigo, celulares: p.celulares)
         }
         Section {
             Text("Id de este celular: \(gestor.dispositivo)").font(.caption2).foregroundColor(.secondary).textSelection(.enabled)
