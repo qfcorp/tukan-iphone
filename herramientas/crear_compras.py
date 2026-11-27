@@ -374,6 +374,133 @@ def crear_desde_lista(bundle, ruta_lista, carpeta_capturas=None):
     print("LISTO: %d compras de %s." % (len(lista), bundle))
 
 
+def _corto(obj, maximo=1500):
+    t = json.dumps(obj, ensure_ascii=False, sort_keys=True)
+    return t if len(t) <= maximo else t[:maximo] + "…"
+
+
+def _mostrar(pedir, titulo, ruta, maximo=1500):
+    """Diagnóstico: GET y muestra código, atributos y relaciones (sin parar si Apple responde error)."""
+    from asc import error_corto
+    st, r = pedir("GET", ruta)
+    print("  · %s  [%s %s]" % (titulo, st, ruta.split("?")[0]))
+    if st != 200:
+        print("      ERROR:", error_corto(r)[:600])
+        return st, r
+    data = r.get("data")
+    filas = data if isinstance(data, list) else ([data] if data else [])
+    if not filas:
+        print("      (vacío)")
+    for d in filas[:6]:
+        print("      %s %s attrs=%s" % (d.get("type"), d.get("id"), _corto(d.get("attributes"), maximo)))
+        rels = {k: (v.get("data") if isinstance(v, dict) else None) for k, v in (d.get("relationships") or {}).items()}
+        rels = {k: (len(v) if isinstance(v, list) else (v or {}).get("id")) for k, v in rels.items() if v is not None}
+        if rels:
+            print("        rels=%s" % _corto(rels, 600))
+    if isinstance(data, list) and len(data) > 6:
+        print("      … %d en total (esta página)" % len(data))
+    if (r.get("meta") or {}).get("paging"):
+        print("      paging=%s" % _corto(r["meta"]["paging"]))
+    return st, r
+
+
+def resumen_precios(precios, inc):
+    """Cuenta precios de suscripción por planType y por país. precios: data de /prices con include=territory."""
+    por_plan = {}
+    for p in precios:
+        plan = (p.get("attributes") or {}).get("planType") or "SIN_PLANTYPE"
+        por_plan[plan] = por_plan.get(plan, 0) + 1
+    return por_plan
+
+
+def pais_de(precio):
+    return (((precio.get("relationships") or {}).get("territory") or {}).get("data") or {}).get("id")
+
+
+def diagnostico():
+    """(27 nov 2026) Solo lee: estado de las 20 compras y detalle de basico.1.mes, completo.1.anio y un pase."""
+    from asc import error_corto, pedir
+    from publicar_app_store import app_id
+
+    def ok(st, r, que):
+        if st not in (200, 201, 204):
+            raise RuntimeError("%s (%s): %s" % (que, st, error_corto(r)))
+        return r
+
+    aid = app_id(BUNDLE)
+    print("== App", aid)
+    _mostrar(pedir, "app", "/v1/apps/%s?fields[apps]=name,bundleId,primaryLocale,contentRightsDeclaration,"
+                            "subscriptionStatusUrl,subscriptionStatusUrlVersion,subscriptionStatusUrlForSandbox,"
+                            "streamlinedPurchasingEnabled" % aid)
+    r = ok(*pedir("GET", "/v1/apps/%s/appAvailabilityV2" % aid), "leer disponibilidad")
+    print("  · appAvailabilityV2 attrs=%s" % _corto(r["data"].get("attributes")))
+    ta, _ = todos(pedir, ok, "/v2/appAvailabilities/%s/territoryAvailabilities?include=territory&limit=200" % r["data"]["id"])
+    paises = sorted({t["relationships"]["territory"]["data"]["id"] for t in ta if t["attributes"].get("available")})
+    print("  países de la app:", len(paises), "· USA" if "USA" in paises else "", "· ECU" if "ECU" in paises else "")
+
+    grupos, _ = todos(pedir, ok, "/v1/apps/%s/subscriptionGroups?limit=50" % aid)
+    grupo = next(g for g in grupos if g["attributes"]["referenceName"] == "TuBroadcast")
+    gid = grupo["id"]
+    print("\n== Grupo", gid, _corto(grupo["attributes"]))
+    _mostrar(pedir, "localizaciones del grupo", "/v1/subscriptionGroups/%s/subscriptionGroupLocalizations" % gid)
+
+    subs = todos(pedir, ok, "/v1/subscriptionGroups/%s/subscriptions?limit=50" % gid)[0]
+    iaps = [i for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]
+            if i["attributes"]["productId"].startswith("tubroadcast.")]
+    print("\n== Estado de las %d suscripciones y %d pases" % (len(subs), len(iaps)))
+    estados = {}
+    for x in sorted(subs, key=lambda s: s["attributes"]["productId"]) + sorted(iaps, key=lambda s: s["attributes"]["productId"]):
+        e = x["attributes"].get("state")
+        estados[e] = estados.get(e, 0) + 1
+        print("  %-28s %-8s %s" % (x["attributes"]["productId"], x["id"], e))
+    print("  RESUMEN:", _corto(estados))
+
+    elegidas = [s for s in subs if s["attributes"]["productId"] in ("tubroadcast.basico.1.mes", "tubroadcast.completo.1.anio")]
+    for s in elegidas:
+        sid = s["id"]
+        print("\n== Suscripción %s (%s)" % (s["attributes"]["productId"], sid))
+        print("  attrs:", _corto(s["attributes"], 3000))
+        print("  relaciones:", sorted((s.get("relationships") or {}).keys()))
+        _mostrar(pedir, "subscriptionAvailability", "/v1/subscriptions/%s/subscriptionAvailability" % sid)
+        _mostrar(pedir, "planAvailabilities", "/v1/subscriptions/%s/planAvailabilities" % sid)
+        st, r = pedir("GET", "/v1/subscriptions/%s/planAvailabilities" % sid)
+        for pa in (r.get("data") or []) if st == 200 else []:
+            _mostrar(pedir, "  territorios del plan %s" % (pa.get("attributes") or {}).get("planType"),
+                     "/v1/subscriptionPlanAvailabilities/%s/availableTerritories?limit=200" % pa["id"], 200)
+        _mostrar(pedir, "localizaciones", "/v1/subscriptions/%s/subscriptionLocalizations" % sid)
+        _mostrar(pedir, "captura de revisión", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
+        try:
+            precios, inc = todos(pedir, ok, "/v1/subscriptions/%s/prices?include=territory,subscriptionPricePoint&limit=200" % sid)
+            print("  · precios: %d · por planType %s" % (len(precios), _corto(resumen_precios(precios, inc))))
+            pps = {i["id"]: i.get("attributes") for i in inc if i.get("type") == "subscriptionPricePoints"}
+            for p in precios:
+                if pais_de(p) in ("USA", "ECU"):
+                    ppid = (((p.get("relationships") or {}).get("subscriptionPricePoint") or {}).get("data") or {}).get("id")
+                    print("      %s attrs=%s punto=%s" % (pais_de(p), _corto(p.get("attributes")), _corto(pps.get(ppid))))
+            sin_pais = sum(1 for p in precios if not pais_de(p))
+            if sin_pais:
+                print("      (%d precios sin país en la respuesta)" % sin_pais)
+        except RuntimeError as e:
+            print("  · precios: ERROR", e)
+        for plan in ("UPFRONT", "MONTHLY"):
+            _mostrar(pedir, "precios %s en USA" % plan,
+                     "/v1/subscriptions/%s/prices?filter[planType]=%s&filter[territory]=USA&include=subscriptionPricePoint,territory" % (sid, plan))
+        _mostrar(pedir, "precio introductorio", "/v1/subscriptions/%s/introductoryOffers?limit=5" % sid)
+
+    if iaps:
+        i = sorted(iaps, key=lambda s: s["attributes"]["productId"])[0]
+        iid = i["id"]
+        print("\n== Pase %s (%s)" % (i["attributes"]["productId"], iid))
+        print("  attrs:", _corto(i["attributes"], 3000))
+        _mostrar(pedir, "inAppPurchaseAvailability", "/v2/inAppPurchases/%s/inAppPurchaseAvailability" % iid)
+        _mostrar(pedir, "localizaciones", "/v2/inAppPurchases/%s/inAppPurchaseLocalizations" % iid)
+        _mostrar(pedir, "captura de revisión", "/v2/inAppPurchases/%s/appStoreReviewScreenshot" % iid)
+        st, r = _mostrar(pedir, "horario de precios", "/v2/inAppPurchases/%s/iapPriceSchedule?include=baseTerritory" % iid)
+        if st == 200 and r.get("data"):
+            _mostrar(pedir, "precios manuales", "/v1/inAppPurchasePriceSchedules/%s/manualPrices?include=territory&limit=5" % r["data"]["id"])
+    print("\nFIN del diagnóstico (no se cambió nada).")
+
+
 def probar():
     subs, cons = productos()
     assert len(subs) == 16 and len(cons) == 4, (len(subs), len(cons))
@@ -423,6 +550,8 @@ def probar_lista(ruta):
 if __name__ == "__main__":
     if sys.argv[1:] == ["probar"]:
         probar()
+    elif sys.argv[1:] == ["diagnostico"]:
+        diagnostico()
     elif sys.argv[1:2] == ["capturas"]:
         subir_capturas(sys.argv[2])
     elif sys.argv[1:2] == ["lista"]:
