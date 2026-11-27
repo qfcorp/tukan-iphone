@@ -21,12 +21,14 @@ final class PruebasTienda: XCTestCase {
         sesion = nil
     }
 
-    /// Panel falso que acepta la compra de Apple y devuelve licencia + código del paquete.
+    /// Panel falso que acepta la compra de Apple y devuelve licencia (y, como el panel de verdad, también el código
+    /// del paquete, que en iPhone se ignora).
     func panelQueAceptaCompras(plan: String = "completo", celulares: Int = 3) {
         PanelFalso.responder = { accion, json in
             guard accion == "apple_compra" else { return (404, ["ok": false]) }
             let l = LlavePrueba.licencia(dispositivo: json["dispositivo"] as! String, plan: plan, modulos: ["rtmp", "srt", "abr"])
-            return (200, ["ok": true, "mensaje": "¡Listo! Plan Completo activado.", "licencia": LlavePrueba.json(l),
+            return (200, ["ok": true, "mensaje": "¡Listo! Plan Completo activado con el App Store. Para los otros celulares usa el código TB-PAQU-ETE3.",
+                          "licencia": LlavePrueba.json(l),
                           "token": "token-apple-0123456789abcdef", "codigo": "TB-PAQU-ETE3", "plan": plan,
                           "celulares": celulares, "expira": 1_798_000_000])
         }
@@ -67,7 +69,7 @@ final class PruebasTienda: XCTestCase {
     func testCargaLos20ProductosDeApple() async throws {
         let g = gestorDePrueba()
         let tienda = Tienda(gestor: g)
-        XCTAssertFalse(tienda.hayPlanes, "Sin planes cargados no se muestran compras ni código")
+        XCTAssertFalse(tienda.hayPlanes, "Sin planes cargados no se muestran compras")
         await tienda.cargarProductos(avisar: false)
         XCTAssertTrue(tienda.hayPlanes)
         XCTAssertNil(tienda.aviso)
@@ -96,7 +98,8 @@ final class PruebasTienda: XCTestCase {
         let compra = try await comprarEnPrueba("tubroadcast.completo.3.mes", g)
         let resultado = await tienda.procesar(compra)
         guard case .listo(let r) = resultado else { return XCTFail("La compra debía quedar lista: \(resultado)") }
-        XCTAssertEqual(r.codigo, "TB-PAQU-ETE3")
+        XCTAssertEqual(r.mensaje, "¡Listo! Plan Completo activo en este iPhone.")
+        XCTAssertFalse(r.mensaje.contains("TB-"), "En iPhone no se muestra el código del paquete")
 
         // Lo que llegó al panel: {dispositivo, modelo, version, transaccion (JWS), app_cuenta}
         let p = try XCTUnwrap(PanelFalso.ultimo("apple_compra"))
@@ -109,10 +112,9 @@ final class PruebasTienda: XCTestCase {
         XCTAssertEqual(contenido["productId"] as? String, "tubroadcast.completo.3.mes")
         XCTAssertEqual((contenido["appAccountToken"] as? String)?.lowercased(), g.appCuenta.uuidString.lowercased())
 
-        // Licencia activa y código del paquete guardado para los otros celulares
+        // Licencia activa (los otros iPhone del paquete usan «Restaurar compras» con la misma cuenta de Apple)
         XCTAssertTrue(g.estado.esValida)
         XCTAssertEqual(g.limites(tipoConexion: "SRT"), .sinLimites)
-        XCTAssertEqual(g.paquete, Paquete(codigo: "TB-PAQU-ETE3", plan: "completo", celulares: 3, expira: "1798000000"))
 
         // La transacción quedó terminada (finish)
         var pendientes = 0

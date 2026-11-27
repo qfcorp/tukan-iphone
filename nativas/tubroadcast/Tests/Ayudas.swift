@@ -100,7 +100,7 @@ final class RelojFalso: Reloj {
 }
 
 @MainActor
-func gestorDePrueba(reloj: Reloj = RelojSistema()) -> GestorLicencia {
+func gestorDePrueba(reloj: Reloj = RelojSistema(), almacen: Almacen = AlmacenMemoria()) -> GestorLicencia {
     GestorLicencia(panel: PanelCliente(servidor: URL(string: "https://panel.prueba")!, sesion: PanelFalso.sesion()),
-                   almacen: AlmacenMemoria(), llavePublica: LlavePrueba.publicaBase64, reloj: reloj)
+                   almacen: almacen, llavePublica: LlavePrueba.publicaBase64, reloj: reloj)
 }

@@ -1,19 +1,13 @@
 // Contrato con el Panel Tukán Central: POST JSON a {servidor}/tubroadcast_api.php?a=...
 // (igual que Android, core/.../tuner/Tuner.kt; servidor: src/Broadcast.php). El VIDEO nunca pasa por aquí.
-//   activar       {codigo, dispositivo, modelo, versionApp}                     -> {ok, mensaje, licencia, token}
-//   apple_compra  {dispositivo, modelo, version, transaccion (JWS), app_cuenta} -> igual que activar + {codigo, plan, celulares, expira (unix s)}
-//                 errores: 400, 402 (firma mala, vencida, revocada...), 403 (paquete lleno), 429 -> siempre se muestra «mensaje»
-//   liberar       {dispositivo, token}                                          -> {ok, mensaje, cambios_restantes, codigo}
+// En iPhone los planes se desbloquean SOLO con la compra de Apple (regla 3.1.1; revisión de Apple del 27 nov 2026):
+// la app NO usa la acción «activar» (código de activación) ni deja escribir ningún código o token.
+//   apple_compra  {dispositivo, modelo, version, transaccion (JWS), app_cuenta} -> {ok, mensaje, licencia, token}
+//                 errores: 400, 402 (firma mala, vencida, revocada...), 403 (paquete lleno), 429 -> se muestra «mensaje» (sin frases que nombren códigos)
+//   liberar       {dispositivo, token}                                          -> {ok, mensaje, cambios_restantes}
 //                 429 = sin cambios (se muestra el mensaje) · 401 = el token ya no sirve (el celular queda libre)
 //   latido        {dispositivo, token, controlCedido, versionAjustes, estadisticas} -> {ok, ordenes, licencia?, mensaje}
 import Foundation
-
-struct PedidoActivar: Encodable, Sendable {
-    let codigo: String
-    let dispositivo: String
-    let modelo: String
-    let versionApp: String
-}
 
 struct PedidoCompraApple: Encodable, Sendable {
     let dispositivo: String
@@ -23,7 +17,7 @@ struct PedidoCompraApple: Encodable, Sendable {
     let transaccion: String
     /// appAccountToken (UUID guardado en el llavero) que se pasó a la compra.
     let app_cuenta: String
-    /// Mismo dato que «version», con el nombre que usa activar (por compatibilidad).
+    /// Mismo dato que «version» (el panel lo lee con este nombre en sus registros).
     let versionApp: String
 }
 
@@ -50,19 +44,15 @@ struct PedidoLatido: Encodable, Sendable {
     let estadisticas: Estadisticas
 }
 
-/// Respuesta de activar y de apple_compra.
-struct RespuestaActivacion: Decodable, Sendable {
+/// Respuesta de apple_compra. Si el panel manda otros datos (por ejemplo un código de paquete) la app los ignora:
+/// en iPhone no se muestra ni se usa ningún código.
+struct RespuestaCompra: Decodable, Sendable {
     var ok: Bool
     var mensaje: String = ""
     var licencia: Licencia?
     var token: String = ""
-    /// Solo apple_compra: código del paquete para activar los otros celulares.
-    var codigo: String?
-    var plan: String?
-    var celulares: Int?
-    var expira: String?
 
-    private enum CodingKeys: String, CodingKey { case ok, mensaje, licencia, token, codigo, plan, celulares, expira }
+    private enum CodingKeys: String, CodingKey { case ok, mensaje, licencia, token }
 
     init(ok: Bool, mensaje: String) { self.ok = ok; self.mensaje = mensaje }
 
@@ -72,12 +62,6 @@ struct RespuestaActivacion: Decodable, Sendable {
         mensaje = try c.decodeIfPresent(String.self, forKey: .mensaje) ?? ""
         licencia = try? c.decodeIfPresent(Licencia.self, forKey: .licencia)
         token = try c.decodeIfPresent(String.self, forKey: .token) ?? ""
-        codigo = try? c.decodeIfPresent(String.self, forKey: .codigo)
-        plan = try? c.decodeIfPresent(String.self, forKey: .plan)
-        if let n = try? c.decodeIfPresent(Int.self, forKey: .celulares) { celulares = n }
-        else if let s = try? c.decodeIfPresent(String.self, forKey: .celulares) { celulares = Int(s) }
-        if let s = try? c.decodeIfPresent(String.self, forKey: .expira) { expira = s }
-        else if let n = try? c.decodeIfPresent(Int64.self, forKey: .expira) { expira = String(n) }
     }
 }
 

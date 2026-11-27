@@ -23,7 +23,7 @@ cat > "$SALIDA/datos.env" <<'J'
 PRODUCTO=TuBroadcast
 BUNDLE_ID=com.tukansoftware.tubroadcast
 URL_APP='(app nativa: camara + RTMP/SRT)'
-VERSION=1.0.0
+VERSION=1.0.1
 COMPILACION=1
 J
 cd "$SALIDA" && xcodegen generate
