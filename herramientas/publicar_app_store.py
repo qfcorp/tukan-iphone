@@ -264,11 +264,12 @@ def version_editable(aid, version_nueva=None):
 def enviar_compras(aid):
     """(25 nov 2026) Deja las compras dentro de la app (suscripciones y consumibles) listas para ir con la próxima
     versión: Apple revisa las primeras compras junto con una versión de la app. Las ya aprobadas o enviadas se saltan."""
-    hechas = []
+    hechas, faltan, otros = [], [], {}
     st, r = pedir("GET", "/v1/apps/%s/subscriptionGroups?include=subscriptions&limit=20" % aid)
     ok(st, r, "leer suscripciones")
     for s in [x for x in r.get("included", []) if x["type"] == "subscriptions"]:
         if s["attributes"].get("state") not in ("READY_TO_SUBMIT", "DEVELOPER_ACTION_NEEDED", "REJECTED"):
+            otros[s["attributes"].get("state")] = otros.get(s["attributes"].get("state"), 0) + 1
             continue
         st2, r2 = pedir("POST", "/v1/subscriptionSubmissions", {"data": {"type": "subscriptionSubmissions",
             "relationships": {"subscription": {"data": {"type": "subscriptions", "id": s["id"]}}}}})
@@ -276,10 +277,12 @@ def enviar_compras(aid):
             hechas.append(s["attributes"]["productId"])
         else:
             print("   aviso compra %s (%s): %s" % (s["attributes"]["productId"], st2, error_corto(r2)))
+            faltan.append(s["attributes"]["productId"])
     st, r = pedir("GET", "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)
     ok(st, r, "leer compras")
     for i in r.get("data", []):
         if i["attributes"].get("state") not in ("READY_TO_SUBMIT", "DEVELOPER_ACTION_NEEDED", "REJECTED"):
+            otros[i["attributes"].get("state")] = otros.get(i["attributes"].get("state"), 0) + 1
             continue
         st2, r2 = pedir("POST", "/v1/inAppPurchaseSubmissions", {"data": {"type": "inAppPurchaseSubmissions",
             "relationships": {"inAppPurchaseV2": {"data": {"type": "inAppPurchases", "id": i["id"]}}}}})
@@ -287,7 +290,10 @@ def enviar_compras(aid):
             hechas.append(i["attributes"]["productId"])
         else:
             print("   aviso compra %s (%s): %s" % (i["attributes"]["productId"], st2, error_corto(r2)))
-    return "%d compras van con la version" % len(hechas)
+            faltan.append(i["attributes"]["productId"])
+    if otros:
+        print("   compras en otros estados (no se mandan): " + ", ".join("%s=%d" % kv for kv in otros.items()))
+    return "%d compras van con la version" % len(hechas), faltan
 
 
 def poner_version(v, version, f):
@@ -450,20 +456,24 @@ def preparar(app, datos_contacto):
     return aid, v["id"], pasos
 
 
-def enviar(aid, vid):
+def enviar(aid, vid, compras=False):
     # Si Apple dejo un envio con "problemas sin resolver", se reenvia ese mismo
     st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&filter[state]=UNRESOLVED_ISSUES&limit=5" % aid)
     if st == 200 and r.get("data"):
         envio = r["data"][0]["id"]
         # Como "Actualizar revision" en la web: volver a poner la version en ese envio
+        if compras:
+            st2 = 0   # con compras hay que armar un envio nuevo (version + compras juntas)
+            r2 = {"errors": [{"detail": "hay compras que deben ir con la version"}]}
         sti, ri = pedir("POST", "/v1/reviewSubmissionItems", {"data": {
             "type": "reviewSubmissionItems",
             "relationships": {"reviewSubmission": {"data": {"type": "reviewSubmissions", "id": envio}},
                               "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
         if sti not in (200, 201):
             print("   aviso: agregar la version al envio viejo (%s): %s" % (sti, error_corto(ri)))
-        st2, r2 = pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
-            "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}})
+        if not compras:
+            st2, r2 = pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
+                "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}})
         if st2 in (200, 201):
             return envio
         # El envio viejo (con «Information Needed») no acepta la version nueva:
@@ -490,6 +500,13 @@ def enviar(aid, vid):
                           "appStoreVersion": {"data": {"type": "appStoreVersions", "id": vid}}}}})
     if st not in (200, 201) and "already" not in json.dumps(r).lower():
         raise RuntimeError("agregar al envio (%s): %s" % (st, error_corto(r)))
+    if compras:
+        # (27 nov 2026) Apple: «la primera compra debe enviarse a revision AL MISMO TIEMPO que una version».
+        # Por eso las compras se mandan con la version ya puesta en el envio y antes de enviarlo.
+        texto, faltan = enviar_compras(aid)
+        print("   " + texto)
+        if faltan:
+            raise RuntimeError("compras que no se pudieron enviar con la version: " + ", ".join(faltan[:6]))
     ok(*pedir("PATCH", "/v1/reviewSubmissions/" + envio, {"data": {
         "type": "reviewSubmissions", "id": envio, "attributes": {"submitted": True}}}), "enviar a revision")
     return envio
@@ -548,9 +565,7 @@ def enviar_versiones_nuevas(estado):
         try:
             aid, vid, pasos = preparar(app, contacto())
             print("   ficha lista: " + "; ".join(pasos))
-            if f.get("compras_con_version"):
-                print("   " + enviar_compras(aid))
-            envio = enviar(aid, vid)
+            envio = enviar(aid, vid, compras=bool(f.get("compras_con_version")))
             estado[app] = {"estado": "enviada", "fecha": ahora(), "version_id": vid, "envio_id": envio,
                            "version": version, "version_aprobada": d.get("version_aprobada") or d.get("version")}
             enviadas.append(app)
@@ -602,9 +617,7 @@ def tanda(solo=None):
         try:
             aid, vid, pasos = preparar(app, datos_contacto)
             print("   ficha lista: " + "; ".join(pasos))
-            if ficha_de(app).get("compras_con_version"):
-                print("   " + enviar_compras(aid))
-            envio = enviar(aid, vid)
+            envio = enviar(aid, vid, compras=bool(ficha_de(app).get("compras_con_version")))
             estado[app] = {"estado": "enviada", "fecha": ahora(), "version_id": vid, "envio_id": envio}
             enviadas += 1
             print("   ENVIADA A REVISION")
@@ -657,6 +670,18 @@ if __name__ == "__main__":
         sys.exit(tanda(solo=apps))
     if modo == "preparar":
         sys.exit(solo_preparar(apps))
+    if modo == "cancelar":
+        # Quita de la revision los envios en espera de esas apps (como «Quitar de la revision» en la web)
+        for app in apps:
+            aid = app_id(ficha_de(app)["bundle_id"])
+            st, r = pedir("GET", "/v1/reviewSubmissions?filter[app]=%s&limit=10" % aid)
+            for e in (r.get("data") or []):
+                if e["attributes"].get("state") in ("WAITING_FOR_REVIEW", "READY_FOR_REVIEW", "UNRESOLVED_ISSUES"):
+                    st2, r2 = pedir("PATCH", "/v1/reviewSubmissions/" + e["id"], {"data": {
+                        "type": "reviewSubmissions", "id": e["id"], "attributes": {"canceled": True}}})
+                    print("%s: envio %s (%s) cancelado: %s" % (app, e["id"], e["attributes"].get("state"),
+                          "si" if st2 in (200, 201) else error_corto(r2)))
+        sys.exit(0)
     if modo == "estado":
         sys.exit(ver_estado())
     print(__doc__)

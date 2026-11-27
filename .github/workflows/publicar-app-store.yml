@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       modo:
-        description: "tanda (la que toca), preparar (sin enviar), enviar (esas apps) o estado"
+        description: "tanda (la que toca), preparar (sin enviar), enviar (esas apps), cancelar (quitar de la revision esas apps) o estado"
         required: true
         default: "tanda"
       apps:
