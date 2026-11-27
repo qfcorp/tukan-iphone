@@ -3,7 +3,9 @@
     "estado": "enviada",
     "fecha": "2026-11-27 19:52 UTC",
     "version_id": "50f969a7-555d-4235-bd4b-199d6e98c745",
-    "envio_id": "d408656a-ba1e-401f-bd1c-1bf7557ad435"
+    "envio_id": "d408656a-ba1e-401f-bd1c-1bf7557ad435",
+    "apple": "DEVELOPER_REJECTED",
+    "error": "compras que no se pudieron enviar con la version: tubroadcast.pase24.1, tubroadcast.pase24.10, tubroadcast.pase24.3, tubroadcast.pase24.5 (2026-11-27 19:55 UTC)"
   },
   "envivo": {
     "estado": "enviada",
