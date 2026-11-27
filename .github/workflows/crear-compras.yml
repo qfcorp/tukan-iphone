@@ -50,19 +50,12 @@ jobs:
           curl -sSL -o /tmp/spec.zip https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip
           cd /tmp && unzip -o -q spec.zip
           python3 - <<'PY'
-          import json, re
+          import json
           d = json.load(open('/tmp/openapi.oas.json'))
-          for path in ('/v1/subscriptionPriceTiers', '/v1/subscriptions/{id}/prices', '/v1/subscriptions/{id}/pricePoints', '/v1/subscriptionPricePoints/{id}/adjustedEqualizations', '/v1/subscriptionPricePoints/{id}/equalizations', '/v1/subscriptionSubmissions'):
-              for m, op in d['paths'][path].items():
-                  if m == 'parameters': continue
-                  print('PATH', m.upper(), path, op.get('summary'), '|', (op.get('description') or '')[:400])
-                  print('   params:', [p.get('name') if 'name' in p else p.get('$ref') for p in op.get('parameters', [])])
-          txt = json.dumps(d)
-          for w in ('multiSeat', 'MultiSeat', 'minQuantity', 'marketSettings', 'adjustedEqualizations'):
-              for m in re.finditer(w, txt):
-                  pass
-              print(w, txt.count(w))
+          for path in sorted(d['paths']):
+              if 'subscriptionGroup' in path or 'Version' in path and 'subscription' in path.lower():
+                  print('PATH', path, sorted(d['paths'][path].keys()))
           for k, v in d['components']['schemas'].items():
-              if 'Equalized' in k or 'Submission' in k and 'Subscription' in k:
-                  print('###', k, json.dumps(v)[:1200])
+              if k.startswith('SubscriptionGroupVersion') and ('Response' not in k or k == 'SubscriptionGroupVersionResponse'):
+                  print('###', k, json.dumps(v)[:1500])
           PY
