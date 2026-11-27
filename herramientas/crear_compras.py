@@ -128,7 +128,8 @@ def todos(pedir, ok, ruta):
     return data, inc
 
 
-def correr():
+def correr(solo=None):
+    """solo = productId: hace solo esa suscripción (sin los pases); para probar un cambio antes de aplicarlo a todas."""
     from asc import error_corto, pedir
     from publicar_app_store import app_id
 
@@ -153,6 +154,12 @@ def correr():
     print("Avisos V2 →", AVISOS_URL)
 
     subs, cons = productos()
+    if solo:
+        subs, cons = [x for x in subs if x["id"] == solo], []
+        assert subs, "no existe " + solo
+        print("SOLO:", solo)
+    territorios = sorted(t["id"] for t in todos(pedir, ok, "/v1/territories?limit=200")[0])
+    print("Territorios de Apple (precio de suscripción en todos):", len(territorios))
 
     # Grupo de suscripción
     grupos, _ = todos(pedir, ok, "/v1/apps/%s/subscriptionGroups?limit=50" % aid)
@@ -188,17 +195,22 @@ def correr():
         if not upfront:
             ok(*pedir("POST", "/v1/subscriptionPlanAvailabilities", cuerpo_plan(sid, paises)), "plan UPFRONT " + s["id"])
             print("  %-28s plan UPFRONT creado en %d países" % (s["id"], len(paises)))
-        else:
-            ter, _ = todos(pedir, ok, "/v1/subscriptionPlanAvailabilities/%s/availableTerritories?limit=200" % upfront["id"])
-            if {t["id"] for t in ter} != set(paises):
-                ok(*pedir("PATCH", "/v1/subscriptionPlanAvailabilities/" + upfront["id"],
-                          cuerpo_plan(sid, paises, upfront["id"])), "países del plan " + s["id"])
-                print("  %-28s plan UPFRONT: países igualados a los de la app (%d)" % (s["id"], len(paises)))
+            pas, _ = todos(pedir, ok, "/v1/subscriptions/%s/planAvailabilities" % sid)
+            upfront = next(pa for pa in pas if (pa.get("attributes") or {}).get("planType") == PLAN)
+        ter, _ = todos(pedir, ok, "/v1/subscriptionPlanAvailabilities/%s/availableTerritories?limit=200" % upfront["id"])
+        en_plan = [t["id"] for t in ter]
+        if set(paises) - set(en_plan):
+            en_plan = ampliar_plan(en_plan, paises)
+            ok(*pedir("PATCH", "/v1/subscriptionPlanAvailabilities/" + upfront["id"],
+                      cuerpo_plan(sid, en_plan, upfront["id"])), "países del plan " + s["id"])
+            print("  %-28s plan UPFRONT: ahora en %d países (incluye todos los de la app)" % (s["id"], len(en_plan)))
+        # Precio UPFRONT en TODOS los territorios de Apple (27 nov 2026, autorizado por Dimitry): sin esto Apple deja la
+        # suscripción en MISSING_METADATA («Debes añadir un precio»). La app sigue sin UE ni China: allí no se vende.
         precios, _ = todos(pedir, ok, "/v1/subscriptions/%s/prices?filter[planType]=%s&include=territory,subscriptionPricePoint&limit=200"
                            % (sid, PLAN))
-        faltan = sorted(set(paises) - {pais_de(p) for p in precios})
+        faltan = sorted(set(territorios) - {pais_de(p) for p in precios})
         if not faltan:
-            print("  %-28s ya tenía precio UPFRONT en sus %d países" % (s["id"], len(paises)))
+            print("  %-28s ya tenía precio UPFRONT en los %d territorios" % (s["id"], len(territorios)))
             continue
         # Punto de EE. UU.: el que ya está en vigor (un precio en vigor no se cambia aquí) o el más cercano al objetivo
         usa = next((p for p in precios if pais_de(p) == "USA"), None)
@@ -213,19 +225,34 @@ def correr():
             t = ((e.get("relationships") or {}).get("territory") or {}).get("data") or {}
             if t.get("id"):
                 por_pais[t["id"]] = e["id"]
-        hechos, fallos = 0, []
-        for pais in faltan:
-            if pais not in por_pais:
-                fallos.append("%s sin equivalencia" % pais)
-                continue
-            st, r = pedir("POST", "/v1/subscriptionPrices", cuerpo_precio(sid, pais, por_pais[pais]))
-            if st in (200, 201):
-                hechos += 1
-            else:
-                fallos.append("%s (%s): %s" % (pais, st, error_corto(r)[:200]))
-        print("  %-28s US$%s · %d países nuevos con precio UPFRONT de %d que faltaban" % (s["id"], pp[1], hechos, len(faltan)))
-        for f in fallos[:10]:
-            print("     aviso precio", f)
+
+        def poner(lista):
+            hechos, rechazados = 0, []
+            for pais in lista:
+                if pais not in por_pais:
+                    rechazados.append((pais, "sin equivalencia"))
+                    continue
+                st, r = pedir("POST", "/v1/subscriptionPrices", cuerpo_precio(sid, pais, por_pais[pais]))
+                if st in (200, 201):
+                    hechos += 1
+                else:
+                    rechazados.append((pais, "%s: %s" % (st, error_corto(r)[:240])))
+            return hechos, rechazados
+
+        hechos, rechazados = poner(faltan)
+        fuera_del_plan = [p for p, _ in rechazados if p not in en_plan and p in por_pais]
+        if fuera_del_plan:
+            # Apple no acepta precio donde el plan no está: se amplía SOLO el plan de la suscripción (no la app)
+            print("  %-28s Apple rechazó %d precios fuera del plan (p. ej. %s: %s); amplío el plan UPFRONT"
+                  % (s["id"], len(fuera_del_plan), rechazados[0][0], rechazados[0][1][:160]))
+            en_plan = ampliar_plan(en_plan, paises, fuera_del_plan)
+            ok(*pedir("PATCH", "/v1/subscriptionPlanAvailabilities/" + upfront["id"],
+                      cuerpo_plan(sid, en_plan, upfront["id"])), "ampliar plan " + s["id"])
+            mas, rechazados = poner(fuera_del_plan)
+            hechos += mas
+        print("  %-28s US$%s · %d territorios nuevos con precio UPFRONT de %d que faltaban" % (s["id"], pp[1], hechos, len(faltan)))
+        for pais, motivo in rechazados[:10]:
+            print("     aviso precio %s %s" % (pais, motivo))
 
     # Consumibles: Pase de 24 horas
     iaps = {i["attributes"]["productId"]: i for i in todos(pedir, ok, "/v1/apps/%s/inAppPurchasesV2?limit=200" % aid)[0]}
@@ -460,18 +487,28 @@ def pais_de(precio):
     return (((precio.get("relationships") or {}).get("territory") or {}).get("data") or {}).get("id")
 
 
-def comparar_paises(paises_app, paises_plan, paises_precio):
-    """Devuelve una lista de problemas comparando países de la app, del plan UPFRONT y con precio UPFRONT."""
+def comparar_paises(paises_app, paises_plan, paises_precio, territorios=None):
+    """Problemas entre países de la app, del plan UPFRONT y con precio UPFRONT.
+    Regla (27 nov 2026, autorizado por Dimitry): el plan cubre al menos los países de la app; hay precio UPFRONT en
+    todo el plan y, si se da «territorios» (los 175 de Apple), también en todos ellos (UE y China incluidas: la app
+    no está disponible allí, así que no se vende)."""
     app, plan, precio = set(paises_app), set(paises_plan), set(paises_precio)
     problemas = []
-    if plan != app:
-        problemas.append("plan≠app (faltan %s, sobran %s)" % (sorted(app - plan)[:8], sorted(plan - app)[:8]))
-    if precio != plan:
-        problemas.append("precio≠plan (sin precio %s, precio sin plan %s)" % (sorted(plan - precio)[:8], sorted(precio - plan)[:8]))
+    if app - plan:
+        problemas.append("plan sin países de la app %s" % sorted(app - plan)[:8])
+    if plan - precio:
+        problemas.append("plan sin precio en %s" % sorted(plan - precio)[:8])
+    if territorios and set(territorios) - precio:
+        problemas.append("sin precio en %d territorios %s" % (len(set(territorios) - precio), sorted(set(territorios) - precio)[:8]))
     return problemas
 
 
-def revisar_suscripcion(pedir, ok, sid, pid, paises):
+def ampliar_plan(paises_plan, paises_app, extra=()):
+    """Países que debe tener el plan UPFRONT: nunca quita ninguno; suma los de la app y los extra."""
+    return sorted(set(paises_plan) | set(paises_app) | set(extra))
+
+
+def revisar_suscripcion(pedir, ok, sid, pid, paises, territorios=None):
     """Una línea con todo lo que Apple pide para una suscripción (solo lee)."""
     pas, _ = todos(pedir, ok, "/v1/subscriptions/%s/planAvailabilities" % sid)
     planes = {}
@@ -488,7 +525,7 @@ def revisar_suscripcion(pedir, ok, sid, pid, paises):
     locs, _ = todos(pedir, ok, "/v1/subscriptions/%s/subscriptionLocalizations" % sid)
     st, r = pedir("GET", "/v1/subscriptions/%s/appStoreReviewScreenshot" % sid)
     cap = (((r.get("data") or {}).get("attributes") or {}).get("assetDeliveryState") or {}).get("state") if st == 200 else st
-    problemas = comparar_paises(paises, planes.get("UPFRONT", []), por_plan.get("UPFRONT", []))
+    problemas = comparar_paises(paises, planes.get("UPFRONT", []), por_plan.get("UPFRONT", []), territorios)
     return "%-28s planes=%s precios=%s futuros=%d textos=%s captura=%s %s" % (
         pid, {k: len(v) for k, v in planes.items()}, {k: len(v) for k, v in por_plan.items()}, futuros,
         [l["attributes"]["locale"] for l in locs], cap, "; ".join(problemas) or "OK")
@@ -536,9 +573,10 @@ def diagnostico():
         print("  %-28s %-8s %s" % (x["attributes"]["productId"], x["id"], e))
     print("  RESUMEN:", _corto(estados))
 
-    print("\n== Revisión completa de las suscripciones (plan UPFRONT, precios, textos, captura)")
+    territorios = [t["id"] for t in todos(pedir, ok, "/v1/territories?limit=200")[0]]
+    print("\n== Revisión completa de las suscripciones (plan UPFRONT, precios en los %d territorios, textos, captura)" % len(territorios))
     for x in sorted(subs, key=lambda s: s["attributes"]["productId"]):
-        print("  " + revisar_suscripcion(pedir, ok, x["id"], x["attributes"]["productId"], paises))
+        print("  " + revisar_suscripcion(pedir, ok, x["id"], x["attributes"]["productId"], paises, territorios))
 
     elegidas = [s for s in subs if s["attributes"]["productId"] in ("tubroadcast.basico.1.mes", "tubroadcast.completo.1.anio")]
     for s in elegidas:
@@ -626,8 +664,12 @@ def probar():
     assert c["data"]["relationships"]["territory"]["data"]["id"] == "ECU"
     assert c["data"]["relationships"]["subscriptionPricePoint"]["data"]["id"] == "pp9"
     assert comparar_paises(["USA", "ECU"], ["ECU", "USA"], ["USA", "ECU"]) == []
-    assert comparar_paises(["USA", "ECU"], ["USA"], ["USA"])[0].startswith("plan≠app")
-    assert comparar_paises(["USA", "ECU"], ["USA", "ECU"], ["USA"])[0].startswith("precio≠plan")
+    assert comparar_paises(["USA", "ECU"], ["USA"], ["USA", "ECU"])[0].startswith("plan sin países de la app")
+    assert comparar_paises(["USA", "ECU"], ["USA", "ECU"], ["USA"])[0].startswith("plan sin precio")
+    assert comparar_paises(["USA"], ["USA"], ["USA"], ["USA", "FRA", "CHN"]) == ["sin precio en 2 territorios ['CHN', 'FRA']"]
+    assert comparar_paises(["USA"], ["USA", "FRA"], ["USA", "FRA", "CHN"], ["USA", "FRA", "CHN"]) == []
+    assert ampliar_plan(["USA", "FRA"], ["USA", "ECU"]) == ["ECU", "FRA", "USA"]      # nunca quita países
+    assert ampliar_plan(["USA"], ["USA"], ["CHN"]) == ["CHN", "USA"]
     assert pais_de({"relationships": {"territory": {"data": {"id": "ECU"}}}}) == "ECU" and pais_de({}) is None
     assert resumen_precios([{"attributes": {"planType": "UPFRONT"}}, {"attributes": {}}], []) == {"UPFRONT": 1, "SIN_PLANTYPE": 1}
     for p in subs + cons:
@@ -664,6 +706,8 @@ def probar_lista(ruta):
 if __name__ == "__main__":
     if sys.argv[1:] == ["probar"]:
         probar()
+    elif sys.argv[1:2] == ["solo"]:
+        correr(solo=sys.argv[2])
     elif sys.argv[1:] == ["diagnostico"]:
         diagnostico()
     elif sys.argv[1:2] == ["capturas"]:

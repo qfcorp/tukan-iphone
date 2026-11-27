@@ -10,6 +10,10 @@ on:
         description: "crear (planes de TuBroadcast), capturas (revisión de TuBroadcast), diagnostico (solo lee el estado de las compras de TuBroadcast) o envivo (compras de EN VIVO Tycoon)"
         required: true
         default: "crear"
+      producto:
+        description: "solo con modo crear: productId de UNA suscripción para probar (vacío = todas y los pases)"
+        required: false
+        default: ""
 
 concurrency:
   group: crear-compras
@@ -31,7 +35,10 @@ jobs:
         run: python3 herramientas/crear_compras.py probar
       - name: Crear en App Store Connect
         if: github.event.inputs.modo == 'crear'
-        run: python3 herramientas/crear_compras.py
+        env:
+          PRODUCTO: ${{ github.event.inputs.producto }}
+        run: |
+          if [ -n "$PRODUCTO" ]; then python3 herramientas/crear_compras.py solo "$PRODUCTO"; else python3 herramientas/crear_compras.py; fi
       - name: Compras de EN VIVO Tycoon (publicacion/compras/envivo.json)
         if: github.event.inputs.modo == 'envivo'
         run: python3 herramientas/crear_compras.py lista com.tukanec.envivo publicacion/compras/envivo.json publicacion/capturas/envivo/revision
