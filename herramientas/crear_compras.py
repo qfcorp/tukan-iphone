@@ -442,6 +442,7 @@ def diagnostico():
     grupo = next(g for g in grupos if g["attributes"]["referenceName"] == "TuBroadcast")
     gid = grupo["id"]
     print("\n== Grupo", gid, _corto(grupo["attributes"]))
+    print("  relaciones:", sorted((grupo.get("relationships") or {}).keys()))
     _mostrar(pedir, "localizaciones del grupo", "/v1/subscriptionGroups/%s/subscriptionGroupLocalizations" % gid)
 
     subs = todos(pedir, ok, "/v1/subscriptionGroups/%s/subscriptions?limit=50" % gid)[0]
@@ -486,12 +487,17 @@ def diagnostico():
             _mostrar(pedir, "precios %s en USA" % plan,
                      "/v1/subscriptions/%s/prices?filter[planType]=%s&filter[territory]=USA&include=subscriptionPricePoint,territory" % (sid, plan))
         _mostrar(pedir, "precio introductorio", "/v1/subscriptions/%s/introductoryOffers?limit=5" % sid)
+        _mostrar(pedir, "versiones", "/v1/subscriptions/%s/versions" % sid, 3000)
+        _mostrar(pedir, "imágenes", "/v1/subscriptions/%s/images" % sid)
+        _mostrar(pedir, "compra promocionada", "/v1/subscriptions/%s/promotedPurchase" % sid)
 
     if iaps:
         i = sorted(iaps, key=lambda s: s["attributes"]["productId"])[0]
         iid = i["id"]
         print("\n== Pase %s (%s)" % (i["attributes"]["productId"], iid))
         print("  attrs:", _corto(i["attributes"], 3000))
+        print("  relaciones:", sorted((i.get("relationships") or {}).keys()))
+        _mostrar(pedir, "versiones", "/v2/inAppPurchases/%s/versions" % iid, 3000)
         _mostrar(pedir, "inAppPurchaseAvailability", "/v2/inAppPurchases/%s/inAppPurchaseAvailability" % iid)
         _mostrar(pedir, "localizaciones", "/v2/inAppPurchases/%s/inAppPurchaseLocalizations" % iid)
         _mostrar(pedir, "captura de revisión", "/v2/inAppPurchases/%s/appStoreReviewScreenshot" % iid)

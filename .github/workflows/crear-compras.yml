@@ -41,3 +41,20 @@ jobs:
       - name: Diagnóstico de las compras de TuBroadcast (solo lee)
         if: github.event.inputs.modo == 'diagnostico' || github.event.inputs.modo == 'crear'
         run: python3 herramientas/crear_compras.py diagnostico
+      - name: TEMPORAL especificacion OpenAPI
+        if: github.event.inputs.modo == 'diagnostico'
+        run: |
+          curl -sSL -o /tmp/spec.zip https://developer.apple.com/sample-code/app-store-connect/app-store-connect-openapi-specification.zip
+          cd /tmp && unzip -o -q spec.zip && ls -la /tmp
+          python3 - <<'PY'
+          import json, glob
+          f = [x for x in glob.glob('/tmp/**/*.json', recursive=True)][0]
+          d = json.load(open(f)); print(f, d['info'].get('version'))
+          sch = d['components']['schemas']
+          for k in sorted(sch):
+              if any(w in k for w in ('SubscriptionVersion', 'SubscriptionPlan', 'PlanType', 'InAppPurchaseVersion', 'SubscriptionState', 'SubscriptionPrice', 'MarketSetting', 'MultiSeat')) or k in ('Subscription', 'SubscriptionCreateRequest', 'SubscriptionUpdateRequest', 'SubscriptionAvailability', 'SubscriptionAvailabilityCreateRequest'):
+                  print('### ' + k); print(json.dumps(sch[k])[:2500])
+          for path in sorted(d['paths']):
+              if any(w in path for w in ('subscriptionVersion', 'planAvailabilit', 'subscriptionPrice', '/v1/subscriptions/{id}', 'inAppPurchaseVersion', 'subscriptionSubmission')):
+                  print('PATH', path, sorted(d['paths'][path].keys()))
+          PY
